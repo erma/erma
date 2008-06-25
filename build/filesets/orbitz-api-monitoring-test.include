@@ -1,0 +1,3 @@
+com/orbitz/monitoring/test/**/*.class
+com/orbitz/monitoring/test/**/*.properties
+com/orbitz/monitoring/test/**/*.xml

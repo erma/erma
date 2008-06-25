@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+
+    <bean id="autoproxy" class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"/>
+
+    <bean id="monitoredAttributeSourceAdvisor" class="com.orbitz.monitoring.lib.interceptor.MonitoredAttributeSourceAdvisor">
+        <constructor-arg index="0" ref="monitoredAttributeSource"/>
+    </bean>
+
+    <bean id="monitoredAttributeSource" class="com.orbitz.monitoring.lib.interceptor.annotation.AnnotationMonitoredAttributeSource"/>
+
+    <bean id="simpleService" class="com.orbitz.monitoring.lib.interceptor.SimpleServiceImpl"/>
+
+</beans>

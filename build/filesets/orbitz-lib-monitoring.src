@@ -1,0 +1,3 @@
+com/orbitz/monitoring/api/**/*.java
+com/orbitz/monitoring/api/**/*.properties
+com/orbitz/monitoring/api/**/*.xml

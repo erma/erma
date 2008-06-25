@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+
+    <bean name="simpleService" class="com.orbitz.monitoring.lib.interceptor.TransactionMonitorProxyFactoryBean">
+        <property name="proxyInterfaces">
+            <list>
+                <value>com.orbitz.monitoring.lib.interceptor.SimpleService</value>
+            </list>
+        </property>
+        <property name="target">
+            <bean class="com.orbitz.monitoring.lib.interceptor.SimpleServiceImpl"/>
+        </property>
+        <property name="monitoredAttributeSource">
+            <bean class="com.orbitz.monitoring.lib.interceptor.annotation.AnnotationMonitoredAttributeSource"/>
+        </property>
+    </bean>
+
+
+
+</beans>

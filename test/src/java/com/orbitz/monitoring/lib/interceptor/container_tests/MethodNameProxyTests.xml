@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+
+    <bean name="simpleService" class="com.orbitz.monitoring.lib.interceptor.TransactionMonitorProxyFactoryBean">
+        <property name="transactionMonitorAttributes">
+            <props>
+                <prop key="sayHello">MONITOR_NAME=HelloMonitor</prop>
+                <prop key="sayGoodbye">MONITOR_NAME=GoodbyeMonitor, INCLUDE_RESULT, INCLUDE_ARGUMENTS</prop>
+            </props>
+        </property>
+        <property name="target" ref="simpleServiceImpl"/>
+    </bean>
+
+    <bean id="simpleServiceImpl" class="com.orbitz.monitoring.lib.interceptor.SimpleServiceImpl"/>
+
+</beans>

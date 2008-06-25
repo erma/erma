@@ -1,0 +1,142 @@
+<?xml version="1.0"?>
+
+
+<!--
+=====================================================================
+orbitz-api-monitoring project build file
+=====================================================================
+-->
+<project name="orbitz-api-monitoring" default="jar" basedir=".">
+
+  <!--
+  =====================================================================
+  Included build targets and such.
+  =====================================================================
+  -->
+  <property name="dir.build" value="${basedir}/build"/>
+
+  <path id="savant.class.path">
+    <pathelement path="${basedir}/build/ant-lib/savant-ant-ext-2.0.4-orbitz.jar"/>
+    <pathelement path="${basedir}/build/ant-lib/savant-main-2.0.4-orbitz.jar"/>
+    <pathelement path="${basedir}/build/ant-lib/savant-main-start-2.0.4-orbitz.jar"/>
+    <pathelement path="${basedir}/build/ant-lib/java-net-commons-1.0-RC5-jdk1.4.jar"/>
+    <pathelement path="${basedir}/build/ant-lib/jdom-1.0.jar"/>
+  </path> 
+
+  <import file="${dir.build}/buildfiles/clean.xml"/>
+  <import file="${dir.build}/buildfiles/compile.xml"/>
+  <import file="${dir.build}/buildfiles/dist.xml"/>
+  <import file="${dir.build}/buildfiles/javadoc.xml"/>
+  <import file="${dir.build}/buildfiles/metrics-reports.xml"/>
+  <import file="${dir.build}/buildfiles/savant-init.xml"/>
+  <import file="${dir.build}/buildfiles/savant-release.xml"/>
+  <import file="${dir.build}/buildfiles/test.xml"/>
+  <import file="${dir.build}/buildfiles/version.xml"/>
+
+  <import file="${dir.build}/buildfiles/compile14.xml"/>
+
+  <!--
+  ======================================================================
+  Dependency definitions
+  =====================================================================
+  -->
+  <!-- <import file="${basedir}/build-deps.xml" /> -->
+
+  <!--
+  ======================================================================
+  Main properties
+  =====================================================================
+  -->
+  <!-- Top level directories -->
+  <property name="dir.compile" value="${basedir}/target/classes"/>
+  <property name="dir.dist" value="${basedir}/target"/>
+  <property name="dir.docs" value="${basedir}/target"/>
+  <property name="dir.src.jdk14" value="${basedir}/src/java"/>
+  <property name="dir.src.jdk15" value="${basedir}/src/java1.5"/>
+  <property name="dir.test" value="${basedir}/target/test"/>
+  <property name="dir.test.compile" value="${basedir}/target/test/classes"/>
+  <property name="dir.test.src" value="${basedir}/test/src/java"/>
+
+  <!-- Sub-level directories -->
+  <property name="dir.filesets" value="${dir.build}/filesets"/>
+  <property name="dir.javadoc" value="${dir.docs}/javadoc"/>
+
+  <!-- The name of the group this build file belongs to (almost always orbitz) -->
+  <property name="name.group" value="orbitz"/>
+
+  <!--
+  ======================================================================
+  Classpaths for building and testing
+  =====================================================================
+  -->
+  <target name="-init-classpath">
+    <path id="classpath.build">
+      <fileset dir="${basedir}/build/lib" includes="**/*.jar" />
+    </path>
+  </target>
+
+  <target name="-init-project-classpath-jdk14" depends="-init-classpath">
+    <property name="dir.src" value="${dir.src.jdk14}"/> 
+    <property file="build.properties"/>
+  </target>
+
+  <target name="-init-project-classpath" depends="-init-classpath">
+    <property name="dir.src" value="${dir.src.jdk15}"/> 
+    <property file="build15.properties"/>
+  </target>
+
+  <target name="-init-unittest-classpath" depends="-init-classpath">
+    <property name="dir.src" value="${basedir}/src/java"/>
+    <property file="build15.properties"/>
+    <path id="classpath.test">
+      <path refid="classpath.build"/>
+      <pathelement location="${dir.compile}"/>
+      <pathelement location="${dir.test.compile}"/>
+    </path>
+  </target>
+
+  <!--
+  =====================================================================
+  Does everything except JavaDoc and test
+  =====================================================================
+  -->
+  <target name="compile" depends="-init-unittest-classpath">
+    <exec executable="ant" failonerror="true">
+      <!--<env key="JAVA_HOME" value="/usr/local/java/jdk1.4"/>-->
+      <arg value="compile.jdk1.4"/>
+    </exec>
+    <antcall target="compile.compile"/>
+  </target>
+
+  <target name="-init-jar">
+    <property name="dir.src" value="${basedir}/src/java"/> 
+  </target>
+
+  <target name="jar" depends="-init-jar,dist.jar"/>
+
+  <!--<target name="all" depends="release" description="Does a full compile and creates necessary jar files."/>-->
+
+  <!--
+  <target name="idea" description="Generates an IntelliJ module file" depends="-init-project-classpath,-init-unittest-classpath">
+    <orbitz:imlgen outputFile="${ant.project.name}.iml" overwrite="true" output="${dir.compile}"
+        testOutput="${dir.test.compile}" excludeOutput="true">
+      <classpath refid="classpath.test"/>
+      <src path="${dir.src.jdk14}"/>
+      <src path="${dir.src.jdk15}"/>
+      <testSrc path="${dir.test.src}"/>
+    </orbitz:imlgen>
+  </target>
+
+  <target name="eclipse" description="Generates an Eclipse .classpath file" depends="-init-project-classpath,-init-unittest-classpath">
+    <orbitz:eclipseClasspath outputFile=".classpath" overwrite="true" output="${dir.compile}"
+        testOutput="${dir.compile.test}">
+      <classpath refid="classpath.test"/>
+      <src path="${dir.src.jdk14}"/>
+      <src path="${dir.src.jdk15}"/>
+      <testSrc path="${dir.test.src}"/>
+    </orbitz:eclipseClasspath>
+  </target>
+  -->
+
+</project>
+

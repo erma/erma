@@ -1,0 +1,3 @@
+Build instructions:
+
+This project uses Apache Ant (http://ant.apache.org/) to build.  If you do not already have Ant installed, simply follow the install instructions in the user manual (http://ant.apache.org/manual/install.html#installing).

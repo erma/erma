@@ -1,0 +1,27 @@
+<project name="orbitz-api-monitoring-deps" xmlns:savant="antlib:net.java.savant.dep.ant">
+  <savant:dependencies id="deps">
+    <savant:artifactgroup type="compile">
+      <savant:artifact name="commons-beanutils" group="apache" projectname="commons" version="1.7" type="jar"/>
+      <savant:artifact name="commons-lang" group="apache" projectname="commons" version="2.2" type="jar"/>
+      <savant:artifact name="backport-util-concurrent" group="emory" projectname="backport-util-concurrent" version="3.0" type="jar"/>
+      <savant:artifact name="junit" group="misc" projectname="junit" version="3.8.1" type="jar"/>
+
+      <!-- Library dependencies -->
+      <savant:artifact name="commons-jexl" group="apache" projectname="commons" version="1.0" type="jar"/>
+      <!--<savant:artifact name="commons-lang" group="apache" projectname="commons" version="2.1" type="jar"/>-->
+      <savant:artifact name="backport-util-concurrent" group="emory" projectname="backport-util-concurrent" version="3.0" type="jar"/>
+      <savant:artifact name="spring" group="springframework" projectname="springframework" version="2.0.6" type="jar"/>
+      <savant:artifact name="xstream" group="codehaus" projectname="xstream" version="1.2.2" type="jar"/>
+    </savant:artifactgroup>
+    <savant:artifactgroup type="test_compile">
+      <savant:artifact name="junitperf" group="misc" projectname="junit" version="1.9.1" type="jar"/>
+    </savant:artifactgroup>
+    <savant:artifactgroup type="test_run">
+      <savant:artifact name="commons-logging" group="apache" projectname="commons" version="1.0.4" type="jar"/>
+      <savant:artifact name="log4j" group="apache" projectname="log4j" version="1.2.14" type="jar"/>
+    </savant:artifactgroup>
+    <savant:artifactgroup type="run">
+      <savant:artifact name="commons-logging" group="apache" projectname="commons" version="1.0.4" type="jar"/>
+    </savant:artifactgroup>
+  </savant:dependencies>
+</project>
