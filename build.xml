@@ -16,11 +16,7 @@ orbitz-api-monitoring project build file
   <property name="dir.build" value="${basedir}/build"/>
 
   <path id="savant.class.path">
-    <pathelement path="${basedir}/build/ant-lib/savant-ant-ext-2.0.4-orbitz.jar"/>
-    <pathelement path="${basedir}/build/ant-lib/savant-main-2.0.4-orbitz.jar"/>
-    <pathelement path="${basedir}/build/ant-lib/savant-main-start-2.0.4-orbitz.jar"/>
-    <pathelement path="${basedir}/build/ant-lib/java-net-commons-1.0-RC5-jdk1.4.jar"/>
-    <pathelement path="${basedir}/build/ant-lib/jdom-1.0.jar"/>
+    <fileset dir="${basedir}/build/ant-lib/" includes="*.jar" />
   </path> 
 
   <import file="${dir.build}/buildfiles/clean.xml"/>
