@@ -63,19 +63,8 @@ are in <project-home>/src
 
   <!-- Sub-target of compile that compiles all the main files -->
   <target name="compile.main" depends="compile.init">
-    <!-- figure out if we need a jdk specific src path -->
-    <available property="append.jdk.src.path" file="${dir.src}${ant.java.version}"/>
-    <condition property="dir.src.jdk" value=":${dir.src}${ant.java.version}">
-      <isset property="append.jdk.src.path"/>
-    </condition>
-    <condition property="dir.src.jdk" value="">
-      <not>
-        <isset property="append.jdk.src.path"/>
-      </not>
-    </condition>
-
     <!-- Compile from src to build directory -->
-    <javac srcdir="${dir.src}${dir.src.jdk}"
+    <javac srcdir="${dir.src.jdk15}"
            destdir="${dir.compile}"
            deprecation="${build.deprecation}"
            encoding="${build.encoding}"
