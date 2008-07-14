@@ -2,6 +2,7 @@ package com.orbitz.monitoring.lib.processor;
 
 import junit.framework.TestCase;
 import com.orbitz.monitoring.api.monitor.TransactionMonitor;
+import com.orbitz.monitoring.api.MonitoringEngine;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +15,12 @@ import java.util.List;
  * @author Operations Architecture
  */
 public class EventPatternMonitorProcessorTest extends TestCase {
+    public void setUp() {
+        // Shutting down the MonitoringEngine so because the vmid
+        // attributes is set an locked, which causes these tests to
+        // fail.
+        MonitoringEngine.getInstance().shutdown();
+    }
 
     public void testDefaultAttributes() {
         EventPatternMonitorProcessor processor = new EventPatternMonitorProcessor();
