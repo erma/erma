@@ -59,7 +59,7 @@ public class LatencyMonitoringCoverageMonitorProcessorTest extends TestCase {
 
         TransactionMonitor monitor = new TransactionMonitor("Test");
         try {
-            Thread.sleep(501);
+            Thread.sleep(505);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -82,7 +82,7 @@ public class LatencyMonitoringCoverageMonitorProcessorTest extends TestCase {
 
         TransactionMonitor parent = new TransactionMonitor("Parent");
         try {
-            Thread.sleep(501);
+            Thread.sleep(505);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -99,7 +99,7 @@ public class LatencyMonitoringCoverageMonitorProcessorTest extends TestCase {
         TransactionMonitor child = new TransactionMonitor("Child");
         child.done();
         try {
-            Thread.sleep(501);
+            Thread.sleep(505);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -126,7 +126,7 @@ public class LatencyMonitoringCoverageMonitorProcessorTest extends TestCase {
         TransactionMonitor child1 = new TransactionMonitor("Child1");
         child1.done();
         try {
-            Thread.sleep(501);
+            Thread.sleep(505);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -141,7 +141,7 @@ public class LatencyMonitoringCoverageMonitorProcessorTest extends TestCase {
 
         TransactionMonitor parent = new TransactionMonitor("Parent");
         try {
-            Thread.sleep(501);
+            Thread.sleep(505);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -162,7 +162,7 @@ public class LatencyMonitoringCoverageMonitorProcessorTest extends TestCase {
         TransactionMonitor child2 = new TransactionMonitor("Child2");
         child2.done();
         try {
-            Thread.sleep(501);
+            Thread.sleep(505);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
