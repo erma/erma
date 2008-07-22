@@ -65,9 +65,7 @@ public class CompositeAttributeMap extends AttributeMap {
                 if (original.isLocked()) copy.lock();
                 getAttributes().put(key, copy);
             } else {
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Attribute is not of type AttributeHolder or CompositeAttributeHolder, skipping: " + key + "=" + value.toString());
-                }
+                set(key, value);
             }
         }
     }

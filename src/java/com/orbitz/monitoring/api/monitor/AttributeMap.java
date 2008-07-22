@@ -94,11 +94,7 @@ public class AttributeMap implements Serializable {
     }
 
     public void setAll(Map attributes) {
-        if (attributes == null) return;
-        for (Iterator i = attributes.entrySet().iterator(); i.hasNext();) {
-            Map.Entry entry = (Map.Entry) i.next();
-            set((String) entry.getKey(), entry.getValue());
-        }
+        setAllAttributeHolders(attributes);
     }
 
     public void setAllAttributeHolders(Map attributeHolders) {
@@ -113,6 +109,8 @@ public class AttributeMap implements Serializable {
                 AttributeHolder original = (AttributeHolder) value;
                 AttributeHolder copy = (AttributeHolder) original.clone();
                 getAttributes().put(key, copy);
+            } else {
+                set(key, value);
             }
         }
     }

@@ -92,9 +92,7 @@ public class AttributeMapTest extends TestCase {
     }
 
     public void testNestedAttributes() {
-
         String nestedPropName = "foo.bar";
-        String regularPropName = "baz";
         
         Map nestedBean = new HashMap();
 
@@ -204,6 +202,16 @@ public class AttributeMapTest extends TestCase {
 
         compositeAttributes.setAllAttributeHolders(map);
         assertEquals("Setting all attributes", compositeAttributes.get("foobar"), "baz");
+    }
+
+    public void testSetAll() {
+        Map map = new HashMap();
+        map.put("key", "value");
+        map.put("foo", "bar");
+
+        attributes.setAll(map);
+        assertEquals("Setting all attributes", attributes.get("foo"), "bar");
+        assertEquals("Setting all attributes", attributes.getAll().size(), 2);
     }
 
     private class NotSerializable {
