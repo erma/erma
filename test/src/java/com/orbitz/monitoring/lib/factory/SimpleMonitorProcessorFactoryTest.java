@@ -47,6 +47,9 @@ public class SimpleMonitorProcessorFactoryTest extends TestCase {
 
         SimpleMonitorProcessorFactory factory =
                 new SimpleMonitorProcessorFactory(processGroups);
+
+        SimpleMonitorProcessorFactory factory2 =
+                new SimpleMonitorProcessorFactory(new ProcessGroup[] {_justA});
         factory.startup();
 
         _a.assertStartupCalled();

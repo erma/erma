@@ -16,13 +16,13 @@ import java.util.List;
 import java.util.ArrayList;
 
 /**
- * Unit tests for the MonitoringEngineManager.
+ * Unit tests for the BaseMonitoringEngineManager.
  *
  * <p>(c) 2000-06 Orbitz, LLC. All Rights Reserved.
  *
  * @author Matt O'Keefe
  */
-public class MonitoringEngineManagerTest extends TestCase {
+public class BaseMonitoringEngineManagerTest extends TestCase {
     // ** PRIVATE DATA ********************************************************
 
 
@@ -40,9 +40,9 @@ public class MonitoringEngineManagerTest extends TestCase {
     }
 
     // ** TEST METHODS ********************************************************
-    public void testMonitoringEngineManager() {
+    public void testBaseMonitoringEngineManager() {
 
-        MonitoringEngineManager manager = new MonitoringEngineManager();
+        BaseMonitoringEngineManager manager = new BaseMonitoringEngineManager();
 
         manager.startup();
         
@@ -52,7 +52,7 @@ public class MonitoringEngineManagerTest extends TestCase {
     }
 
     public void testMaliciousRuntimeControls() {
-        MonitoringEngineManager manager = new MonitoringEngineManager();
+        BaseMonitoringEngineManager manager = new BaseMonitoringEngineManager();
         manager.startup();
 
         int i = 0;
@@ -75,7 +75,7 @@ public class MonitoringEngineManagerTest extends TestCase {
         XmlMonitorRenderer renderer = new XmlMonitorRenderer(attributeList);
         renderer.setPrettyPrint(true);
 
-        MonitoringEngineManager manager = new MonitoringEngineManager();
+        BaseMonitoringEngineManager manager = new BaseMonitoringEngineManager();
         manager.startup();
 
         {

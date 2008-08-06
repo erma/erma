@@ -41,6 +41,8 @@ public class MonitoringEngineTest extends TestCase {
         _engine = MonitoringEngine.getInstance();
         _engine.setProcessorFactory(_factory);
         _engine.setDecomposer(new MockDecomposer());
+
+        
     }
 
     protected void tearDown()
@@ -264,14 +266,6 @@ public class MonitoringEngineTest extends TestCase {
         assertFalse(parentMonitor.hasAttribute("parentSequenceId"));
     }
 
-    public void testGlobalAttributeInheritance() {
-        _engine.startup();
-
-        TransactionMonitor mon = new TransactionMonitor("test");
-
-        assertNotNull(mon.get(Monitor.HOSTNAME));
-    }
-
     public void testMultithreadedChildMonitorCorrelation()
             throws InterruptedException {
         _engine.startup();
@@ -381,6 +375,7 @@ public class MonitoringEngineTest extends TestCase {
         assertEquals(1, monitor.getAsFloat("float"), 0);
         assertEquals(1, monitor.getAsDouble("double"), 0);
         assertEquals(true, monitor.getAsBoolean("boolean"));
+        
     }
 
     public void testClearCompositeMonitorRefs() {
@@ -405,45 +400,6 @@ public class MonitoringEngineTest extends TestCase {
 
         count = _engine.clearCurrentThread();
         assertEquals(count, 0);
-    }
-
-    public void testVmidLogic() {
-        // atlas test case
-        System.setProperty("OrbitzHostId", "vmid");
-        System.setProperty("OrbitzHostVersion", "0.0");
-        _engine = new MonitoringEngine();
-        _engine.setProcessorFactory(_factory);
-        _engine.setDecomposer(new MockDecomposer());
-        _engine.startup();
-        EventMonitor m1 = new EventMonitor("event");
-        _engine.initMonitor(m1);
-        assertEquals("Vmid not as expected.", "vmid", m1.get(Monitor.VMID));
-        System.clearProperty("OrbitzHostId");
-        System.clearProperty("OrbitzHostVersion");
-
-        // jboss test case
-        System.setProperty("OrbitzHostId", "vmid-0.0");
-        System.setProperty("OrbitzHostVersion", "0.0");
-        _engine = new MonitoringEngine();
-        _engine.setProcessorFactory(_factory);
-        _engine.setDecomposer(new MockDecomposer());
-        _engine.startup();
-        EventMonitor m2 = new EventMonitor("event");
-        _engine.initMonitor(m2);
-        assertEquals("Vmid not as expected.", "vmid", m2.get(Monitor.VMID));
-        System.clearProperty("OrbitzHostId");
-        System.clearProperty("OrbitzHostVersion");
-
-        // weblogic test case
-        System.setProperty("vmid", "machine-vmid");
-        _engine = new MonitoringEngine();
-        _engine.setProcessorFactory(_factory);
-        _engine.setDecomposer(new MockDecomposer());
-        _engine.startup();
-        EventMonitor m3 = new EventMonitor("event");
-        _engine.initMonitor(m3);
-        assertEquals("Vmid not as expected.", "vmid", m3.get(Monitor.VMID));
-        System.clearProperty("vmid");
     }
 
     public void testMakeSerializableWithoutStartupDoesntThrowException() {

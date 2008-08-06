@@ -8,8 +8,8 @@ import com.orbitz.monitoring.api.monitor.EventMonitor;
 import com.orbitz.monitoring.api.monitor.TransactionMonitor;
 import com.orbitz.monitoring.api.monitor.serializable.SerializableMonitor;
 import com.orbitz.monitoring.api.monitor.serializable.SerializableCompositeMonitor;
-import com.orbitz.monitoring.lib.MonitoringEngineManager;
 import com.orbitz.monitoring.test.MockMonitorProcessorFactory;
+import com.orbitz.monitoring.lib.BaseMonitoringEngineManager;
 import junit.framework.TestCase;
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
@@ -40,8 +40,8 @@ public class EventPatternLoggingMonitorProcessorTest extends TestCase {
         cpuProfilingMonitorProcessor.setEnabled(true);
         MockMonitorProcessorFactory mockMonitorProcessorFactory =
                 new MockMonitorProcessorFactory(new MonitorProcessor[] {cpuProfilingMonitorProcessor});
-        MonitoringEngineManager monitoringEngineManager =
-                new MonitoringEngineManager(mockMonitorProcessorFactory);
+        BaseMonitoringEngineManager monitoringEngineManager =
+                new BaseMonitoringEngineManager(mockMonitorProcessorFactory);
         monitoringEngineManager.startup();
     }
 
@@ -57,6 +57,7 @@ public class EventPatternLoggingMonitorProcessorTest extends TestCase {
 
         String name = "testEvent";
         EventMonitor event = new EventMonitor(name);
+        event.set(Monitor.VMID, _testVMID);
         event.fire();
 
         String expected = '\n'+_testVMID+'|'+name;
@@ -67,6 +68,7 @@ public class EventPatternLoggingMonitorProcessorTest extends TestCase {
     public void testRenderTransaction() {
         String name = "testTransaction";
         TransactionMonitor txn = new TransactionMonitor(name);
+        txn.set(Monitor.VMID, _testVMID);
         txn.succeeded();
         txn.done();
 
@@ -78,11 +80,14 @@ public class EventPatternLoggingMonitorProcessorTest extends TestCase {
     public void testRenderTransactionContainingChildMonitors() {
         MonitoringEngine.getInstance().setEventPatternMonitoringLevel(MonitoringLevel.INFO);
         TransactionMonitor parent = new TransactionMonitor("parent");
+        parent.set(Monitor.VMID, _testVMID);
 
         EventMonitor child = new EventMonitor("child1");
+        child.set(Monitor.VMID, _testVMID);
         child.fire();
 
         TransactionMonitor child2 = new TransactionMonitor("child2");
+        child2.set(Monitor.VMID, _testVMID);
         child2.failedDueTo(new RuntimeException(new IllegalArgumentException()));
         child2.done();
 
@@ -99,6 +104,7 @@ public class EventPatternLoggingMonitorProcessorTest extends TestCase {
     public void testRenderSerializedTransactionMonitor() {
 
         TransactionMonitor monitor = new TransactionMonitor("monitor");
+        monitor.set(Monitor.VMID, _testVMID);
         monitor.failedDueTo(new RuntimeException(new IllegalStateException("oops")));
         SerializableMonitor serializableMomento = monitor.getSerializableMomento();
 
@@ -110,11 +116,13 @@ public class EventPatternLoggingMonitorProcessorTest extends TestCase {
     public void testRenderTransactionWithBogusFailureThrowable() {
 
         TransactionMonitor parent = new TransactionMonitor("parent");
-
+        parent.set(Monitor.VMID, _testVMID);
         EventMonitor child = new EventMonitor("child1");
+        child.set(Monitor.VMID, _testVMID);
         child.fire();
 
         TransactionMonitor child2 = new TransactionMonitor("child2");
+        child2.set(Monitor.VMID, _testVMID);
         child2.set("failureThrowable", new Object());
         child2.done();
 
@@ -136,6 +144,7 @@ public class EventPatternLoggingMonitorProcessorTest extends TestCase {
 
         String name = "testTransaction";
         TransactionMonitor txn = new TransactionMonitor(name);
+        txn.set(Monitor.VMID, _testVMID);
         txn.succeeded();
         txn.done();
 
@@ -154,9 +163,16 @@ public class EventPatternLoggingMonitorProcessorTest extends TestCase {
     public void testMonitorsToSkip() {
         String name = "parentTransaction";
         TransactionMonitor txn = new TransactionMonitor(name);
-        new EventMonitor("child1Monitor").fire();
-        new EventMonitor("skipMonitor").fire();
-        new EventMonitor("child2Monitor").fire();
+        txn.set(Monitor.VMID, _testVMID);
+        EventMonitor child1 = new EventMonitor("child1Monitor");
+        child1.set(Monitor.VMID, _testVMID);
+        child1.fire();
+        EventMonitor skip = new EventMonitor("skipMonitor");
+        skip.set(Monitor.VMID, _testVMID);
+        skip.fire();
+        EventMonitor child2 = new EventMonitor("child2Monitor");
+        child2.set(Monitor.VMID, _testVMID);
+        child2.fire();
         txn.succeeded();
         txn.done();
 
@@ -185,9 +201,20 @@ public class EventPatternLoggingMonitorProcessorTest extends TestCase {
     public void testCondensingDuplicateMonitors() {
         String name = "parentTransaction";
         TransactionMonitor txn = new TransactionMonitor(name);
-        new EventMonitor("childMonitor").fire();
-        new EventMonitor("childMonitor").fire();
-        new EventMonitor("otherMonitor").fire();
+        txn.set(Monitor.VMID, _testVMID);
+
+        EventMonitor childMonitor = new EventMonitor("childMonitor");
+        childMonitor.set(Monitor.VMID, _testVMID);
+        childMonitor.fire();
+
+        EventMonitor childMonitor2 = new EventMonitor("childMonitor");
+        childMonitor2.set(Monitor.VMID, _testVMID);
+        childMonitor2.fire();
+
+        EventMonitor otherMonitor = new EventMonitor("otherMonitor");
+        otherMonitor.set(Monitor.VMID, _testVMID);
+        otherMonitor.fire();
+
         txn.succeeded();
         txn.done();
 
@@ -195,21 +222,31 @@ public class EventPatternLoggingMonitorProcessorTest extends TestCase {
                 "\n  " + _testVMID + "|childMonitor|2 occurences" +
                 "\n  " + _testVMID + "|otherMonitor";
         String actual = _processor.renderMonitor(txn);
+        
         assertEquals("Transaction containing child Monitors not rendered as expected", expected, actual);
     }
 
     public void testCondensingSubpattern() {
         String name = "parentTransaction";
         TransactionMonitor txn = new TransactionMonitor(name);
+        txn.set(Monitor.VMID, _testVMID);
         TransactionMonitor foo = new TransactionMonitor("foo");
-        new EventMonitor("childMonitor").fire();
+        foo.set(Monitor.VMID, _testVMID);
+        EventMonitor child = new EventMonitor("childMonitor");
+        child.set(Monitor.VMID, _testVMID);
+        child.fire();
         foo.succeeded();
         foo.done();
         foo = new TransactionMonitor("foo");
-        new EventMonitor("childMonitor").fire();
+        foo.set(Monitor.VMID, _testVMID);
+        EventMonitor child2 = new EventMonitor("childMonitor");
+        child2.set(Monitor.VMID, _testVMID);
+        child2.fire();
         foo.succeeded();
         foo.done();
-        new EventMonitor("otherMonitor").fire();
+        EventMonitor other = new EventMonitor("otherMonitor");
+        other.set(Monitor.VMID, _testVMID);
+        other.fire();
         txn.succeeded();
         txn.done();
 
@@ -241,6 +278,7 @@ public class EventPatternLoggingMonitorProcessorTest extends TestCase {
 
         String name = "testTransaction";
         TransactionMonitor txn = new TransactionMonitor(name);
+        txn.set(Monitor.VMID, _testVMID);
         txn.failedDueTo(e2);
         txn.done();
 

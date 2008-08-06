@@ -9,8 +9,6 @@ import edu.emory.mathcs.backport.java.util.concurrent.atomic.AtomicInteger;
 import edu.emory.mathcs.backport.java.util.concurrent.atomic.AtomicReference;
 import org.apache.log4j.Logger;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
@@ -54,6 +52,8 @@ public class MonitoringEngine {
     private Map _monitorLevels;
     private AtomicReference _atomicEPMLevel;
 
+    private Runnable _startupRunnable;
+
     // ** CONSTRUCTORS ********************************************************
     protected MonitoringEngine() {
         _syncedThreadToStack = new ConcurrentHashMap();
@@ -63,6 +63,8 @@ public class MonitoringEngine {
         _monitorLevels = new TreeMap(Collections.reverseOrder());
         
         _atomicEPMLevel = new AtomicReference(_eventPatternMonitoringLevel);
+
+        _globalAttributes = new AttributeMap();
     }
 
     // ** PUBLIC METHODS ******************************************************
@@ -95,9 +97,11 @@ public class MonitoringEngine {
         _syncedThreadToStack.clear();
         _processorFactory.startup();
 
-        initializeGlobalAttributes();
-
         _running = true;
+
+        if (_startupRunnable != null) {
+            _startupRunnable.run();
+        }
     }
 
     /**
@@ -114,7 +118,7 @@ public class MonitoringEngine {
     public void shutdown() {
         if (_running) {
             log.info("MonitoringEngine shutting down");
-            
+            _globalAttributes.clear();
             _monitorProcessorLevels.clear();
             _monitorLevels.clear();
             _running = false;
@@ -572,6 +576,10 @@ public class MonitoringEngine {
         _globalAttributes.setAll(attributes);
     }
 
+    public AttributeHolder setGlobal(String key, String value) {
+        return _globalAttributes.set(key, value).serializable();
+    }
+
     /**
      * Gets enabled state of MonitoringEngine.  No monitors are processed until
      * this returns true.
@@ -583,41 +591,15 @@ public class MonitoringEngine {
         return _monitoringEnabled && _running;
     }
 
-    // ** PRIVATE METHODS *****************************************************
-
-    private void initializeGlobalAttributes() {
-        _globalAttributes = new AttributeMap();
-
-        // set vmid global attribute - handle variations on OrbitzHostId system property
-        // that exist with different containers
-        String hostId = System.getProperty("OrbitzHostId");
-        String hostVer = System.getProperty("OrbitzHostVersion", "?");
-
-        String vmid = "JVM_ID_NOT_SET";
-        if (hostId != null && hostId.endsWith(hostVer)) {
-            vmid = hostId.substring(0, (hostId.length() - hostVer.length() - 1));
-        } else if (hostId != null) {
-            vmid = hostId;
-        } else {
-            hostId = System.getProperty("vmid");
-            if(hostId != null) {
-                int idx = hostId.indexOf('-') + 1;
-                vmid = hostId.substring(idx);
-            }
-        }
-
-        _globalAttributes.set(Monitor.VMID, vmid).serializable().lock();
-
-        // set hostname global attribute
-        String hostname = "HOSTNAME_NOT_SET";
-        try {
-            hostname = InetAddress.getLocalHost().getHostName();
-        } catch (UnknownHostException e) {
-            log.warn("", e);
-        }
-        hostname = hostname.replace('.','_');
-        _globalAttributes.set(Monitor.HOSTNAME, hostname).serializable().lock();
+    /**
+     * Sets a Runnable to be executed on startup of the MonitoringEngine.
+     * @param startupRunnable instance of a Runnable
+     */
+    public void setStartupRunnable(Runnable startupRunnable) {
+        _startupRunnable = startupRunnable;
     }
+
+    // ** PRIVATE METHODS *****************************************************
 
     /**
      * This method encapsulates the logic of looping over all applicable

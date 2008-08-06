@@ -3,7 +3,7 @@ package com.orbitz.monitoring.lib.processor;
 import com.orbitz.monitoring.api.Monitor;
 import com.orbitz.monitoring.api.MonitorProcessor;
 import com.orbitz.monitoring.api.monitor.EventMonitor;
-import com.orbitz.monitoring.lib.MonitoringEngineManager;
+import com.orbitz.monitoring.lib.BaseMonitoringEngineManager;
 import com.orbitz.monitoring.lib.factory.ProcessGroup;
 import com.orbitz.monitoring.lib.factory.SimpleMonitorProcessorFactory;
 import com.orbitz.monitoring.test.MockMonitorProcessor;
@@ -24,7 +24,7 @@ public class AsyncMonitorProcessorTest extends TestCase {
     // ** PRIVATE DATA ********************************************************
     private AsyncMonitorProcessor _processor;
     private MockMonitorProcessor _attachedProcessor;
-    private MonitoringEngineManager _monitoringEngineManager;
+    private BaseMonitoringEngineManager _monitoringEngineManager;
 
     // ** TEST SUITE METHODS **************************************************
     protected void setUp()
@@ -37,7 +37,7 @@ public class AsyncMonitorProcessorTest extends TestCase {
         ProcessGroup processGroup = new ProcessGroup(_processor);
         SimpleMonitorProcessorFactory simpleMonitorProcessorFactory = new SimpleMonitorProcessorFactory(new ProcessGroup[]{processGroup});
 
-        _monitoringEngineManager = new MonitoringEngineManager(simpleMonitorProcessorFactory);
+        _monitoringEngineManager = new BaseMonitoringEngineManager(simpleMonitorProcessorFactory);
         _monitoringEngineManager.startup();
 
         _processor.startup();
@@ -63,9 +63,7 @@ public class AsyncMonitorProcessorTest extends TestCase {
         for(Monitor monitor : monitors) {
             System.out.println(monitor.getAll());
             if (monitor.get(Monitor.NAME).equals(event.get(Monitor.NAME))) {
-              assertEquals(event.get(Monitor.HOSTNAME) , monitor.get(Monitor.HOSTNAME));
               assertEquals(event.get(Monitor.CREATED_AT) , monitor.get(Monitor.CREATED_AT));
-              assertEquals(event.get(Monitor.VMID) , monitor.get(Monitor.VMID));
               assertEquals(event.get(Monitor.THREAD_ID) , monitor.get(Monitor.THREAD_ID));
               checkMonitorCreated = true;
            }
@@ -84,9 +82,7 @@ public class AsyncMonitorProcessorTest extends TestCase {
         boolean checkMonitorCreated = false;
         for(Monitor monitor : monitors) {
             if (monitor.get(Monitor.NAME).equals(event.get(Monitor.NAME))) {
-              assertEquals(event.get(Monitor.HOSTNAME) , monitor.get(Monitor.HOSTNAME));
               assertEquals(event.get(Monitor.CREATED_AT) , monitor.get(Monitor.CREATED_AT));
-              assertEquals(event.get(Monitor.VMID) , monitor.get(Monitor.VMID));
               assertEquals(event.get(Monitor.THREAD_ID) , monitor.get(Monitor.THREAD_ID));
               checkMonitorCreated = true;
            }

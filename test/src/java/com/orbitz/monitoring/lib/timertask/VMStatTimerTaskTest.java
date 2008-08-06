@@ -2,7 +2,7 @@ package com.orbitz.monitoring.lib.timertask;
 
 import com.orbitz.monitoring.api.Monitor;
 import com.orbitz.monitoring.api.MonitoringEngine;
-import com.orbitz.monitoring.lib.MonitoringEngineManager;
+import com.orbitz.monitoring.lib.BaseMonitoringEngineManager;
 import com.orbitz.monitoring.test.MockDecomposer;
 import com.orbitz.monitoring.test.MockMonitorProcessor;
 import com.orbitz.monitoring.test.MockMonitorProcessorFactory;
@@ -29,8 +29,8 @@ public class VMStatTimerTaskTest extends TestCase {
         MockMonitorProcessorFactory mockMonitorProcessorFactory =
                 new MockMonitorProcessorFactory(processor);
         MockDecomposer mockDecomposer = new MockDecomposer();
-        MonitoringEngineManager monitoringEngineManager =
-                new MonitoringEngineManager(mockMonitorProcessorFactory, mockDecomposer);
+        BaseMonitoringEngineManager monitoringEngineManager =
+                new BaseMonitoringEngineManager(mockMonitorProcessorFactory, mockDecomposer);
         monitoringEngineManager.startup();
     }
 

@@ -43,7 +43,7 @@ public class SimpleMonitorRenderer {
      * @return a String of XML
      */
     public String renderMonitor(Monitor monitor, boolean includeStackTraces) {
-
+        
         if (monitor == null) {
             return "null";
         }

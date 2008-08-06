@@ -25,8 +25,8 @@ import java.util.LinkedList;
  * @@org.springframework.jmx.export.metadata.ManagedResource
  * (description="Management interface for ERMA MonitoringEngine")
  */
-public class MonitoringEngineManager {
-    private static final Logger log = Logger.getLogger(MonitoringEngineManager.class);
+public class BaseMonitoringEngineManager {
+    private static final Logger log = Logger.getLogger(BaseMonitoringEngineManager.class);
 
     private MonitorProcessorFactory _factory;
     private Decomposer _decomposer;
@@ -34,15 +34,17 @@ public class MonitoringEngineManager {
     private Collection _timerTasks;
     private boolean _monitoringEnabled = true;
 
-    public MonitoringEngineManager() {
+    protected Runnable _startupRunnable;
+
+    public BaseMonitoringEngineManager() {
         this(new SimpleMonitorProcessorFactory(null), null);
     }
 
-    public MonitoringEngineManager(MonitorProcessorFactory factory) {
+    public BaseMonitoringEngineManager(MonitorProcessorFactory factory) {
         this(factory, null);
     }
 
-    public MonitoringEngineManager(MonitorProcessorFactory factory,
+    public BaseMonitoringEngineManager(MonitorProcessorFactory factory,
                                    Decomposer decomposer) {
         if (decomposer == null) {
             decomposer = new AttributeDecomposer();
@@ -57,6 +59,7 @@ public class MonitoringEngineManager {
 
         MonitoringEngine.getInstance().setProcessorFactory(_factory);
         MonitoringEngine.getInstance().setDecomposer(_decomposer);
+        MonitoringEngine.getInstance().setStartupRunnable(_startupRunnable);
 
         if (_timerTasks == null) {
             _timerTasks = new LinkedList();
@@ -120,6 +123,10 @@ public class MonitoringEngineManager {
      */
     public boolean getMonitoringEnabled() {
         return _monitoringEnabled;
+    }
+
+    public void setStartupRunnable(Runnable startupRunnable) {
+        _startupRunnable = startupRunnable;
     }
 
     /**

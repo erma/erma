@@ -64,7 +64,6 @@ public abstract class MonitorTestBase extends TestCase {
         Monitor monitor = createMonitor("test");
 
         assertEquals("monitor.name", "test", monitor.get(Monitor.NAME));
-        assertTrue("monitor.hostname", monitor.hasAttribute(Monitor.HOSTNAME));
         assertTrue("monitor.createdAt",
                    monitor.hasAttribute(Monitor.CREATED_AT));
         assertEquals(Integer.toHexString(Thread.currentThread().hashCode()),
@@ -102,7 +101,7 @@ public abstract class MonitorTestBase extends TestCase {
         monitor.set("key2", key2Val);
 
         // Coerceable types
-        assertSame("Value for key1", key1Val, monitor.get("key1"));
+        assertSame("Value forT key1", key1Val, monitor.get("key1"));
         assertSame("Value for key2", key2Val, monitor.get("key2"));
 
         assertEquals("String value for key2", "foo",

@@ -112,7 +112,7 @@ orbitz-api-monitoring project build file
 
   <!--<target name="all" depends="release" description="Does a full compile and creates necessary jar files."/>-->
 
-  <!--
+<!--  
   <target name="idea" description="Generates an IntelliJ module file" depends="-init-project-classpath,-init-unittest-classpath">
     <orbitz:imlgen outputFile="${ant.project.name}.iml" overwrite="true" output="${dir.compile}"
         testOutput="${dir.test.compile}" excludeOutput="true">
@@ -132,7 +132,6 @@ orbitz-api-monitoring project build file
       <testSrc path="${dir.test.src}"/>
     </orbitz:eclipseClasspath>
   </target>
-  -->
-
+-->
 </project>
 
