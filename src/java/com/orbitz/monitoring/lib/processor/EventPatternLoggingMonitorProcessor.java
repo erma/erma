@@ -5,6 +5,8 @@ import com.orbitz.monitoring.lib.renderer.EventPatternMonitorRenderer;
 import org.apache.log4j.Logger;
 
 import java.util.Set;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  * A monitor processor that logs the monitors collected to a log4j logger in an
@@ -16,46 +18,39 @@ import java.util.Set;
  */
 public class EventPatternLoggingMonitorProcessor extends MonitorProcessorAdapter {
 
-    private boolean includeLatency = false;
-
-    private boolean includeCpuTime = false;
-
     private EventPatternMonitorRenderer renderer;
+
+    private List allowedAttributes;
+    private static final List DEFAULT_ATTRIBUTES = new ArrayList();
+    
+    static {
+        DEFAULT_ATTRIBUTES.add("name");
+        DEFAULT_ATTRIBUTES.add("vmid");
+        DEFAULT_ATTRIBUTES.add("failureThrowable");
+    }
+
+    public EventPatternLoggingMonitorProcessor() {
+        allowedAttributes = new ArrayList(DEFAULT_ATTRIBUTES);
+    }
 
     // ** STATIC/FINAL DATA ***************************************************
     private static final Logger log = Logger.getLogger(
             EventPatternLoggingMonitorProcessor.class);
 
-    public EventPatternLoggingMonitorProcessor() {
-        renderer = new EventPatternMonitorRenderer();
-    }
-
     // ** PUBLIC METHODS ******************************************************
     public void process(Monitor monitor) {
+        renderer = new EventPatternMonitorRenderer(allowedAttributes);
+        
         String logString = renderMonitor(monitor);
         log.info(logString);
     }
 
     protected String renderMonitor(Monitor monitor) {
-        return renderer.renderMonitor(monitor, includeLatency, includeCpuTime);
+        return renderer.renderMonitor(monitor);
     }
 
-
-    public boolean isIncludeLatency() {
-        return includeLatency;
-    }
-
-    public void setIncludeLatency(boolean includeLatency) {
-        this.includeLatency = includeLatency;
-    }
-
-
-    public boolean isIncludeCpuTime() {
-        return includeCpuTime;
-    }
-
-    public void setIncludeCpuTime(boolean includeCpuTime) {
-        this.includeCpuTime = includeCpuTime;
+    public void setAllowedAttributes(final List allowedAttributes) {
+        this.allowedAttributes = allowedAttributes;
     }
 
     public Set getMonitorsToSkip() {
@@ -65,5 +60,4 @@ public class EventPatternLoggingMonitorProcessor extends MonitorProcessorAdapter
     public void setMonitorsToSkip(Set monitorsToSkip) {
         renderer.setMonitorsToSkip(monitorsToSkip);
     }
-
 }

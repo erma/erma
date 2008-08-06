@@ -31,6 +31,7 @@ public class EventPatternMonitorRenderer {
     }
 
     public EventPatternMonitorRenderer(final List allowedAttributes) {
+        this();
         this.allowedAttributes = allowedAttributes;
     }
 
@@ -62,14 +63,14 @@ public class EventPatternMonitorRenderer {
         Iterator it = allowedAttributes.iterator();
         while (it.hasNext()) {
             String attributeName = (String) it.next();
-            if (monitor.hasAttribute(attributeName)) {
+            if (attributeName.equals("failureThrowable")) {
+                assignFailureThrowable(monitor, buffer);
+            } else if (monitor.hasAttribute(attributeName)) {
                 Object attributeValue = monitor.get(attributeName);
-                buffer.append(delimeter).append(attributeValue);
+                buffer.append(attributeValue).append(delimeter);
             }
         }
-
-        assignFailureThrowable(monitor, buffer);
-
+        
         if (monitor instanceof CompositeMonitor) {
 
             CompositeMonitor compositeMonitor = (CompositeMonitor) monitor;
