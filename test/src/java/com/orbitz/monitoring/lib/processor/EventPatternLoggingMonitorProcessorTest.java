@@ -18,6 +18,8 @@ import org.apache.log4j.PatternLayout;
 
 import java.util.Collections;
 import java.util.StringTokenizer;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Unit tests for the EventPatternLoggingMonitorProcessor.
@@ -138,10 +140,13 @@ public class EventPatternLoggingMonitorProcessorTest extends TestCase {
     }
 
     public void testRenderTransactionWithDetail() {
-
-        _processor.setIncludeCpuTime(true);
-        _processor.setIncludeLatency(true);
-
+        List attributes = new ArrayList();
+        attributes.add("vmid");
+        attributes.add("name");
+        attributes.add("latency");
+        attributes.add("cpuTimeMillis");
+        _processor.setAllowedAttributes(attributes);
+        
         String name = "testTransaction";
         TransactionMonitor txn = new TransactionMonitor(name);
         txn.set(Monitor.VMID, _testVMID);

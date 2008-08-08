@@ -43,6 +43,14 @@ public class EventPatternMonitorRenderer {
         this.monitorsToSkip.addAll(monitorsToSkip);
     }
 
+    public List getAllowedAttributes() {
+        return allowedAttributes;
+    }
+
+    public void setAllowedAttributes(final List allowedAttributes) {
+        this.allowedAttributes = allowedAttributes;
+    }
+
     /**
      * Renders a Monitor recursively based on vmid, name and failed attrs.
      *
@@ -70,9 +78,12 @@ public class EventPatternMonitorRenderer {
                 buffer.append(attributeValue).append(delimeter);
             }
         }
+
+        if (buffer.lastIndexOf(String.valueOf(delimeter)) == buffer.length()-1) {
+            buffer.deleteCharAt(buffer.length()-1);//the last delimeter
+        }
         
         if (monitor instanceof CompositeMonitor) {
-
             CompositeMonitor compositeMonitor = (CompositeMonitor) monitor;
             Collection childMonitors = compositeMonitor.getChildMonitors();
             if(!childMonitors.isEmpty()) {
@@ -118,7 +129,7 @@ public class EventPatternMonitorRenderer {
                     break;
                 }
             }
-            buffer.append(delimeter).append(t.getClass().getName());
+            buffer.append(t.getClass().getName());
         } else if (LazyDynaBean.class.isAssignableFrom(o.getClass())) {
             // serialized monitors will have throwableFailure fields that are decomposed
             // into LazyDynaBean classes by the ReflectiveDecomposer, in other words this
@@ -141,15 +152,15 @@ public class EventPatternMonitorRenderer {
             // should therefore be of type String
             Object className = ex.get("class");
             if ((className != null) && (String.class.isAssignableFrom(className.getClass()))) {
-                buffer.append(delimeter).append(className);
+                buffer.append(className);
             } else {
                 logger.warn("Unexpected type for failureThrowable.class field");
-                buffer.append(delimeter + "failed");
+                buffer.append("failed");
             }
         } else {
             logger.warn("Unexpected type for failureThrowable field : "+
                     o.getClass().getName());
-            buffer.append(delimeter + "failed");
+            buffer.append("failed");
         }
     }
 
@@ -167,7 +178,7 @@ public class EventPatternMonitorRenderer {
         if(count > 1) {
             final int endOfFirst = child.indexOf("\n", 1);
             if (endOfFirst > 0) {
-                child.insert(endOfFirst, delimeter + count + " occurences");
+                child.insert(endOfFirst, String.valueOf(delimeter) + count + " occurences");
             } else {
                 child.append(delimeter).append(count).append(" occurences");
             }

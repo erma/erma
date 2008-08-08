@@ -20,17 +20,16 @@ public class EventPatternLoggingMonitorProcessor extends MonitorProcessorAdapter
 
     private EventPatternMonitorRenderer renderer;
 
-    private List allowedAttributes;
     private static final List DEFAULT_ATTRIBUTES = new ArrayList();
     
     static {
-        DEFAULT_ATTRIBUTES.add("name");
         DEFAULT_ATTRIBUTES.add("vmid");
+        DEFAULT_ATTRIBUTES.add("name");
         DEFAULT_ATTRIBUTES.add("failureThrowable");
     }
 
     public EventPatternLoggingMonitorProcessor() {
-        allowedAttributes = new ArrayList(DEFAULT_ATTRIBUTES);
+        renderer = new EventPatternMonitorRenderer(DEFAULT_ATTRIBUTES);
     }
 
     // ** STATIC/FINAL DATA ***************************************************
@@ -39,8 +38,6 @@ public class EventPatternLoggingMonitorProcessor extends MonitorProcessorAdapter
 
     // ** PUBLIC METHODS ******************************************************
     public void process(Monitor monitor) {
-        renderer = new EventPatternMonitorRenderer(allowedAttributes);
-        
         String logString = renderMonitor(monitor);
         log.info(logString);
     }
@@ -50,7 +47,7 @@ public class EventPatternLoggingMonitorProcessor extends MonitorProcessorAdapter
     }
 
     public void setAllowedAttributes(final List allowedAttributes) {
-        this.allowedAttributes = allowedAttributes;
+        renderer.setAllowedAttributes(allowedAttributes);
     }
 
     public Set getMonitorsToSkip() {
