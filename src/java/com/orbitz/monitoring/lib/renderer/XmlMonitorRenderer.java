@@ -22,11 +22,11 @@ public class XmlMonitorRenderer {
 
     private static final Logger logger = Logger.getLogger(XmlMonitorRenderer.class);
 
-    private static final String INDENT_STRING = "  ";
+    protected static final String INDENT_STRING = "  ";
 
-    private List allowedAttributes;
-    private int maxCharacters = -1;
-    private boolean prettyPrint = false;
+    protected List allowedAttributes;
+    protected int maxCharacters = -1;
+    protected boolean prettyPrint = false;
 
     /**
      * Constructor.
@@ -85,9 +85,26 @@ public class XmlMonitorRenderer {
         this.prettyPrint = prettyPrint;
     }
 
+    protected void writeMonitorTerse(HierarchicalStreamWriter writer, Monitor monitor, int length) {
+        String monitorClassName = monitor.getClass().getName();
+        int classIdx = monitorClassName.lastIndexOf('.');
+        if (classIdx >= 0) {
+            monitorClassName = monitorClassName.substring(classIdx + 1);
+        }
+
+        String message = "Error rendering event pattern: length is " + length + ", max length is " +  maxCharacters;
+
+        writer.startNode(monitorClassName);
+        appendMonitorDataAsAttributes(writer, monitor);
+        writer.setValue("\n" + INDENT_STRING + message + "\n");
+        writer.endNode();
+
+        logger.warn(message);
+    }
+
     // private methods ********************************************************
 
-    private void writeMonitor(HierarchicalStreamWriter writer, Monitor monitor) {
+    protected void writeMonitor(HierarchicalStreamWriter writer, Monitor monitor) {
         String monitorClassName = monitor.getClass().getName();
         int classIdx = monitorClassName.lastIndexOf('.');
         if (classIdx >= 0) {
@@ -111,7 +128,7 @@ public class XmlMonitorRenderer {
         writer.endNode();
     }
 
-    private void appendMonitorDataAsAttributes(HierarchicalStreamWriter writer, Monitor monitor) {
+    protected void appendMonitorDataAsAttributes(HierarchicalStreamWriter writer, Monitor monitor) {
         Iterator it = allowedAttributes.iterator();
         while (it.hasNext()) {
             String attributeName = (String) it.next();
@@ -135,22 +152,5 @@ public class XmlMonitorRenderer {
                 }
             }
         }
-    }
-
-    private void writeMonitorTerse(HierarchicalStreamWriter writer, Monitor monitor, int length) {
-        String monitorClassName = monitor.getClass().getName();
-        int classIdx = monitorClassName.lastIndexOf('.');
-        if (classIdx >= 0) {
-            monitorClassName = monitorClassName.substring(classIdx + 1);
-        }
-
-        String message = "Error rendering event pattern: length is " + length + ", max length is " +  maxCharacters;
-
-        writer.startNode(monitorClassName);
-        appendMonitorDataAsAttributes(writer, monitor);
-        writer.setValue("\n" + INDENT_STRING + message + "\n");
-        writer.endNode();
-
-        logger.warn(message);
     }
 }
