@@ -22,11 +22,11 @@ public class XmlMonitorRenderer {
 
     private static final Logger logger = Logger.getLogger(XmlMonitorRenderer.class);
 
-    protected static final String INDENT_STRING = "  ";
+    private static final String INDENT_STRING = "  ";
 
-    protected List allowedAttributes;
-    protected int maxCharacters = -1;
-    protected boolean prettyPrint = false;
+    private List allowedAttributes;
+    private int maxCharacters = -1;
+    private boolean prettyPrint = false;
 
     /**
      * Constructor.
@@ -35,7 +35,21 @@ public class XmlMonitorRenderer {
      */
     public XmlMonitorRenderer(List allowedAttributes) {
         this.allowedAttributes = allowedAttributes;
-    }            
+    }
+
+    public List getAllowedAttributes() {
+        return allowedAttributes;
+    }
+
+    public static String getIndentString() {
+        return INDENT_STRING;
+    }
+
+    public int getMaxCharacters() {
+        return maxCharacters;
+    }
+
+    
 
     /**
      * Renders a Monitor with attributes filtered to specified set.

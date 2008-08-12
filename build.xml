@@ -3,10 +3,10 @@
 
 <!--
 =====================================================================
-orbitz-api-monitoring project build file
+erma project build file
 =====================================================================
 -->
-<project name="orbitz-api-monitoring" default="jar" basedir=".">
+<project name="erma" default="jar" basedir=".">
 
   <!--
   =====================================================================
@@ -36,7 +36,7 @@ orbitz-api-monitoring project build file
   Dependency definitions
   =====================================================================
   -->
-  <!-- <import file="${basedir}/build-deps.xml" /> -->
+  <import file="${basedir}/build-deps.xml" /> 
 
   <!--
   ======================================================================

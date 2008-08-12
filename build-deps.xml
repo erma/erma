@@ -1,4 +1,4 @@
-<project name="orbitz-api-monitoring-deps" xmlns:savant="antlib:net.java.savant.dep.ant">
+<project name="erma-deps" xmlns:savant="antlib:net.java.savant.dep.ant">
   <savant:dependencies id="deps">
     <savant:artifactgroup type="compile">
       <savant:artifact name="commons-beanutils" group="apache" projectname="commons" version="1.7" type="jar"/>
