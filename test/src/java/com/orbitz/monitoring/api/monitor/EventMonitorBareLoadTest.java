@@ -1,150 +1,162 @@
 package com.orbitz.monitoring.api.monitor;
 
-import java.lang.System;
+import com.orbitz.monitoring.api.MonitorProcessor;
+import com.orbitz.monitoring.api.MonitoringEngine;
+import com.orbitz.monitoring.test.MockMonitorProcessorFactory;
 import junit.framework.TestCase;
 
-import com.orbitz.monitoring.api.MonitoringEngine;
-import com.orbitz.monitoring.api.MonitorProcessor;
-import com.orbitz.monitoring.test.MockMonitorProcessorFactory;
-
 public class EventMonitorBareLoadTest extends TestCase {
-  private long iterations = 10000;
-  private int users = 10;
-  private long startTime;
-  private long endTime;
+    private boolean shouldRun = false;
 
-  public void setUp() {
-    MonitoringEngine mEngine = MonitoringEngine.getInstance();
-    mEngine.setProcessorFactory(
-            new MockMonitorProcessorFactory(new MonitorProcessor[0]));
-    mEngine.startup();
-  }
+    private long iterations = 10000;
+    private int users = 10;
+    private long startTime;
+    private long endTime;
 
-  private void eventMonitorLoad() {
-    for (int i = 0; i < iterations; i++) {
-      new EventMonitor("foo").fire();
+    public void setUp() {
+        MonitoringEngine mEngine = MonitoringEngine.getInstance();
+        mEngine.setProcessorFactory(
+                new MockMonitorProcessorFactory(new MonitorProcessor[0]));
+        mEngine.startup();
     }
-  }
 
-  public void testEventMonitorLoad() {
-    startTime = System.currentTimeMillis();
-    eventMonitorLoad();
-    endTime = System.currentTimeMillis();
-
-    logResults(singleThreaded("EventMonitor"), iterations);
-  }
-
-  public void testEventMonitorParallelLoad() throws Exception {
-    Thread threads[] = new Thread[users];
-
-    for (int i = 0; i < users; i++) {
-      threads[i] = new Thread(new Runnable() {
-        public void run() {
-          eventMonitorLoad();
+    private void eventMonitorLoad() {
+        for (int i = 0; i < iterations; i++) {
+            new EventMonitor("foo").fire();
         }
-      });
     }
 
-    startTime = System.currentTimeMillis();
-    for (int i = 0; i < users; i++) {
-      threads[i].start();
-    }
-    for (int i = 0; i < users; i++) {
-      threads[i].join();
-    }
-    endTime = System.currentTimeMillis();
+    public void testEventMonitorLoad() {
+        if(shouldRun) {
+            startTime = System.currentTimeMillis();
+            eventMonitorLoad();
+            endTime = System.currentTimeMillis();
 
-    logResults(parallel("EventMonitor"), iterations);
-  }
-
-  private void transactionMonitorLoad() {
-    for (int i = 0; i < iterations; i++) {
-      new TransactionMonitor("foo").done();
-    }
-  }
-
-  public void testTransactionMonitorLoad() {
-    startTime = System.currentTimeMillis();
-    transactionMonitorLoad();
-    endTime = System.currentTimeMillis();
-
-    logResults(singleThreaded("TransactionMonitor"), iterations);
-  }
-
-  public void testTransactionMonitorParallelLoad() throws Exception {
-    Thread threads[] = new Thread[users];
-
-    for (int i = 0; i < users; i++) {
-      threads[i] = new Thread(new Runnable() {
-        public void run() {
-          transactionMonitorLoad();
+            logResults(singleThreaded("EventMonitor"), iterations);
         }
-      });
     }
 
-    startTime = System.currentTimeMillis();
-    for (int i = 0; i < users; i++) {
-      threads[i].start();
-    }
-    for (int i = 0; i < users; i++) {
-      threads[i].join();
-    }
-    endTime = System.currentTimeMillis();
+    public void testEventMonitorParallelLoad() throws Exception {
+        if(shouldRun) {
+            Thread threads[] = new Thread[users];
 
-    logResults(parallel("TransactionMonitor"), iterations);
-  }
+            for (int i = 0; i < users; i++) {
+                threads[i] = new Thread(new Runnable() {
+                    public void run() {
+                        eventMonitorLoad();
+                    }
+                });
+            }
 
+            startTime = System.currentTimeMillis();
+            for (int i = 0; i < users; i++) {
+                threads[i].start();
+            }
+            for (int i = 0; i < users; i++) {
+                threads[i].join();
+            }
+            endTime = System.currentTimeMillis();
 
-  private void transactionMonitorParentChildLoad() {
-    for (int i = 0; i < iterations; i++) {
-      TransactionMonitor parent = new TransactionMonitor("parent");
-      TransactionMonitor child = new TransactionMonitor("child");
-      child.done();
-      parent.done();
-    }
-  }
-
-  public void testTransactionMonitorParentChildLoad() {
-    startTime = System.currentTimeMillis();
-    transactionMonitorParentChildLoad();
-    endTime = System.currentTimeMillis();
-
-    logResults(singleThreaded("TransactionMonitor parent->child"), 2 * iterations);
-  }
-
-  public void testTransactionMonitorParentChildParallelLoad() throws Exception {
-    Thread threads[] = new Thread[users];
-
-    for (int i = 0; i < users; i++) {
-      threads[i] = new Thread(new Runnable() {
-        public void run() {
-          transactionMonitorParentChildLoad();
+            logResults(parallel("EventMonitor"), iterations);
         }
-      });
     }
 
-    startTime = System.currentTimeMillis();
-    for (int i = 0; i < users; i++) {
-      threads[i].start();
+    private void transactionMonitorLoad() {
+        for (int i = 0; i < iterations; i++) {
+            new TransactionMonitor("foo").done();
+        }
     }
-    for (int i = 0; i < users; i++) {
-      threads[i].join();
+
+    public void testTransactionMonitorLoad() {
+        if(shouldRun) {
+            startTime = System.currentTimeMillis();
+            transactionMonitorLoad();
+            endTime = System.currentTimeMillis();
+
+            logResults(singleThreaded("TransactionMonitor"), iterations);
+        }
     }
-    endTime = System.currentTimeMillis();
 
-    logResults(parallel("TransactionMonitor parent->child"), iterations);
-  }
+    public void testTransactionMonitorParallelLoad() throws Exception {
+        if(shouldRun) {
+            Thread threads[] = new Thread[users];
 
-  private String singleThreaded(String name) {
-    return name + " - 1 user, " + iterations + " iterations";
-  }
+            for (int i = 0; i < users; i++) {
+                threads[i] = new Thread(new Runnable() {
+                    public void run() {
+                        transactionMonitorLoad();
+                    }
+                });
+            }
 
-  private String parallel(String name) {
-    return name + " - " + users + " users, " + iterations + " iterations per user";
-  }
+            startTime = System.currentTimeMillis();
+            for (int i = 0; i < users; i++) {
+                threads[i].start();
+            }
+            for (int i = 0; i < users; i++) {
+                threads[i].join();
+            }
+            endTime = System.currentTimeMillis();
 
-  private void logResults(String message, long divisor) {
-    System.out.println(message + ", avg time per monitor: " + 
-      ((float) (endTime - startTime) / divisor) + " ms");
-  }
+            logResults(parallel("TransactionMonitor"), iterations);
+        }
+    }
+
+
+    private void transactionMonitorParentChildLoad() {
+        for (int i = 0; i < iterations; i++) {
+            TransactionMonitor parent = new TransactionMonitor("parent");
+            TransactionMonitor child = new TransactionMonitor("child");
+            child.done();
+            parent.done();
+        }
+    }
+
+    public void testTransactionMonitorParentChildLoad() {
+        if(shouldRun) {
+            startTime = System.currentTimeMillis();
+            transactionMonitorParentChildLoad();
+            endTime = System.currentTimeMillis();
+
+            logResults(singleThreaded("TransactionMonitor parent->child"), 2 * iterations);
+        }
+    }
+
+    public void testTransactionMonitorParentChildParallelLoad() throws Exception {
+        if(shouldRun) {
+            Thread threads[] = new Thread[users];
+
+            for (int i = 0; i < users; i++) {
+                threads[i] = new Thread(new Runnable() {
+                    public void run() {
+                        transactionMonitorParentChildLoad();
+                    }
+                });
+            }
+
+            startTime = System.currentTimeMillis();
+            for (int i = 0; i < users; i++) {
+                threads[i].start();
+            }
+            for (int i = 0; i < users; i++) {
+                threads[i].join();
+            }
+            endTime = System.currentTimeMillis();
+
+            logResults(parallel("TransactionMonitor parent->child"), iterations);
+        }
+    }
+
+    private String singleThreaded(String name) {
+        return name + " - 1 user, " + iterations + " iterations";
+    }
+
+    private String parallel(String name) {
+        return name + " - " + users + " users, " + iterations + " iterations per user";
+    }
+
+    private void logResults(String message, long divisor) {
+        System.out.println(message + ", avg time per monitor: " +
+                ((float) (endTime - startTime) / divisor) + " ms");
+    }
 }

@@ -39,37 +39,53 @@ public class VMStatTimerTaskTest extends TestCase {
         Monitor[] monitors = processor.extractProcessObjects();
         boolean garbageCollectorStats = false;
         boolean threadStats = false;
-        boolean memoryStats = false;
-        boolean memoryPoolStats = false;
+        boolean heapMemoryStats = false;
+        boolean nonHeapMemoryStats = false;
+        boolean finalMemoryStats = false;
+        boolean heapMemoryPoolStats = false;
+        boolean nonHeapMemoryPoolStats = false;
         for (Monitor monitor: monitors) {
-            if ("GarbageCollectorStats".equals(monitor.get(Monitor.NAME))) {
-                garbageCollectorStats = true;
-                assertTrue("Didn't find a collectorName attribute", monitor.hasAttribute("collectorName"));
-                assertTrue("Didn't find a collectionCount attribute", monitor.hasAttribute("collectionCount"));
-                assertTrue("Didn't find a collectionTime attribute", monitor.hasAttribute("collectionTime"));
-            } else if ("ThreadStats".equals(monitor.get(Monitor.NAME))) {
-                threadStats = true;
-                assertTrue("Didn't find a threadCount attribute", monitor.hasAttribute("threadCount"));
-            } else if ("MemoryStats".equals(monitor.get(Monitor.NAME))) {
-                memoryStats = true;
-                assertTrue("Didn't find a heapMemoryUsage attribute", monitor.hasAttribute("heapMemoryUsage"));
-                assertTrue("Didn't find a nonHeapMemoryUsage attribute", monitor.hasAttribute("nonHeapMemoryUsage"));
-                assertTrue("Didn't find an objectPendingFinalizationCount attribute", monitor.hasAttribute("objectPendingFinalizationCount"));
-            } else if ("MemoryPoolStats".equals(monitor.get(Monitor.NAME))) {
-                memoryPoolStats = true;
-                assertTrue("Didn't find a memoryPoolName attribute", monitor.hasAttribute("memoryPoolName"));
-                assertTrue("Didn't find a memoryPoolType attribute", monitor.hasAttribute("memoryPoolType"));
-                assertTrue("Didn't find a memoryPoolUsage attribute", monitor.hasAttribute("memoryPoolUsage"));
-                if ("PS Old Gen".equals(monitor.getAsString("memoryPoolName"))) {
-                    assertTrue("Didn't find a memoryPoolCollectionUsage attribute for 'PS Old Gen' pool",
-                            monitor.hasAttribute("memoryPoolCollectionUsage"));
+            if("JvmStats".equals(monitor.get(Monitor.NAME))) {
+                if (monitor.getAsString("type").startsWith("GarbageCollector")) {
+                    garbageCollectorStats = true;
+                    assertTrue("Didn't find a count attribute", monitor.hasAttribute("count"));
+                    assertTrue("Didn't find a time attribute", monitor.hasAttribute("time"));
+                } else if (monitor.getAsString("type").startsWith("Thread")) {
+                    threadStats = true;
+                    assertTrue("Didn't find a count attribute", monitor.hasAttribute("count"));
+                } else if (monitor.getAsString("type").startsWith("Memory.Heap.memoryUsage")) {
+                    heapMemoryStats = true;
+                    assertTrue("Didn't find a count attribute", monitor.hasAttribute("count"));
+                    assertTrue("Didn't find a percent attribute", monitor.hasAttribute("percent"));
+                } else if (monitor.getAsString("type").startsWith("Memory.NonHeap.memoryUsage")) {
+                    nonHeapMemoryStats = true;
+                    assertTrue("Didn't find a count attribute", monitor.hasAttribute("count"));
+                    assertTrue("Didn't find a percent attribute", monitor.hasAttribute("percent"));
+                } else if (monitor.getAsString("type").startsWith("Memory.objectPendingFinalization")) {
+                    finalMemoryStats = true;
+                    assertTrue("Didn't find a count attribute", monitor.hasAttribute("count"));
+                } else if (monitor.getAsString("type").startsWith("Memory.Heap.Pool")) {
+                    heapMemoryPoolStats = true;
+                    assertTrue("Didn't find a count attribute", monitor.hasAttribute("count"));
+                    if(monitor.getAsString("type").endsWith("memoryUsage")) {
+                        assertTrue("Didn't find a percent attribute", monitor.hasAttribute("percent"));
+                    }
+                } else if (monitor.getAsString("type").startsWith("Memory.NonHeap.Pool")) {
+                    nonHeapMemoryPoolStats = true;
+                    assertTrue("Didn't find a count attribute", monitor.hasAttribute("count"));
+                    if(monitor.getAsString("type").endsWith("memoryUsage")) {
+                        assertTrue("Didn't find a percent attribute", monitor.hasAttribute("percent"));
+                    }
                 }
             }
         }
-        assertTrue("Didn't find a GarbageCollectorStats Monitor", garbageCollectorStats);
-        assertTrue("Didn't find a ThreadStats Monitor", threadStats);
-        assertTrue("Didn't find a MemoryStats Monitor", memoryStats);
-        assertTrue("Didn't find a MemoryPoolStats Monitor", memoryPoolStats);
+        assertTrue("Didn't find a GarbageCollector Monitor", garbageCollectorStats);
+        assertTrue("Didn't find a Thread Monitor", threadStats);
+        assertTrue("Didn't find a Memory.Heap.memoryUsage Monitor", heapMemoryStats);
+        assertTrue("Didn't find a Memory.NonHeap.memoryUsage Monitor", nonHeapMemoryStats);
+        assertTrue("Didn't find a Memory.objectPendingFinalization Monitor", finalMemoryStats);
+        assertTrue("Didn't find a Memory.Heap.Pool Monitor", heapMemoryPoolStats);
+        assertTrue("Didn't find a Memory.NonHeap.Pool Monitor", nonHeapMemoryPoolStats);
     }
 
     protected void tearDown() throws Exception {

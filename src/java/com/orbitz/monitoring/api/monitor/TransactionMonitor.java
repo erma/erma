@@ -55,7 +55,7 @@ public class TransactionMonitor extends AbstractCompositeMonitor {
 
     /**
      * Creates a new TransactionMonitor with the given name and default
-     * attttributes. The transaction is marked failed by default. The start time
+     * attributes. The transaction is marked failed by default. The start time
      * is also noted.
      *
      * @param name the name of this transaction
@@ -64,6 +64,22 @@ public class TransactionMonitor extends AbstractCompositeMonitor {
      */
     public TransactionMonitor(String name, Map defaultAttributes) {
         super(name, defaultAttributes);
+
+        startTransactionMonitor();
+    }
+
+    /**
+     * Creates a new TransactionMonitor with the given name, level and default
+     * attributes. The transaction is marked failed by default. The start time
+     * is also noted.
+     *
+     * @param name the name of this transaction
+     * @param monitoringLevel monitoring level
+     * @param defaultAttributes attributes that should be set on this
+     *        monitor immediately
+     */
+    public TransactionMonitor(String name, MonitoringLevel monitoringLevel, Map defaultAttributes) {
+        super(name, monitoringLevel, defaultAttributes);
 
         startTransactionMonitor();
     }

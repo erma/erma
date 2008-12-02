@@ -1,10 +1,10 @@
 package com.orbitz.monitoring.lib;
 
 import com.orbitz.monitoring.api.Decomposer;
+import com.orbitz.monitoring.api.MonitorProcessor;
 import com.orbitz.monitoring.api.MonitorProcessorFactory;
 import com.orbitz.monitoring.api.MonitoringEngine;
 import com.orbitz.monitoring.api.MonitoringLevel;
-import com.orbitz.monitoring.api.MonitorProcessor;
 import com.orbitz.monitoring.api.monitor.EventMonitor;
 import com.orbitz.monitoring.lib.decomposer.AttributeDecomposer;
 import com.orbitz.monitoring.lib.factory.SimpleMonitorProcessorFactory;
@@ -14,8 +14,9 @@ import edu.emory.mathcs.backport.java.util.concurrent.TimeUnit;
 import org.apache.log4j.Logger;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
-import java.util.LinkedList;
+import java.util.Map;
 
 /**
  * A class that allows the MonitoringEngine to be manageable.
@@ -31,7 +32,7 @@ public class BaseMonitoringEngineManager {
     private MonitorProcessorFactory _factory;
     private Decomposer _decomposer;
     private ScheduledExecutorService _scheduledExecutor;
-    private Collection _timerTasks;
+    private Map _timerTasks;
     private boolean _monitoringEnabled = true;
 
     protected Runnable _startupRunnable;
@@ -62,7 +63,7 @@ public class BaseMonitoringEngineManager {
         MonitoringEngine.getInstance().setStartupRunnable(_startupRunnable);
 
         if (_timerTasks == null) {
-            _timerTasks = new LinkedList();
+            _timerTasks = Collections.emptyMap();
         }
 
         MonitoringEngine.getInstance().startup();
@@ -73,10 +74,16 @@ public class BaseMonitoringEngineManager {
 
         _scheduledExecutor = Executors.newSingleThreadScheduledExecutor();
 
-        Iterator iter = _timerTasks.iterator();
+        Iterator iter = _timerTasks.entrySet().iterator();
         while (iter.hasNext()) {
-            Runnable task = (Runnable) iter.next();
-            _scheduledExecutor.scheduleAtFixedRate(task, 60000, 60000, TimeUnit.MILLISECONDS);
+            Map.Entry entry = (Map.Entry) iter.next();
+            long millis = ((Number) entry.getKey()).longValue();
+            Collection tasks = (Collection) entry.getValue();
+            Iterator it = tasks.iterator();
+            while (it.hasNext()) {
+                Runnable task = (Runnable) it.next();
+                _scheduledExecutor.scheduleAtFixedRate(task, millis, millis, TimeUnit.MILLISECONDS);
+            }
         }
     }
 
@@ -98,12 +105,27 @@ public class BaseMonitoringEngineManager {
         MonitoringEngine.getInstance().restart();
     }
 
-    public Collection getTimerTasks() {
+    public Map getTimerTasks() {
         return _timerTasks;
     }
 
-    public void setTimerTasks(Collection timerTasks) {
+    /**
+     * Takes a map in the form of:
+     *   milliseconds -> collection of timer tasks
+     *
+     * @param timerTasks the map of timer tasks
+     */
+    public void setTimerTasks(Map timerTasks) {
         _timerTasks = timerTasks;
+    }
+
+    /**
+     * Takes a collection of timer tasks. 
+     *
+     * @param timerTasks the map of timer tasks
+     */
+    public void setTimerTasks(Collection timerTasks) {
+        setTimerTasks(Collections.singletonMap(new Integer(60000), timerTasks));
     }
 
     /**

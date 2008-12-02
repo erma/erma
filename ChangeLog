@@ -1,0 +1,7 @@
+Version 3.1:
+ * Initial GitHub version
+ * ERMA-1: AsyncMonitorProcessor forwards startup/shutdown
+ * ERMA-3: Standardize JvmStats monitors
+ * ERMA-7: Add percent free memory to JvmStats
+ * ERMA-8: Create deadlock detection scheduled task
+ * ERMA-10: Report GC values in JvmStats as deltas

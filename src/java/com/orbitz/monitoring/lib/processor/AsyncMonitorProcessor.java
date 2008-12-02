@@ -3,8 +3,6 @@ package com.orbitz.monitoring.lib.processor;
 import com.orbitz.monitoring.api.Monitor;
 import com.orbitz.monitoring.api.MonitorProcessor;
 import com.orbitz.monitoring.api.MonitorProcessorAttachable;
-import com.orbitz.monitoring.api.MonitoringLevel;
-
 import edu.emory.mathcs.backport.java.util.concurrent.ExecutorService;
 import edu.emory.mathcs.backport.java.util.concurrent.Executors;
 import edu.emory.mathcs.backport.java.util.concurrent.TimeUnit;
@@ -50,11 +48,17 @@ public final class AsyncMonitorProcessor
     // ** PUBLIC METHODS ******************************************************
     public void startup() {
         _monitorProcessingExecutor = Executors.newSingleThreadExecutor();
+        for(Iterator i = _processors.iterator(); i.hasNext();) {
+            ((MonitorProcessor) i.next()).startup();
+        }
     }
 
     public void shutdown() {
         flushEvents();
         _monitorProcessingExecutor.shutdownNow();
+        for(Iterator i = _processors.iterator(); i.hasNext();) {
+            ((MonitorProcessor) i.next()).shutdown();
+        }
     }
 
     public void monitorCreated(Monitor monitor) {

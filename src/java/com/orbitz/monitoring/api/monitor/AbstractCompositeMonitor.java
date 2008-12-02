@@ -40,6 +40,12 @@ public abstract class AbstractCompositeMonitor extends AbstractMonitor
         MonitoringEngine.getInstance().compositeMonitorStarted(this);
     }
 
+    public AbstractCompositeMonitor(String name, MonitoringLevel monitoringLevel, Map inheritedAttributes) {
+        super(name, monitoringLevel, inheritedAttributes);
+
+        MonitoringEngine.getInstance().compositeMonitorStarted(this);
+    }
+
     public void addChildMonitor(Monitor monitor) {
         _childMonitors.add(monitor);
     }

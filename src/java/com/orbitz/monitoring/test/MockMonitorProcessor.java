@@ -1,13 +1,12 @@
 package com.orbitz.monitoring.test;
 
+import com.orbitz.monitoring.api.Monitor;
+import com.orbitz.monitoring.api.MonitorProcessor;
 import junit.framework.Assert;
 
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
-
-import com.orbitz.monitoring.api.Monitor;
-import com.orbitz.monitoring.api.MonitorProcessor;
-import com.orbitz.monitoring.api.MonitoringLevel;
 
 /**
  * A mock implementation of MonitorProcessor that can be used to assert expected
@@ -44,9 +43,9 @@ public class MockMonitorProcessor implements MonitorProcessor {
 
         _throwThrowableDuringProcessing = false;
 
-        _monitorCreatedObjects = new HashSet();
-        _monitorStartedObjects = new HashSet();
-        _processObjects = new HashSet();
+        _monitorCreatedObjects = new LinkedHashSet();
+        _monitorStartedObjects = new LinkedHashSet();
+        _processObjects = new LinkedHashSet();
     }
 
     public MockMonitorProcessor(String name) {
