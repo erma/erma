@@ -109,29 +109,4 @@ erma project build file
   </target>
 
   <target name="jar" depends="-init-jar,dist.jar"/>
-
-  <!--<target name="all" depends="release" description="Does a full compile and creates necessary jar files."/>-->
-
-<!--  
-  <target name="idea" description="Generates an IntelliJ module file" depends="-init-project-classpath,-init-unittest-classpath">
-    <orbitz:imlgen outputFile="${ant.project.name}.iml" overwrite="true" output="${dir.compile}"
-        testOutput="${dir.test.compile}" excludeOutput="true">
-      <classpath refid="classpath.test"/>
-      <src path="${dir.src.jdk14}"/>
-      <src path="${dir.src.jdk15}"/>
-      <testSrc path="${dir.test.src}"/>
-    </orbitz:imlgen>
-  </target>
-
-  <target name="eclipse" description="Generates an Eclipse .classpath file" depends="-init-project-classpath,-init-unittest-classpath">
-    <orbitz:eclipseClasspath outputFile=".classpath" overwrite="true" output="${dir.compile}"
-        testOutput="${dir.compile.test}">
-      <classpath refid="classpath.test"/>
-      <src path="${dir.src.jdk14}"/>
-      <src path="${dir.src.jdk15}"/>
-      <testSrc path="${dir.test.src}"/>
-    </orbitz:eclipseClasspath>
-  </target>
--->
 </project>
-
