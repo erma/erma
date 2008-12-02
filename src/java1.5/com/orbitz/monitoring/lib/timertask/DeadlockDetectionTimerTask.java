@@ -15,10 +15,18 @@ import java.lang.management.ThreadMXBean;
  */
 public class DeadlockDetectionTimerTask implements Runnable {
 
+    public DeadlockDetectionTimerTask() {
+        super();
+        final ThreadMXBean threadBean = ManagementFactory.getThreadMXBean();
+        if(threadBean.isThreadContentionMonitoringSupported()) {
+            threadBean.setThreadContentionMonitoringEnabled(true);
+        }
+    }
+
     public void run() {
         final ThreadMXBean threadBean = ManagementFactory.getThreadMXBean();
-        if(threadBean.isObjectMonitorUsageSupported() && threadBean.isSynchronizerUsageSupported()) {
-            if(threadBean.findDeadlockedThreads() != null) {
+        if(threadBean.isThreadContentionMonitoringEnabled()) {
+            if(threadBean.findMonitorDeadlockedThreads() != null) {
                 final EventMonitor monitor = new EventMonitor("JvmStats", MonitoringLevel.ESSENTIAL);
                 monitor.set("type", "Thread.Deadlock");
                 monitor.set("count", 1);
