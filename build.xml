@@ -96,12 +96,23 @@ erma project build file
   Does everything except JavaDoc and test
   =====================================================================
   -->
+  <taskdef resource="org/apache/commons/attributes/anttasks.properties"/>
+  <target name="compile-attributes" depends="-init-project-classpath">
+    <mkdir dir="target/generated"/>
+    <attribute-compiler destdir="target/generated">
+      <fileset dir="${dir.src}" includes="**/*.java"/>
+    </attribute-compiler>
+    <mkdir dir="${dir.compile}"/>
+    <javac srcdir="target/generated" classpathref="classpath.build" destdir="${dir.compile}"/>
+  </target>
+
   <target name="compile" depends="-init-unittest-classpath">
     <exec executable="ant" failonerror="true">
       <!--<env key="JAVA_HOME" value="/usr/local/java/jdk1.4"/>-->
       <arg value="compile.jdk1.4"/>
     </exec>
     <antcall target="compile.compile"/>
+    <antcall target="compile-attributes"/>
   </target>
 
   <target name="-init-jar">
