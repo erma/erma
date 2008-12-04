@@ -5,3 +5,4 @@ Version 3.1:
  * ERMA-7: Add percent free memory to JvmStats
  * ERMA-8: Create deadlock detection scheduled task
  * ERMA-10: Report GC values in JvmStats as deltas
+ * ERMA-12: Adding commons-attributes
