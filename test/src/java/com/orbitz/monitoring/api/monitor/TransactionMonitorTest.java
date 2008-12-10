@@ -1,15 +1,12 @@
 package com.orbitz.monitoring.api.monitor;
 
 import com.orbitz.monitoring.api.Monitor;
-import com.orbitz.monitoring.api.CompositeMonitor;
-import com.orbitz.monitoring.api.monitor.serializable.SerializableMonitor;
-import com.orbitz.monitoring.api.monitor.serializable.SerializableCompositeMonitor;
 import com.orbitz.monitoring.test.CompositeMonitorTestBase;
 import com.orbitz.monitoring.test.MockMonitorProcessor;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.HashMap;
 
 /**
  * Unit tests for the {@link TransactionMonitor} monitor object.

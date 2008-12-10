@@ -4,11 +4,11 @@ import com.orbitz.monitoring.api.Monitor;
 import com.orbitz.monitoring.api.MonitoringEngine;
 import com.orbitz.monitoring.api.MonitoringLevel;
 import com.orbitz.monitoring.api.monitor.serializable.SerializableMonitor;
-
 import org.apache.commons.lang.CharSetUtils;
 import org.apache.log4j.Logger;
 
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -33,26 +33,41 @@ public abstract class AbstractMonitor
 
     // ** CONSTRUCTORS ********************************************************
 
+    protected AbstractMonitor() {
+        _attributes = createAttributeMap();
+        MonitoringEngine.getInstance().initGlobalAttributes(this);
+    }
+
     /**
      * This constructor is provided for subclasses that need to
      * initialize any themselves before the set() methods are invoked.
      * Subclasses that do this should use this constructor and then call init()
-     * 
+     *
      * @param inheritedAttributes the collection of inheritable attributes that should be
      * set on this Monitor
      * */
     protected AbstractMonitor(Map inheritedAttributes) {
-        _attributes = createAttributeMap();
-        _attributes.setAll(inheritedAttributes);
+        this();
+        if(inheritedAttributes != null) {
+            for (Iterator i = inheritedAttributes.entrySet().iterator(); i.hasNext();) {
+                Map.Entry entry = (Map.Entry) i.next();
+                String key = (String) entry.getKey();
+                Object value = entry.getValue();
+                if(value != null && AttributeHolder.class.isAssignableFrom(value.getClass())) {
+                    value = ((AttributeHolder) value).getValue();
+                }
+                set(key, value).lock();
+            }
+        }
     }
 
     public AbstractMonitor(String name) {
-        _attributes = createAttributeMap();
+        this();
         init(name);
     }
-    
+
     public AbstractMonitor(String name, MonitoringLevel monitoringLevel) {
-        _attributes = createAttributeMap();
+        this();
         _monitoringLevel = monitoringLevel;
         init(name);
     }
@@ -240,7 +255,7 @@ public abstract class AbstractMonitor
 
         buf.append("[").append(getClass()).append(" attributes=");
         buf.append(_attributes);
-        buf.append("level=").append(_monitoringLevel).append("]");
+        buf.append(" level=").append(_monitoringLevel).append("]");
 
         return buf.toString();
     }
