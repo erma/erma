@@ -27,7 +27,7 @@ The targets in this file are used to initialize build files.
   <!-- or Maven -->
   <taskdef uri="antlib:net.java.savant.dep.ant"
            resource="net/java/savant/dep/ant/antlib.xml"
-           classpathref="savant.class.path"/>
+           classpathref="ant-lib.class.path"/>
 
   <!-- set conditional artifact properties -->
   <condition property="artifacts.user" value="artifacts">

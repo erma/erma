@@ -29,7 +29,7 @@ The targets in this file are used to build jars
     
     <taskdef name="foreach" 
              classname="net.java.savant.dep.ant.taskdefs.ForeachTask" 
-             classpathref="savant.class.path"/>
+             classpathref="ant-lib.class.path"/>
 
     <!--
     ===================================================================
