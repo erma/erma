@@ -119,6 +119,11 @@ public class BaseMonitoringEngineManager {
         _timerTasks = timerTasks;
     }
 
+    public Collection getTimerTasks() {
+        return (_timerTasks != null && _timerTasks.containsKey(new Integer(60000))) ?
+                (Collection) _timerTasks.get(new Integer(60000)) : Collections.emptySet();
+    }
+
     /**
      * Takes a collection of timer tasks. 
      *

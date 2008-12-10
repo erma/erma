@@ -698,7 +698,7 @@ public class MonitoringEngine {
         }
     }
 
-    public LinkedList getStack() {
+    private LinkedList getStack() {
         return (LinkedList) _syncedThreadToStack.get(Thread.currentThread());
     }
 
@@ -810,7 +810,7 @@ public class MonitoringEngine {
     /**
      * Private class used in synced stacks.
      */
-    public class StackFrame {
+    private class StackFrame {
 
         private final CompositeMonitor _monitor;
         private final AtomicInteger _counter;
