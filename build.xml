@@ -16,8 +16,8 @@ erma project build file
   <property name="dir.build" value="${basedir}/build"/>
 
   <path id="savant.class.path">
-    <fileset dir="${basedir}/build/ant-lib/" includes="*.jar" />
-  </path> 
+    <fileset dir="${dir.build}/ant-lib/" includes="*.jar" />
+  </path>
 
   <import file="${dir.build}/buildfiles/clean.xml"/>
   <import file="${dir.build}/buildfiles/compile.xml"/>
@@ -67,7 +67,7 @@ erma project build file
   -->
   <target name="-init-classpath">
     <path id="classpath.build">
-      <fileset dir="${basedir}/build/lib" includes="**/*.jar" />
+      <fileset dir="${dir.build}/lib" includes="**/*.jar" />
     </path>
   </target>
 
@@ -96,6 +96,7 @@ erma project build file
   Does everything except JavaDoc and test
   =====================================================================
   -->
+  <!--
   <taskdef resource="org/apache/commons/attributes/anttasks.properties"/>
   <target name="compile-attributes" depends="-init-project-classpath">
     <mkdir dir="target/generated"/>
@@ -105,6 +106,7 @@ erma project build file
     <mkdir dir="${dir.compile}"/>
     <javac srcdir="target/generated" classpathref="classpath.build" destdir="${dir.compile}"/>
   </target>
+  -->
 
   <target name="compile" depends="-init-unittest-classpath">
     <exec executable="ant" failonerror="true">
@@ -112,7 +114,7 @@ erma project build file
       <arg value="compile.jdk1.4"/>
     </exec>
     <antcall target="compile.compile"/>
-    <antcall target="compile-attributes"/>
+    <!--<antcall target="compile-attributes"/>-->
   </target>
 
   <target name="-init-jar">

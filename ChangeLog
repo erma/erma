@@ -1,3 +1,7 @@
+Version 3.2
+ * Added commons-attributes jars
+ * ERMA-13: Inheritable attributes passed into TransactionMonitor are not marked as inheritable
+
 Version 3.1:
  * Initial GitHub version
  * ERMA-1: AsyncMonitorProcessor forwards startup/shutdown

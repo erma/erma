@@ -115,8 +115,7 @@ public class TransactionMonitor extends AbstractCompositeMonitor {
      * @param method a string containing the method name that we're monitoring
      * @param defaultAttributes the default attributes for this monitor
      */
-    public TransactionMonitor(Class klass, String method,
-                              Map defaultAttributes) {
+    public TransactionMonitor(Class klass, String method, Map defaultAttributes) {
         this(formatName(klass, method), defaultAttributes);
     }
 
@@ -156,10 +155,10 @@ public class TransactionMonitor extends AbstractCompositeMonitor {
         //if (MonitoringEngine.getInstance().isEnabled()) assert hasAttribute(START_TIME);
 
         Date endTime = new Date();
-        set(END_TIME, endTime).serializable();
+        set(END_TIME, endTime).serializable().lock();
 
         Date startTime = (Date) get(START_TIME);
-        set(LATENCY, endTime.getTime() - startTime.getTime()).serializable();
+        set(LATENCY, endTime.getTime() - startTime.getTime()).serializable().lock();
 
         process();
     }

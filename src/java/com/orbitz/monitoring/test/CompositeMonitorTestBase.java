@@ -2,14 +2,12 @@ package com.orbitz.monitoring.test;
 
 import com.orbitz.monitoring.api.CompositeMonitor;
 import com.orbitz.monitoring.api.Monitor;
+import com.orbitz.monitoring.api.monitor.TransactionMonitor;
 import com.orbitz.monitoring.api.monitor.serializable.SerializableCompositeMonitor;
 import com.orbitz.monitoring.api.monitor.serializable.SerializableMonitor;
-import com.orbitz.monitoring.api.monitor.TransactionMonitor;
-import com.orbitz.monitoring.api.monitor.AttributeHolder;
 
-import java.util.Map;
-import java.util.Collection;
 import java.util.Iterator;
+import java.util.Map;
 
 /**
  * An abstract test case that can be used to test implementations of
@@ -105,17 +103,20 @@ public abstract class CompositeMonitorTestBase extends MonitorTestBase {
     }
 
     public void testGetSerializableMomento() {
-        super.testGetSerializableMomento();
-        
         CompositeMonitor parent = createCompositeMonitor("parent");
         parent.set("parent", "foo");
         CompositeMonitor child = createCompositeMonitor("child");
         parent.set("child", "foo");
         CompositeMonitor grandchild = createCompositeMonitor("grandchild");
         parent.set("grandchild", "foo");
+
         completeMonitorUse(grandchild);
         completeMonitorUse(child);
         completeMonitorUse(parent);
+
+        assertEquals(1, parent.getChildMonitors().size());
+        assertEquals(1, child.getChildMonitors().size());
+        assertEquals(0, grandchild.getChildMonitors().size());
 
         SerializableCompositeMonitor momento = (SerializableCompositeMonitor)
                 parent.getSerializableMomento();

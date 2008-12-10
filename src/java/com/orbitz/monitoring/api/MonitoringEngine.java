@@ -638,11 +638,13 @@ public class MonitoringEngine {
         }
     }
 
-    private void inheritAttributesFromParent(Monitor monitor) {
-
-        // Inherit global attributes
-        for (Iterator it = _globalAttributes.getAllAttributeHolders().entrySet().iterator();
-             it.hasNext();) {
+    /**
+     * Set global attributes on the monitor.
+     *
+     * @param monitor the monitor
+     */
+    public void initGlobalAttributes(Monitor monitor) {
+        for (Iterator it = _globalAttributes.getAllAttributeHolders().entrySet().iterator(); it.hasNext();) {
             Map.Entry entry = (Map.Entry) it.next();
             String key = (String) entry.getKey();
             AttributeHolder holder = (AttributeHolder)entry.getValue();
@@ -653,7 +655,9 @@ public class MonitoringEngine {
             if (holder.isSerializable()) attribute.serializable();
             if (holder.isLocked()) attribute.lock();
         }
+    }
 
+    private void inheritAttributesFromParent(Monitor monitor) {
         // Inherit from parent if not set.
         Map attrs = getInheritableAttributes();
 
@@ -662,7 +666,7 @@ public class MonitoringEngine {
             String key = (String) entry.getKey();
             AttributeHolder parentAttribute = (AttributeHolder) entry.getValue();
 
-            if (! monitor.hasAttribute(key)) {
+            if (!monitor.hasAttribute(key)) {
                 Object value = parentAttribute.getValue();
                 AttributeHolder childAttribute = monitor.set(key, value);
                 
