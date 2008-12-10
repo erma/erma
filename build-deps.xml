@@ -5,6 +5,8 @@
       <savant:artifact name="commons-lang" group="apache" projectname="commons" version="2.2" type="jar"/>
       <savant:artifact name="backport-util-concurrent" group="emory" projectname="backport-util-concurrent" version="3.0" type="jar"/>
       <savant:artifact name="junit" group="misc" projectname="junit" version="3.8.1" type="jar"/>
+      <savant:artifact name="commons-attributes-compiler" group="apache" projectname="commons" version="2.1" type="jar"/>
+      <savant:artifact name="commons-attributes-api" group="apache" projectname="commons" version="2.1" type="jar"/>
 
       <!-- Library dependencies -->
       <savant:artifact name="commons-jexl" group="apache" projectname="commons" version="1.0" type="jar"/>

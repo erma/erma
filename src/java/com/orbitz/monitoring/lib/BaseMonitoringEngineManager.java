@@ -105,7 +105,7 @@ public class BaseMonitoringEngineManager {
         MonitoringEngine.getInstance().restart();
     }
 
-    public Map getTimerTasks() {
+    public Map getTimerTasksMap() {
         return _timerTasks;
     }
 
@@ -115,7 +115,7 @@ public class BaseMonitoringEngineManager {
      *
      * @param timerTasks the map of timer tasks
      */
-    public void setTimerTasks(Map timerTasks) {
+    public void setTimerTasksMap(Map timerTasks) {
         _timerTasks = timerTasks;
     }
 
@@ -125,7 +125,7 @@ public class BaseMonitoringEngineManager {
      * @param timerTasks the map of timer tasks
      */
     public void setTimerTasks(Collection timerTasks) {
-        setTimerTasks(Collections.singletonMap(new Integer(60000), timerTasks));
+        setTimerTasksMap(Collections.singletonMap(new Integer(60000), timerTasks));
     }
 
     /**
