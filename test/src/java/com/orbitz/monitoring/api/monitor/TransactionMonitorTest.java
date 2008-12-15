@@ -1,12 +1,18 @@
 package com.orbitz.monitoring.api.monitor;
 
 import com.orbitz.monitoring.api.Monitor;
+import com.orbitz.monitoring.api.MonitoringEngine;
 import com.orbitz.monitoring.test.CompositeMonitorTestBase;
 import com.orbitz.monitoring.test.MockMonitorProcessor;
+import edu.emory.mathcs.backport.java.util.concurrent.ExecutorService;
+import edu.emory.mathcs.backport.java.util.concurrent.Executors;
+import edu.emory.mathcs.backport.java.util.concurrent.Future;
+import edu.emory.mathcs.backport.java.util.concurrent.TimeUnit;
 
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Unit tests for the {@link TransactionMonitor} monitor object.
@@ -162,6 +168,31 @@ public class TransactionMonitorTest extends CompositeMonitorTestBase {
         getMockProcessor(txn).assertExpectedProcessObject(txn);
     }
 
+    public void testInheritableAttributes() {
+        ExecutorService executor = Executors.newFixedThreadPool(3);
+
+        Map inheritableAttributes = new HashMap();
+        inheritableAttributes.put("requestId", 0);
+        inheritableAttributes.put("attribute", "test");
+
+        AbstractRunnable baz = new WorkerRunnable("Baz");
+        AbstractRunnable bar = new DelegatingRunnable("Bar", executor, baz);
+        AbstractRunnable foo = new DelegatingRunnable("Foo", inheritableAttributes, executor, bar);
+
+        Future future = executor.submit(foo);
+        try {
+            future.get(50, TimeUnit.MILLISECONDS);
+        } catch (Exception doNothing) {
+            // no-op
+        }
+
+        assertInheritableAttributes("Foo", foo.monitors);
+        assertInheritableAttributes("Bar", bar.monitors);
+        assertInheritableAttributes("Baz", baz.monitors);
+
+        executor.shutdownNow();
+    }
+
     // ** PROTECTED METHODS ***************************************************
     protected Monitor createMonitor(String name, Map inheritedAttributes) {
         return new TransactionMonitor(name, inheritedAttributes);
@@ -204,5 +235,110 @@ public class TransactionMonitorTest extends CompositeMonitorTestBase {
 
         assertTrue("For latency", transaction.getAsLong(
                 TransactionMonitor.LATENCY) > 0);
+    }
+
+    private void assertInheritableAttributes(String appName, Map<String,Monitor> monitors) {
+        if(monitors.containsKey("in")) {
+            Monitor m = monitors.get("in");
+            assertEquals(appName, m.getAsString("appName"));
+            assertEquals(0, m.getAsInt("requestId"));
+            assertEquals("test", m.getAsString("attribute"));
+        }
+        if(monitors.containsKey("work")) {
+            Monitor m = monitors.get("work");
+            assertEquals(appName, m.getAsString("appName"));
+            assertEquals(0, m.getAsInt("requestId"));
+            assertEquals("test", m.getAsString("attribute"));
+        }
+        if(monitors.containsKey("out")) {
+            Monitor m = monitors.get("out");
+            assertEquals(appName, m.getAsString("appName"));
+            assertEquals(0, m.getAsInt("requestId"));
+            assertEquals("test", m.getAsString("attribute"));
+        }
+    }
+
+    // ** PRIVATE CLASSES *****************************************************
+    abstract class AbstractRunnable implements Runnable {
+
+        protected String appName;
+        protected Map inheritableAttributes;
+        protected Map<String,Monitor> monitors;
+
+        public AbstractRunnable(String appName, Map inheritableAttributes) {
+            super();
+            this.appName = appName;
+            this.inheritableAttributes = inheritableAttributes;
+            this.monitors = new ConcurrentHashMap<String,Monitor>();
+        }
+
+    }
+
+    class DelegatingRunnable extends AbstractRunnable {
+
+        private ExecutorService executor;
+        private AbstractRunnable delegate;
+
+        public DelegatingRunnable(String appName, ExecutorService executor, AbstractRunnable delegate) {
+            this(appName, null, executor, delegate);
+        }
+
+        public DelegatingRunnable(String appName, Map inheritableAttributes, ExecutorService executor, AbstractRunnable delegate) {
+            super(appName, inheritableAttributes);
+            this.executor = executor;
+            this.delegate = delegate;
+        }
+
+        public void run() {
+            if(inheritableAttributes != null) {
+                inheritableAttributes.put("appName", appName);
+            }
+            TransactionMonitor in = new TransactionMonitor("threadIn_" + appName, inheritableAttributes);
+            try {
+                TransactionMonitor work = new TransactionMonitor(appName + ".execute");
+                try {
+                    TransactionMonitor out = new TransactionMonitor("threadOut_" + delegate.appName);
+                    try {
+                        delegate.inheritableAttributes = MonitoringEngine.getInstance().getInheritableAttributes();
+                        Future future = executor.submit(delegate);
+                        future.get(50, TimeUnit.MILLISECONDS);
+                    } catch (Exception doNothing) {
+                        // no-op
+                    } finally {
+                        out.done();
+                        monitors.put("out", out);
+                    }
+                } finally {
+                    work.done();
+                    monitors.put("work", work);
+                }
+            } finally {
+                in.done();
+                monitors.put("in", in);
+                MonitoringEngine.getInstance().clearCurrentThread();
+            }
+        }
+    }
+
+    class WorkerRunnable extends AbstractRunnable {
+        public WorkerRunnable(String appName) {
+            super(appName, null);
+        }
+
+        public void run() {
+            if(inheritableAttributes != null) {
+                inheritableAttributes.put("appName", appName);
+            }
+            TransactionMonitor in = new TransactionMonitor("threadIn_" + appName, inheritableAttributes);
+            try {
+                TransactionMonitor work = new TransactionMonitor(appName + ".execute");
+                work.done();
+                monitors.put("work", work);
+            } finally {
+                in.done();
+                monitors.put("in", in);
+                MonitoringEngine.getInstance().clearCurrentThread();
+            }
+        }
     }
 }
