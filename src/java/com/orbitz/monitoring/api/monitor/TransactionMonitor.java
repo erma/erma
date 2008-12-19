@@ -29,11 +29,12 @@ public class TransactionMonitor extends AbstractCompositeMonitor {
     protected static final String TRANSACTION_MONITOR = "TransactionMonitor";
 
     /**
-     * Creates a new TransactionMonitor with the given name. The monitor is
-     * marked as failed by default. Also, the start time of this transaction is
-     * noted, thereby starting the stop watch.
+     * Creates a new transaction monitor with the provided
+     * name. The monitor is marked as failed by default. Also,
+     * the start time of this transaction is noted, thereby
+     * starting the stop watch.
      *
-     * @param name the name of this transaction
+     * @param name the name of the monitr
      */
     public TransactionMonitor(String name) {
         super(name);
@@ -42,10 +43,13 @@ public class TransactionMonitor extends AbstractCompositeMonitor {
     }
 
     /**
-     * Creates a new TransactionMonitor with the given name and level.
+     * Creates a new transaction monitor with the provided
+     * name and monitoring level. The monitor is marked as
+     * failed by default. Also, the start time of this
+     * transaction is noted, thereby starting the stop watch.
      *
-     * @param name the name of this transaction
-     * @param monitoringLevel monitoring level
+     * @param name the name of the monitor
+     * @param monitoringLevel the monitoring level
      */
     public TransactionMonitor(String name, MonitoringLevel monitoringLevel) {
         super(name, monitoringLevel);
@@ -54,39 +58,43 @@ public class TransactionMonitor extends AbstractCompositeMonitor {
     }
 
     /**
-     * Creates a new TransactionMonitor with the given name and default
-     * attributes. The transaction is marked failed by default. The start time
-     * is also noted.
+     * Create a new transaction monitor with the provided
+     * name and inherited attributes. The monitor is marked
+     * as failed by default. Also, the start time of this
+     * transaction is noted, thereby starting the stop watch.
      *
-     * @param name the name of this transaction
-     * @param defaultAttributes attributes that should be set on this
-     *        monitor immediately
+     * @param name the name of the monitor
+     * @param inheritedAttributes the collection of inherited attributes
      */
-    public TransactionMonitor(String name, Map defaultAttributes) {
-        super(name, defaultAttributes);
+    public TransactionMonitor(String name, Map inheritedAttributes) {
+        super(name, inheritedAttributes);
 
         startTransactionMonitor();
     }
 
     /**
-     * Creates a new TransactionMonitor with the given name, level and default
-     * attributes. The transaction is marked failed by default. The start time
-     * is also noted.
+     * Create a new transaction monitor with the provided
+     * name, monitoring level and inherited attributes. The
+     * monitor is marked as failed by default. Also, the
+     * start time of this transaction is noted, thereby
+     * starting the stop watch.
      *
-     * @param name the name of this transaction
-     * @param monitoringLevel monitoring level
-     * @param defaultAttributes attributes that should be set on this
-     *        monitor immediately
+     * @param name the name of the monitor
+     * @param monitoringLevel the monitoring level
+     * @param inheritedAttributes the collection of inherited attributes
      */
-    public TransactionMonitor(String name, MonitoringLevel monitoringLevel, Map defaultAttributes) {
-        super(name, monitoringLevel, defaultAttributes);
+    public TransactionMonitor(String name, MonitoringLevel monitoringLevel, Map inheritedAttributes) {
+        super(name, monitoringLevel, inheritedAttributes);
 
         startTransactionMonitor();
     }
 
     /**
-     * Creates a new TransactionMonitor with a name obtained by concatenating
-     * the class name and method string together.
+     * Create a new transaction monitor using the provided
+     * class and method to generate a name. The monitor is
+     * marked as failed by default. Also, the start time of
+     * this transaction is noted, thereby starting the stop
+     * watch.
      *
      * @param klass the class that we're monitoring
      * @param method a string containing the method name that we're monitoring
@@ -96,30 +104,35 @@ public class TransactionMonitor extends AbstractCompositeMonitor {
     }
 
     /**
-     * Creates a new TransactionMonitor with a name obtained by concatenating
-     * the class name and method string together, with the given monitoring level
+     * Create a new transaction monitor using the provided
+     * class and method to generate a name, with the provided
+     * monitoring level. The monitor is markedas failed by
+     * default. Also, the start time of this transaction is
+     * noted, thereby starting the stop watch.
      *
      * @param klass the class that we're monitoring
      * @param method a string containing the method name that we're monitoring
-     * @param level monitoring level
+     * @param monitoringLevel the monitoring level
      */
-    public TransactionMonitor(Class klass, String method, MonitoringLevel level) {
-        this(formatName(klass, method), level);
+    public TransactionMonitor(Class klass, String method, MonitoringLevel monitoringLevel) {
+        this(formatName(klass, method), monitoringLevel);
     }
 
     /**
-     * Creates a new TransactionMonitor with default attributes and a name
-     * composed of the class name and method name.
+     * Create a new transaction monitor using the provided
+     * class and method to generate a name, with the provided
+     * inherited attributes. The monitor is markedas failed
+     * by default. Also, the start time of this transaction
+     * is noted, thereby starting the stop watch.
      *
      * @param klass the class that we're monitoring
      * @param method a string containing the method name that we're monitoring
-     * @param defaultAttributes the default attributes for this monitor
+     * @param inheritedAttributes the collection of inherited attributes
      */
-    public TransactionMonitor(Class klass, String method, Map defaultAttributes) {
-        this(formatName(klass, method), defaultAttributes);
+    public TransactionMonitor(Class klass, String method, Map inheritedAttributes) {
+        this(formatName(klass, method), inheritedAttributes);
     }
 
-    // ** PUBLIC METHODS ******************************************************
     /**
      * Marks this transaction as having succeeded.
      */
@@ -143,17 +156,11 @@ public class TransactionMonitor extends AbstractCompositeMonitor {
         set(FAILURE_THROWABLE, e).serializable();
         failed();
     }
-
-    // ** PROTECTED METHODS ***************************************************
     
     /**
-     * Stops the stop watch for this monitor and submits it for processing.
+     * Stops the stop watch for this monitor. Delegates to AbstractMonitor.process().
      */
     public void done() {
-        //if (MonitoringEngine.getInstance().isEnabled()) assert hasAttribute(CREATED_AT);
-        //if (MonitoringEngine.getInstance().isEnabled()) assert hasAttribute(FAILED);
-        //if (MonitoringEngine.getInstance().isEnabled()) assert hasAttribute(START_TIME);
-
         Date endTime = new Date();
         set(END_TIME, endTime).serializable().lock();
 
@@ -163,14 +170,13 @@ public class TransactionMonitor extends AbstractCompositeMonitor {
         process();
     }
 
-    // ** PRIVATE METHODS *****************************************************
+    // format the class and method into a name
     private static String formatName(Class klass, String method) {
         return klass.getName() + "." + method;
     }
 
+    // mark the monitor as failed and start the stop watch
     private void startTransactionMonitor() {
-        //if (MonitoringEngine.getInstance().isEnabled()) assert hasAttribute(CREATED_AT);
-
         set(FAILED, true).serializable();
         set(START_TIME, new Date()).serializable().lock();
 

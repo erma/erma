@@ -27,6 +27,7 @@ import java.util.Set;
 public abstract class AbstractCompositeMonitor extends AbstractMonitor
         implements CompositeMonitor {
 
+    // a set of classes that are known to be serializable
     private static final Set SERIALIZABLE;
     static {
         final Set set = new HashSet();
@@ -45,22 +46,50 @@ public abstract class AbstractCompositeMonitor extends AbstractMonitor
 
     private List _childMonitors = new LinkedList();
 
+    /**
+     * Create a new composite monitor with the provided
+     * name.
+     *
+     * @param name the name of the monitor
+     */
     public AbstractCompositeMonitor(String name) {
         super(name);
 
         MonitoringEngine.getInstance().compositeMonitorStarted(this);
     }
 
+    /**
+     * Create a new composite monitor with the provided
+     * name and monitoring level.
+     *
+     * @param name the name of the monitor
+     * @param monitoringLevel the monitoring level
+     */
     public AbstractCompositeMonitor(String name, MonitoringLevel monitoringLevel) {
         super(name, monitoringLevel);
 
         MonitoringEngine.getInstance().compositeMonitorStarted(this);
     }
 
+    /**
+     * Create a new composite monitor with the provided
+     * name and inherited attributes.
+     *
+     * @param name the name of the monitor
+     * @param inheritedAttributes the collection of inherited attributes
+     */
     public AbstractCompositeMonitor(String name, Map inheritedAttributes) {
         this(name, MonitoringLevel.INFO, inheritedAttributes);
     }
 
+    /**
+     * Create a new composite monitor with the provided
+     * name, monitoring level and inherited attributes.
+     *
+     * @param name the name of the monitor
+     * @param monitoringLevel the monitoring level
+     * @param inheritedAttributes the collection of inherited attributes
+     */
     public AbstractCompositeMonitor(String name, MonitoringLevel monitoringLevel, Map inheritedAttributes) {
         super();
 
@@ -86,10 +115,20 @@ public abstract class AbstractCompositeMonitor extends AbstractMonitor
         MonitoringEngine.getInstance().compositeMonitorStarted(this);
     }
 
+    /**
+     * Add a monitor as a child.
+     *
+     * @param monitor the child monitor
+     */
     public void addChildMonitor(Monitor monitor) {
         _childMonitors.add(monitor);
     }
 
+    /**
+     * Get the collection of child monitors.
+     *
+     * @return the collection of child monitors
+     */
     public Collection getChildMonitors() {
         return _childMonitors;
     }
@@ -138,6 +177,12 @@ public abstract class AbstractCompositeMonitor extends AbstractMonitor
         return compositeMap.getAllInheritableAttributeHolders();
     }
 
+    /**
+     * Get a serializable version of this monitor. Also creates
+     * serialized versions of any child monitors.
+     *
+     * @return the serializable monitor
+     */
     public SerializableMonitor getSerializableMomento() {
         List childMomentos = new ArrayList(_childMonitors.size());
         Iterator it = _childMonitors.iterator();
@@ -155,6 +200,9 @@ public abstract class AbstractCompositeMonitor extends AbstractMonitor
         return monitor;
     }
 
+    /**
+     * Process this composite monitor. Delegates to AbstractMonitor.process().
+     */
     protected void process() {
         MonitoringEngine.getInstance().compositeMonitorCompleted(this);
         super.process();
