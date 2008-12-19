@@ -7,14 +7,15 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadMXBean;
 
 /**
- * Created by IntelliJ IDEA.
- * User: mkemp
- * Date: Nov 5, 2008
- * Time: 4:51:35 PM
- * To change this template use File | Settings | File Templates.
+ * Timer task that will fire a monitor of deadlocked
+ * threads are detected.
  */
 public class DeadlockDetectionTimerTask implements Runnable {
 
+    /**
+     * Default constructor. Enables thread contention
+     * monitoring.
+     */
     public DeadlockDetectionTimerTask() {
         super();
         final ThreadMXBean threadBean = ManagementFactory.getThreadMXBean();
@@ -23,6 +24,9 @@ public class DeadlockDetectionTimerTask implements Runnable {
         }
     }
 
+    /**
+     * Implementaion of {@link java.lang.Runnable#run}.
+     */
     public void run() {
         final ThreadMXBean threadBean = ManagementFactory.getThreadMXBean();
         if(threadBean.isThreadContentionMonitoringEnabled()) {

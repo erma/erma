@@ -19,8 +19,7 @@ import java.util.Set;
  *
  * @author Doug Barth
  */
-public abstract class AbstractMonitor
-        implements Monitor {
+public abstract class AbstractMonitor implements Monitor {
     // ** STATIC/FINAL DATA ***************************************************
     private static final Logger log = Logger.getLogger(AbstractMonitor.class);
 
@@ -33,19 +32,22 @@ public abstract class AbstractMonitor
 
     // ** CONSTRUCTORS ********************************************************
 
+    /**
+     * Initializes the attribute map and global attributes. Subclasses
+     * will need to call init(String) themselves.
+     */
     protected AbstractMonitor() {
         _attributes = createAttributeMap();
         MonitoringEngine.getInstance().initGlobalAttributes(this);
     }
 
     /**
-     * This constructor is provided for subclasses that need to
-     * initialize any themselves before the set() methods are invoked.
-     * Subclasses that do this should use this constructor and then call init()
+     * Initializes the attribute map, global attributes and sets the
+     * provided inherited attributes. Subclasses will need to call
+     * init(String) themselves.
      *
-     * @param inheritedAttributes the collection of inheritable attributes that should be
-     * set on this Monitor
-     * */
+     * @param inheritedAttributes the collection of inherited attributes
+     */
     protected AbstractMonitor(Map inheritedAttributes) {
         this();
         if(inheritedAttributes != null) {
@@ -61,25 +63,51 @@ public abstract class AbstractMonitor
         }
     }
 
+    /**
+     * Initializes the attribute map, global attributes and calls
+     * init(String).
+     * 
+     * @param name the name of the monitor
+     */
     public AbstractMonitor(String name) {
-        this();
-        init(name);
+        this(name, MonitoringLevel.INFO, null);
     }
 
+    /**
+     * Initializes the attribute map, global attributes, monitoring
+     * level and calls init(String).
+     *
+     * @param name the name of the monitor
+     * @param monitoringLevel the monitoring level
+     */
     public AbstractMonitor(String name, MonitoringLevel monitoringLevel) {
-        this();
-        _monitoringLevel = monitoringLevel;
-        init(name);
+        this(name, monitoringLevel, null);
     }
 
+    /**
+     * Initializes the attribute map, global attributes, sets the
+     * provided inherited attributes and calls init(String).
+     *
+     * @param name the name of the monitor
+     * @param inheritedAttributes the collection of inherited attributes
+     */
+    public AbstractMonitor(String name, Map inheritedAttributes) {
+        this(name, MonitoringLevel.INFO, inheritedAttributes);
+    }
+
+    /**
+     * Initializes the attribute map, global attributes, monitoring
+     * level, sets the provided inherited attributes and calls
+     * init(String).
+     *
+     * @param name the name of the monitor
+     * @param monitoringLevel the monitoring level
+     * @param inheritedAttributes the collection of inherited attributes
+     */
     public AbstractMonitor(String name, MonitoringLevel monitoringLevel, Map inheritedAttributes) {
         this(inheritedAttributes);
         _monitoringLevel = monitoringLevel;
         init(name);
-    }
-
-    public AbstractMonitor(String name, Map inheritedAttributes) {
-        this(name, MonitoringLevel.INFO, inheritedAttributes);
     }
 
     // ** PUBLIC METHODS ******************************************************
@@ -240,6 +268,11 @@ public abstract class AbstractMonitor
         return _attributes.hasAttribute(key);
     }
 
+    /**
+     * Get a serializable version of this monitor.
+     *
+     * @return the serializable monitor
+     */
     public SerializableMonitor getSerializableMomento() {
         MonitoringEngine engine = MonitoringEngine.getInstance();
         Map serializableAttributes = engine.makeAttributeHoldersSerializable(_attributes.getAllAttributeHolders());
@@ -261,6 +294,14 @@ public abstract class AbstractMonitor
     }
 
     // ** PROTECTED METHODS ***************************************************
+    /**
+     * Used to invoke the monitor lifecycle methods
+     *   MonitoringEngine.initMonitor and
+     *   MonitoringEngine.monitorCreated
+     * on this monitor.
+     *
+     * @param name the name of the monitor
+     */
     protected void init(String name) {
         MonitoringEngine.getInstance().initMonitor(this);
 
@@ -272,6 +313,11 @@ public abstract class AbstractMonitor
         _processed = false;
     }
 
+    /**
+     * Used to invoke the monitor lifecycle method
+     *   MonitoringEngine.process
+     * on this monitor.
+     */
     protected void process() {
         if (_processed) {
             log.error("This monitor has already been processed: " + this);
