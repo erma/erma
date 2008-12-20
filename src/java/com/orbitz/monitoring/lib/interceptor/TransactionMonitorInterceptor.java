@@ -1,12 +1,13 @@
 package com.orbitz.monitoring.lib.interceptor;
 
-import com.orbitz.monitoring.api.monitor.TransactionMonitor;
-import com.orbitz.monitoring.api.MonitoringLevel;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 import org.apache.log4j.Logger;
+
+import com.orbitz.monitoring.api.MonitoringLevel;
+import com.orbitz.monitoring.api.monitor.TransactionMonitor;
 
 /**
  * @author Ray Krueger
@@ -30,11 +31,16 @@ public class TransactionMonitorInterceptor implements MethodInterceptor {
         TransactionMonitor monitor = createTransactionMonitor(invocation);
 
         try {
+            if (includeArguments(invocation)) {
+                monitor.set(MONITOR_ARGUMENTS_NAME, invocation.getArguments());
+            }
             Object result;
             result = invocation.proceed();
             log.debug("Monitor success");
 
-            setMonitorParameters(invocation, result, monitor);
+            if (includeResult(invocation)) {
+                monitor.set(MONITOR_RESULT_NAME, result);
+            }
 
             monitor.succeeded();
 
@@ -58,24 +64,13 @@ public class TransactionMonitorInterceptor implements MethodInterceptor {
         return new TransactionMonitor(invocation.getMethod().getDeclaringClass(), monitorName, level);
     }
 
-    protected MonitoringLevel getMonitoringLevel (MethodInvocation invocation) {
+    protected MonitoringLevel getMonitoringLevel(MethodInvocation invocation) {
         MonitoredAttribute att = getAttribute(invocation);
 
         if (att == null) {
             return MonitoringLevel.INFO;
         } else {
             return MonitoringLevel.toLevel(att.getLevelStr());
-        }
-
-    }
-
-    protected void setMonitorParameters(MethodInvocation invocation, Object result, TransactionMonitor monitor) {
-        if (includeResult(invocation)) {
-            monitor.set(MONITOR_RESULT_NAME, result);
-        }
-
-        if (includeArguments(invocation)) {
-            monitor.set(MONITOR_ARGUMENTS_NAME, invocation.getArguments());
         }
     }
 
@@ -91,7 +86,8 @@ public class TransactionMonitorInterceptor implements MethodInterceptor {
     }
 
     protected MonitoredAttribute getAttribute(MethodInvocation invocation) {
-        Class targetClass = (invocation.getThis() != null) ? invocation.getThis().getClass() : invocation.getMethod().getDeclaringClass();
+        Class targetClass = (invocation.getThis() != null) ? invocation.getThis().getClass() : invocation.getMethod()
+                .getDeclaringClass();
         return monitoredAttributeSource.getMonitoredAttribute(invocation.getMethod(), targetClass);
     }
 

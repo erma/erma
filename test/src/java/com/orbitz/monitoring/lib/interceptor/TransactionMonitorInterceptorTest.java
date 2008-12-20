@@ -44,7 +44,8 @@ public class TransactionMonitorInterceptorTest extends TestCase {
 
         final MockTransactionMonitor FIXED_MONITOR = new MockTransactionMonitor("FIXED_MONITOR");
 
-        TransactionMonitorInterceptor interceptor = new TransactionMonitorInterceptor(new MatchAlwaysMonitoredAttributeSource()) {
+        TransactionMonitorInterceptor interceptor = new TransactionMonitorInterceptor(
+                new MatchAlwaysMonitoredAttributeSource(true, true)) {
 
             protected TransactionMonitor createTransactionMonitor(MethodInvocation invocation) {
                 assertEquals("testMethodOne", getMonitorName(invocation));
@@ -52,8 +53,9 @@ public class TransactionMonitorInterceptorTest extends TestCase {
             }
         };
 
+        Object[] arguments = new Object[0];
         try {
-            interceptor.invoke(new MockMethodInvocation(new Object[0]){
+            interceptor.invoke(new MockMethodInvocation(arguments){
 
                 public Object proceed() throws Throwable {
                     throw new IllegalArgumentException("Great googly moogly");
@@ -68,10 +70,11 @@ public class TransactionMonitorInterceptorTest extends TestCase {
         assertTrue(FIXED_MONITOR.isDone());
         assertFalse(FIXED_MONITOR.isSucceeded());
         assertTrue(FIXED_MONITOR.isFailed());
+        assertSame(arguments, FIXED_MONITOR.get("arguments"));
         assertEquals(IllegalArgumentException.class, FIXED_MONITOR.getFailedDueTo().getClass());
         assertEquals("Great googly moogly", FIXED_MONITOR.getFailedDueTo().getMessage());
-
     }
+
 
     private static class MockMethodInvocation implements MethodInvocation {
 
