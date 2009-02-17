@@ -121,4 +121,15 @@ erma project build file
   </target>
 
   <target name="jar" depends="-init-jar,dist.jar"/>
+
+  <!-- override imported target to include src from both trees -->
+  <target name="-jar-source-code" if="create-src-jar">
+    <jar jarfile="${dir.dist}/${name.jar}-src.jar" basedir="${basedir}/src/java" index="true" whenempty="skip"
+         includesfile="${dir.filesets}/${name.jar}.src">
+    </jar>
+    <jar jarfile="${dir.dist}/${name.jar}-src.jar" basedir="${basedir}/src/java1.5" index="true" whenempty="skip" update="true"
+         includesfile="${dir.filesets}/${name.jar}.src">
+    </jar>
+  </target>
+
 </project>
