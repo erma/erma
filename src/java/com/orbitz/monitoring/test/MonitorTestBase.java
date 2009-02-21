@@ -1,10 +1,6 @@
 package com.orbitz.monitoring.test;
 
-import com.orbitz.monitoring.api.CantCoerceException;
-import com.orbitz.monitoring.api.Monitor;
-import com.orbitz.monitoring.api.MonitorProcessor;
-import com.orbitz.monitoring.api.MonitoringEngine;
-import com.orbitz.monitoring.api.AttributeUndefinedException;
+import com.orbitz.monitoring.api.*;
 import com.orbitz.monitoring.api.monitor.serializable.SerializableMonitor;
 import com.orbitz.monitoring.api.monitor.TransactionMonitor;
 import junit.framework.TestCase;
@@ -63,11 +59,11 @@ public abstract class MonitorTestBase extends TestCase {
     public void testMonitorCreationInvariants() {
         Monitor monitor = createMonitor("test");
 
-        assertEquals("monitor.name", "test", monitor.get(Monitor.NAME));
+        assertEquals("monitor.name", "test", monitor.get(Attribute.NAME));
         assertTrue("monitor.createdAt",
-                   monitor.hasAttribute(Monitor.CREATED_AT));
+                   monitor.hasAttribute(Attribute.CREATED_AT));
         assertEquals(Integer.toHexString(Thread.currentThread().hashCode()),
-                     monitor.get(Monitor.THREAD_ID));
+                     monitor.get(Attribute.THREAD_ID));
         assertNotNull(monitor.getLevel());
     }
 
@@ -778,7 +774,7 @@ public abstract class MonitorTestBase extends TestCase {
         public void monitorCreated(Monitor m) {
             // next line won't work here, doug is too smart...
             //assertNotNull(m.get(Monitor.NAME));
-            failed = (m.get(Monitor.NAME) == null);
+            failed = (m.get(Attribute.NAME) == null);
             super.monitorCreated(m);
         }
     }
@@ -800,7 +796,7 @@ public abstract class MonitorTestBase extends TestCase {
         assertNotNull(ms);
         assertEquals(1, ms.length);
         assertNotNull(ms[0]);
-        assertNotNull(ms[0].get(Monitor.NAME));
+        assertNotNull(ms[0].get(Attribute.NAME));
     }
 
     // ** PROTECTED METHODS ***************************************************

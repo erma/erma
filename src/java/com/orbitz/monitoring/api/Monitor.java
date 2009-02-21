@@ -506,52 +506,68 @@ public interface Monitor {
     /**
      * The name of this Monitor instance. This name should describe what is
      * being monitored.
+     *
+     * @deprecated use Attribute.NAME instead
      */
-    static final String NAME = "name";
+    static final String NAME = Attribute.NAME;
 
     /**
      * The VM id of the system that this monitor was monitoring. The
      * MonitoringEngine sets this attribute when it receives the initMonitor()
      * callback.
+     *
+     * @deprecated use Attribute.VMID instead
      */
-    static final String VMID = "vmid";
+    static final String VMID = Attribute.VMID;
 
     /**
      * The host name of the system that this monitor was monitoring. The
      * MonitoringEngine sets this attribute when it receives the initMonitor()
      * callback.
+     *
+     * @deprecated use Attribute.HOSTNAME instead
      */
-    static final String HOSTNAME = "hostname";
+    static final String HOSTNAME = Attribute.HOSTNAME;
 
     /**
      * The unqiue identifier of the thread that was being monitored. The
      * MonitoringEngine set this attribute when it receives the initMonitor()
      * callback.
+     *
+     * @deprecated use Attribute.THREAD_ID instead
      */
-    static final String THREAD_ID = "threadId";
+    static final String THREAD_ID = Attribute.THREAD_ID;
 
     /**
      * The time that this monitor was created. The MonitoringEngine sets this 
      * attribute when it receives the initMonitor() callback.
+     *
+     * @deprecated use Attribute.CREATED_AT instead
      */
-    static final String CREATED_AT = "createdAt";
+    static final String CREATED_AT = Attribute.CREATED_AT;
 
     /**
      * The unqiue identifier of the monitor during a given path of execution. The
      * MonitoringEngine set this attribute when it receives the initMonitor()
      * callback.
+     *
+     * @deprecated use Attribute.SEQUENCE_ID instead
      */
-    static final String SEQUENCE_ID = "sequenceId";
+    static final String SEQUENCE_ID = Attribute.SEQUENCE_ID;
 
     /**
      * The unqiue identifier of the parent monitor during a given path of execution.
      * The MonitoringEngine set this attribute when it receives the initMonitor()
      * callback.
+     *
+     * @deprecated use Attribute.PARENT_SEQUENCE_ID instead
      */
-    static final String PARENT_SEQUENCE_ID = "parentSequenceId";
+    static final String PARENT_SEQUENCE_ID = Attribute.PARENT_SEQUENCE_ID;
 
     /**
      * The class of this Monitor instance.
+     *
+     * @deprecated use Attribute.CLASS_NAME instead
      */
-    static final String CLASS_NAME = "className";
+    static final String CLASS_NAME = Attribute.CLASS_NAME;
 }

@@ -1,6 +1,7 @@
 package com.orbitz.monitoring.lib.processor;
 
 import com.orbitz.monitoring.api.Monitor;
+import com.orbitz.monitoring.api.Attribute;
 import com.orbitz.monitoring.api.monitor.EventMonitor;
 import com.orbitz.monitoring.api.monitor.TransactionMonitor;
 import org.apache.log4j.Logger;
@@ -32,7 +33,7 @@ public class LatencyMonitoringCoverageMonitorProcessor
         try {
             if (TransactionMonitor.class.isAssignableFrom(monitor.getClass())) {
                 TransactionMonitor parent = (TransactionMonitor) monitor;
-                long latency = parent.getAsLong("latency");
+                long latency = parent.getAsLong(Attribute.LATENCY);
                 if (latency > threshold) {
                     ArrayList list = new ArrayList();
                     Iterator iter = parent.getChildMonitors().iterator();
@@ -48,13 +49,13 @@ public class LatencyMonitoringCoverageMonitorProcessor
                     if (listSize == 0) {
                         fireMonitoringGapEvent(parent, leftChild, rightChild, latency);
                     } else {
-                        Date parentStartDate = (Date) parent.get("startTime");
-                        Date parentEndDate = (Date) parent.get("endTime");
+                        Date parentStartDate = (Date) parent.get(Attribute.START_TIME);
+                        Date parentEndDate = (Date) parent.get(Attribute.END_TIME);
                         if (listSize == 1) {
                             rightChild = (TransactionMonitor) list.get(0);
                             leftChild = rightChild;
-                            Date rightChildStartDate = (Date) rightChild.get("startTime");
-                            Date leftChildEndDate = (Date) leftChild.get("endTime");
+                            Date rightChildStartDate = (Date) rightChild.get(Attribute.START_TIME);
+                            Date leftChildEndDate = (Date) leftChild.get(Attribute.END_TIME);
                             latency = rightChildStartDate.getTime() - parentStartDate.getTime();
                             if (latency > threshold) {
                                 fireMonitoringGapEvent(parent, null, rightChild, latency);
@@ -65,7 +66,7 @@ public class LatencyMonitoringCoverageMonitorProcessor
                             }
                         } else if (listSize > 1) {
                             rightChild = (TransactionMonitor) list.get(0);
-                            Date startDateB = (Date) rightChild.get("startTime");
+                            Date startDateB = (Date) rightChild.get(Attribute.START_TIME);
                             if (startDateB.getTime() - parentStartDate.getTime() > threshold) {
                                 fireMonitoringGapEvent(parent, null, rightChild, latency);
                             }
@@ -74,8 +75,8 @@ public class LatencyMonitoringCoverageMonitorProcessor
                             while (bIdx < list.size()) {
                                 leftChild = (TransactionMonitor) list.get(aIdx);
                                 rightChild = (TransactionMonitor) list.get(bIdx);
-                                Date endDateA = (Date) leftChild.get("endTime");
-                                startDateB = (Date) rightChild.get("startTime");
+                                Date endDateA = (Date) leftChild.get(Attribute.END_TIME);
+                                startDateB = (Date) rightChild.get(Attribute.START_TIME);
                                 latency = startDateB.getTime() - endDateA.getTime();
                                 if (latency > threshold) {
                                     fireMonitoringGapEvent(parent, leftChild, rightChild, latency);
@@ -83,7 +84,7 @@ public class LatencyMonitoringCoverageMonitorProcessor
                                 aIdx++;
                                 bIdx++;
                             }
-                            Date endDateB = (Date) rightChild.get("endTime");
+                            Date endDateB = (Date) rightChild.get(Attribute.END_TIME);
                             latency = parentEndDate.getTime() - endDateB.getTime();
                             if (latency > threshold) {
                                 fireMonitoringGapEvent(parent, rightChild, null, latency);
@@ -100,10 +101,10 @@ public class LatencyMonitoringCoverageMonitorProcessor
     private void fireMonitoringGapEvent(TransactionMonitor tMon, TransactionMonitor leftChild, TransactionMonitor rightChild, long latency) {
 
         EventMonitor eventMonitor = new EventMonitor("MonitoringCoverageGap");
-        eventMonitor.set("monitorName", tMon.get(Monitor.NAME));
-        eventMonitor.set("leftChild", leftChild == null ? null : leftChild.get(Monitor.NAME));
-        eventMonitor.set("rightChild", rightChild == null ? null : rightChild.get(Monitor.NAME));
-        eventMonitor.set("latency", latency);
+        eventMonitor.set("monitorName", tMon.get(Attribute.NAME));
+        eventMonitor.set("leftChild", leftChild == null ? null : leftChild.get(Attribute.NAME));
+        eventMonitor.set("rightChild", rightChild == null ? null : rightChild.get(Attribute.NAME));
+        eventMonitor.set(Attribute.LATENCY, latency);
         eventMonitor.fire();
     }
 

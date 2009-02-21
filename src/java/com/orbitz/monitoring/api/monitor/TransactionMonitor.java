@@ -2,6 +2,7 @@ package com.orbitz.monitoring.api.monitor;
 
 import com.orbitz.monitoring.api.MonitoringEngine;
 import com.orbitz.monitoring.api.MonitoringLevel;
+import com.orbitz.monitoring.api.Attribute;
 
 import java.util.Map;
 import java.util.Date;
@@ -15,18 +16,40 @@ import java.util.Date;
  * @author Doug Barth
  */
 public class TransactionMonitor extends AbstractCompositeMonitor {
+    /**
+     * @deprecated use Attribute.RESULT_CODE instead
+     */
+    public static final String RESULT_CODE = Attribute.RESULT_CODE;
 
-    public static final String RESULT_CODE = "resultCode";
+    /**
+     * @deprecated use Attribute.START_TIME instead
+     */
+    protected static final String START_TIME = Attribute.START_TIME;
+    /**
+     * @deprecated use Attribute.END_TIME instead
+     */
+    protected static final String END_TIME = Attribute.END_TIME;
+    /**
+     * @deprecated use Attribute.LATENCY instead
+     */
+    protected static final String LATENCY = Attribute.LATENCY;
 
-    protected static final String START_TIME = "startTime";
-    protected static final String END_TIME = "endTime";
-    protected static final String LATENCY = "latency";
-
-    protected static final String FAILURE_THROWABLE = "failureThrowable";
-    protected static final String FAILED = "failed";
-    protected static final String BUSINESS_FAILURE = "businessFailure";
-
-    protected static final String TRANSACTION_MONITOR = "TransactionMonitor";
+    /**
+     * @deprecated use Attribute.FAILURE_THROWABLE instead
+     */
+    protected static final String FAILURE_THROWABLE = Attribute.FAILURE_THROWABLE;
+    /**
+     * @deprecated use Attribute.FAILED instead
+     */
+    protected static final String FAILED = Attribute.FAILED;
+    /**
+     * @deprecated use Attribute.BUSINESS_FAILURE instead
+     */
+    protected static final String BUSINESS_FAILURE = Attribute.BUSINESS_FAILURE;
+    /**
+     * @deprecated use Attribute.TRANSACTION_MONITOR instead
+     */
+    protected static final String TRANSACTION_MONITOR = Attribute.TRANSACTION_MONITOR;
 
     /**
      * Creates a new transaction monitor with the provided
@@ -137,14 +160,14 @@ public class TransactionMonitor extends AbstractCompositeMonitor {
      * Marks this transaction as having succeeded.
      */
     public void succeeded() {
-        set(FAILED, false);
+        set(Attribute.FAILED, false);
     }
 
     /**
      * Marks this transaction as having failed.
      */
     public void failed() {
-        set(FAILED, true);
+        set(Attribute.FAILED, true);
     }
 
     /**
@@ -153,7 +176,7 @@ public class TransactionMonitor extends AbstractCompositeMonitor {
      * @param e the Throwable that caused the failure
      */
     public void failedDueTo(Throwable e) {
-        set(FAILURE_THROWABLE, e).serializable();
+        set(Attribute.FAILURE_THROWABLE, e).serializable();
         failed();
     }
     
@@ -162,10 +185,10 @@ public class TransactionMonitor extends AbstractCompositeMonitor {
      */
     public void done() {
         Date endTime = new Date();
-        set(END_TIME, endTime).serializable().lock();
+        set(Attribute.END_TIME, endTime).serializable().lock();
 
-        Date startTime = (Date) get(START_TIME);
-        set(LATENCY, endTime.getTime() - startTime.getTime()).serializable().lock();
+        Date startTime = (Date) get(Attribute.START_TIME);
+        set(Attribute.LATENCY, endTime.getTime() - startTime.getTime()).serializable().lock();
 
         process();
     }

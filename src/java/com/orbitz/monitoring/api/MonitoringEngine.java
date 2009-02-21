@@ -28,7 +28,7 @@ import java.util.TreeMap;
  * @author Doug Barth
  */
 public class MonitoringEngine {
-    // ** STATIC/FINAL DATA ***************************************************
+
     private static final Logger log = Logger.getLogger(MonitoringEngine.class);
 
     private static final String DEFAULT_PARENT_SEQUENCE_ID = "m";
@@ -37,7 +37,6 @@ public class MonitoringEngine {
 
     private static MonitoringEngine _instance = new MonitoringEngine();
 
-    // ** PRIVATE DATA ********************************************************
     private boolean _monitoringEnabled = true;
     private boolean _running;
     private MonitoringLevel _eventPatternMonitoringLevel = MonitoringLevel.INFO;
@@ -54,7 +53,6 @@ public class MonitoringEngine {
 
     private Runnable _startupRunnable;
 
-    // ** CONSTRUCTORS ********************************************************
     protected MonitoringEngine() {
         _syncedThreadToStack = new ConcurrentHashMap();
 
@@ -67,7 +65,6 @@ public class MonitoringEngine {
         _globalAttributes = new AttributeMap();
     }
 
-    // ** PUBLIC METHODS ******************************************************
     public static MonitoringEngine getInstance() {
         return _instance;
     }
@@ -167,7 +164,7 @@ public class MonitoringEngine {
                 for (Iterator i = stack.iterator(); i.hasNext();) {
                     StackFrame stackFrame = (StackFrame) i.next();
                     Monitor m = stackFrame.getCompositeMonitor();
-                    String s = (String) m.get(Monitor.NAME);
+                    String s = (String) m.get(Attribute.NAME);
                     if (monitorNames.length() > 0) {
                         monitorNames.append(", ");
                     }
@@ -195,10 +192,10 @@ public class MonitoringEngine {
             return;
         }
 
-        monitor.set(Monitor.CREATED_AT, new Date()).serializable().lock();
+        monitor.set(Attribute.CREATED_AT, new Date()).serializable().lock();
 
         String threadId = Integer.toHexString(Thread.currentThread().hashCode());
-        monitor.set(Monitor.THREAD_ID, threadId).serializable().lock();
+        monitor.set(Attribute.THREAD_ID, threadId).serializable().lock();
 
         inheritAttributesFromParent(monitor);
     }
@@ -292,7 +289,7 @@ public class MonitoringEngine {
         if (compositeMonitorLevel == null) {
             if (log.isDebugEnabled()) {
                 log.debug("skipping composite monitor with name "+
-                        compositeMonitor.get(Monitor.NAME) + ", it has no defined level");
+                        compositeMonitor.get(Attribute.NAME) + ", it has no defined level");
             }
             return;
         }
@@ -300,7 +297,7 @@ public class MonitoringEngine {
         MonitoringLevel epmLevel = (MonitoringLevel) _atomicEPMLevel.get();
         if (!isEnabled() || epmLevel.hasHigherPriorityThan(compositeMonitorLevel)) {
             if (log.isDebugEnabled()) {
-                log.debug("skipping " + compositeMonitor.getAsString("name"));
+                log.debug("skipping " + compositeMonitor.getAsString(Attribute.NAME));
             }
             return;
         }
@@ -346,7 +343,7 @@ public class MonitoringEngine {
                 // A child monitor was not processed, process them now.
                 StackFrame stackFrame = (StackFrame) stack.removeLast();
                 CompositeMonitor missedMonitor = stackFrame.getCompositeMonitor();
-                String name = (String) missedMonitor.get(Monitor.NAME);
+                String name = (String) missedMonitor.get(Attribute.NAME);
                 log.warn("unfinished child monitor \""+name+"\" found so will process now and remove; app is fine");
                 process(missedMonitor);
             }
@@ -387,7 +384,7 @@ public class MonitoringEngine {
                 StackFrame stackFrame = (StackFrame) i.previous();
                 CompositeMonitor monitor = stackFrame.getCompositeMonitor();
 
-                if (name.equals(monitor.get(Monitor.NAME))) {
+                if (name.equals(monitor.get(Attribute.NAME))) {
                     monitorToReturn = monitor;
                     break;
                 }
@@ -420,9 +417,9 @@ public class MonitoringEngine {
             StackFrame stackFrame = (StackFrame) stack.getLast();
             CompositeMonitor parent = stackFrame.getCompositeMonitor();
 
-            parentSequenceId = parent.getAsString(Monitor.SEQUENCE_ID);
+            parentSequenceId = parent.getAsString(Attribute.SEQUENCE_ID);
 
-            inheritable.put(Monitor.PARENT_SEQUENCE_ID,
+            inheritable.put(Attribute.PARENT_SEQUENCE_ID,
                     new CompositeAttributeHolder(parentSequenceId, true).serializable().lock());
 
         }
@@ -434,7 +431,7 @@ public class MonitoringEngine {
             sequenceId += "_" + counter.getAndIncrement();
         }
 
-        inheritable.put(Monitor.SEQUENCE_ID, new CompositeAttributeHolder(sequenceId, true).serializable().lock());
+        inheritable.put(Attribute.SEQUENCE_ID, new CompositeAttributeHolder(sequenceId, true).serializable().lock());
 
         return inheritable;
     }
@@ -599,8 +596,6 @@ public class MonitoringEngine {
         _startupRunnable = startupRunnable;
     }
 
-    // ** PRIVATE METHODS *****************************************************
-
     /**
      * This method encapsulates the logic of looping over all applicable
      * processors and applying the supplied closure on each processor.
@@ -702,7 +697,6 @@ public class MonitoringEngine {
         return (LinkedList) _syncedThreadToStack.get(Thread.currentThread());
     }
 
-    // ** ACCESSORS ***********************************************************
     public MonitorProcessorFactory getProcessorFactory() {
         return _processorFactory;
     }
@@ -783,7 +777,7 @@ public class MonitoringEngine {
      * returned.
      */
     public MonitoringLevel getOverrideLevelForMonitor(Monitor monitor) {
-        String name = monitor.getAsString(Monitor.NAME);
+        String name = monitor.getAsString(Attribute.NAME);
 
         Set keys = _monitorLevels.keySet();
         Iterator itr = keys.iterator();
@@ -801,7 +795,6 @@ public class MonitoringEngine {
         return (keyToUse != null ? (MonitoringLevel)_monitorLevels.get(keyToUse) : null);
     }
 
-    // ** INNER CLASSES *******************************************************
     private static interface ProcessClosure {
         public void processWithProcessor(Monitor monitor,
                                          MonitorProcessor processor);

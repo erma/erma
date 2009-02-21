@@ -1,6 +1,7 @@
 package com.orbitz.monitoring.lib.processor;
 
 import com.orbitz.monitoring.api.Monitor;
+import com.orbitz.monitoring.api.Attribute;
 import com.orbitz.monitoring.api.monitor.TransactionMonitor;
 import org.apache.log4j.Logger;
 
@@ -26,7 +27,7 @@ public class ConcurrencyMonitorProcessor
     // ** PUBLIC METHODS ******************************************************
     public void monitorStarted(Monitor monitor) {
         if (isEnabled && TransactionMonitor.class.isAssignableFrom(monitor.getClass())) {
-            String name = monitor.getAsString(Monitor.NAME);
+            String name = monitor.getAsString(Attribute.NAME);
             synchronized(map) {
                 Integer cnt = (Integer) map.get(name);
                 if (cnt == null) {
@@ -41,7 +42,7 @@ public class ConcurrencyMonitorProcessor
 
     public void process(Monitor monitor) {
         if (isEnabled && TransactionMonitor.class.isAssignableFrom(monitor.getClass())) {
-            String name = monitor.getAsString(Monitor.NAME);
+            String name = monitor.getAsString(Attribute.NAME);
             synchronized(map) {
                 Integer cnt = (Integer) map.get(name);
                 if (cnt == null) {

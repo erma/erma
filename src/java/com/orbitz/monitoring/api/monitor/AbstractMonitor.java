@@ -3,6 +3,7 @@ package com.orbitz.monitoring.api.monitor;
 import com.orbitz.monitoring.api.Monitor;
 import com.orbitz.monitoring.api.MonitoringEngine;
 import com.orbitz.monitoring.api.MonitoringLevel;
+import com.orbitz.monitoring.api.Attribute;
 import com.orbitz.monitoring.api.monitor.serializable.SerializableMonitor;
 import org.apache.commons.lang.CharSetUtils;
 import org.apache.log4j.Logger;
@@ -21,10 +22,9 @@ import java.util.Set;
  * @author Doug Barth
  */
 public abstract class AbstractMonitor implements Monitor {
-    // ** STATIC/FINAL DATA ***************************************************
+
     private static final Logger log = Logger.getLogger(AbstractMonitor.class);
 
-    // ** PRIVATE DATA ********************************************************
     protected AttributeMap _attributes;
     private boolean _processed;
     protected MonitoringLevel _monitoringLevel = MonitoringLevel.INFO;
@@ -339,7 +339,6 @@ public abstract class AbstractMonitor implements Monitor {
         return new AttributeMap();
     }
 
-    // ** ACCESSORS ***********************************************************
     protected AttributeMap getAttributes() {
         return _attributes;
     }

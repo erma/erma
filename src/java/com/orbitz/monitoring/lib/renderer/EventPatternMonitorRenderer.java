@@ -2,6 +2,7 @@ package com.orbitz.monitoring.lib.renderer;
 
 import com.orbitz.monitoring.api.CompositeMonitor;
 import com.orbitz.monitoring.api.Monitor;
+import com.orbitz.monitoring.api.Attribute;
 import org.apache.commons.beanutils.LazyDynaBean;
 import org.apache.log4j.Logger;
 
@@ -71,7 +72,7 @@ public class EventPatternMonitorRenderer {
         Iterator it = allowedAttributes.iterator();
         while (it.hasNext()) {
             String attributeName = (String) it.next();
-            if (attributeName.equals("failureThrowable")) {
+            if (attributeName.equals(Attribute.FAILURE_THROWABLE)) {
                 assignFailureThrowable(monitor, buffer);
             } else if (monitor.hasAttribute(attributeName)) {
                 Object attributeValue = monitor.get(attributeName);
@@ -111,10 +112,10 @@ public class EventPatternMonitorRenderer {
     }
 
     private void assignFailureThrowable(Monitor monitor, StringBuffer buffer) {
-        if (! monitor.hasAttribute("failureThrowable")) {
+        if (! monitor.hasAttribute(Attribute.FAILURE_THROWABLE)) {
             return;
         }
-        Object o = monitor.get("failureThrowable");
+        Object o = monitor.get(Attribute.FAILURE_THROWABLE);
         if (Throwable.class.isAssignableFrom(o.getClass())) {
             Throwable t = (Throwable) o;
             HashSet causeSet = new HashSet();
@@ -190,8 +191,8 @@ public class EventPatternMonitorRenderer {
     protected boolean shouldRender(Monitor monitor) {
         boolean render = true;
         if(!logger.isDebugEnabled()) {
-            if (monitor.hasAttribute(Monitor.NAME)) {
-                String name = monitor.getAsString(Monitor.NAME);
+            if (monitor.hasAttribute(Attribute.NAME)) {
+                String name = monitor.getAsString(Attribute.NAME);
                 Iterator it = monitorsToSkip.iterator();
                 while(render && it.hasNext()) {
                     String sName = (String) it.next();
