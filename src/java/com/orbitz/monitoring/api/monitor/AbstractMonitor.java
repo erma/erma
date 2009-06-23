@@ -8,6 +8,7 @@ import org.apache.commons.lang.CharSetUtils;
 import org.apache.log4j.Logger;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +30,7 @@ public abstract class AbstractMonitor implements Monitor {
     protected MonitoringLevel _monitoringLevel = MonitoringLevel.INFO;
 
     private static final String invalidCharacters = " \\[\\]*,|()$@|~?&<>\\^";
+    private static final Set invalidCharSet =  buildInvalidCharSet();
 
     // ** CONSTRUCTORS ********************************************************
 
@@ -304,8 +306,14 @@ public abstract class AbstractMonitor implements Monitor {
      */
     protected void init(String name) {
         MonitoringEngine.getInstance().initMonitor(this);
-
-        name = CharSetUtils.delete(name,invalidCharacters);
+        if(name != null){
+            for (int i = 0; i < name.length(); i++) {
+                if(invalidCharSet.contains(new Character(name.charAt(i)))){
+                    name = CharSetUtils.delete(name,invalidCharacters);
+                    break;
+                }
+            }
+        }
         set(NAME, name);
 
         MonitoringEngine.getInstance().monitorCreated(this);
@@ -334,5 +342,15 @@ public abstract class AbstractMonitor implements Monitor {
     // ** ACCESSORS ***********************************************************
     protected AttributeMap getAttributes() {
         return _attributes;
+    }
+    
+    // ** PRIVATE Methods
+    private static Set buildInvalidCharSet() {
+        Set set = new HashSet();
+        char[] invalidArr = invalidCharacters.toCharArray();
+        for (int i = 0; i < invalidArr.length; i++) {
+            set.add(new Character(invalidArr[i]));
+        }
+        return set;
     }
 }
