@@ -1,9 +1,11 @@
 package com.orbitz.monitoring.lib.processor;
 
+import org.apache.log4j.Logger;
+
 import com.orbitz.monitoring.api.Monitor;
 import com.orbitz.monitoring.api.MonitorProcessor;
+import com.orbitz.monitoring.lib.renderer.MonitorRenderer;
 import com.orbitz.monitoring.lib.renderer.SimpleMonitorRenderer;
-import org.apache.log4j.Logger;
 
 /**
  * This is an implementation of the {@link MonitorProcessor} interface that
@@ -13,7 +15,7 @@ import org.apache.log4j.Logger;
  */
 
 public class LoggingMonitorProcessor
-        implements MonitorProcessor {
+implements MonitorProcessor {
     // ** PRIVATE DATA ********************************************************
     private Logger log;
 
@@ -22,15 +24,37 @@ public class LoggingMonitorProcessor
     private boolean _logProcess = true;
     private boolean _includeStackTrace = false;
 
+    private MonitorRenderer monitorRenderer;
+
     private String _name;
 
-    // ** PUBLIC METHODS ******************************************************
-    public void startup() {
-        log = Logger.getLogger(getClass());
+    public LoggingMonitorProcessor() {
+        monitorRenderer = new SimpleMonitorRenderer();
     }
 
-    public void shutdown() {
-        // No-op
+    public String getName() {
+        return _name;
+    }
+
+    public boolean isIncludeStackTrace() {
+        return _includeStackTrace;
+    }
+
+    // ** ACCESSORS ***********************************************************
+    public MonitorRenderer getMonitorRenderer() {
+        return monitorRenderer;
+    }
+
+    public boolean isLogMonitorCreated() {
+        return _logMonitorCreated;
+    }
+
+    public boolean isLogMonitorStarted() {
+        return _logMonitorStarted;
+    }
+
+    public boolean isLogProcess() {
+        return _logProcess;
     }
 
     public void monitorCreated(Monitor monitor) {
@@ -51,49 +75,41 @@ public class LoggingMonitorProcessor
         }
     }
 
-    public String getName() {
-        return _name;
-    }
-
-    public void setName(final String name) {
-        _name = name;
-    }
-
-    // ** PRIVATE METHODS *****************************************************
-    private String renderMonitor(Monitor monitor) {
-        return new SimpleMonitorRenderer().renderMonitor(monitor, _includeStackTrace);
-    }
-
-    // ** ACCESSORS ***********************************************************
-    public boolean isLogMonitorCreated() {
-        return _logMonitorCreated;
+    public void setIncludeStackTrace(boolean includeStackTrace) {
+        _includeStackTrace = includeStackTrace;
     }
 
     public void setLogMonitorCreated(boolean logMonitorCreated) {
         _logMonitorCreated = logMonitorCreated;
     }
 
-    public boolean isLogMonitorStarted() {
-        return _logMonitorStarted;
-    }
-
     public void setLogMonitorStarted(boolean logMonitorStarted) {
         _logMonitorStarted = logMonitorStarted;
-    }
-
-    public boolean isLogProcess() {
-        return _logProcess;
     }
 
     public void setLogProcess(boolean logProcess) {
         _logProcess = logProcess;
     }
 
-    public boolean isIncludeStackTrace() {
-        return _includeStackTrace;
+    public void setName(final String name) {
+        _name = name;
     }
 
-    public void setIncludeStackTrace(boolean includeStackTrace) {
-        _includeStackTrace = includeStackTrace;
+    public void setMonitorRenderer(MonitorRenderer monitorRenderer) {
+        this.monitorRenderer = monitorRenderer;
+    }
+
+    public void shutdown() {
+        // No-op
+    }
+
+    // ** PUBLIC METHODS ******************************************************
+    public void startup() {
+        log = Logger.getLogger(getClass());
+    }
+
+    // ** PRIVATE METHODS *****************************************************
+    private String renderMonitor(Monitor monitor) {
+        return monitorRenderer.renderMonitor(monitor, _includeStackTrace);
     }
 }

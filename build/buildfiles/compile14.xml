@@ -70,6 +70,9 @@ are in <project-home>/src
           debug="${build.debug}"
           includeAntRuntime="false"
           target="1.4">
+        <bootclasspath>
+          <pathelement location="${dir.build}/lib/sun/java/rt-1.4.2_16.jar" />
+        </bootclasspath>
         <classpath>
           <path refid="classpath.build"/>
         </classpath>

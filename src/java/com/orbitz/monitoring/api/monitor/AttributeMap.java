@@ -99,8 +99,6 @@ public class AttributeMap implements Serializable {
     public void setAllAttributeHolders(Map attributeHolders) {
         if (attributeHolders == null) return;
 
-        clear();
-
         for (Iterator i = attributeHolders.entrySet().iterator(); i.hasNext();) {
             Map.Entry entry = (Map.Entry) i.next();
             String key = (String) entry.getKey();

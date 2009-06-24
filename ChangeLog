@@ -1,3 +1,9 @@
+Version 3.3:
+ * Added javadocs
+ * ERMA-9: Expose renderer in LoggingMonitorProcessor
+ * ERMA-11: TransactionMonitorInterceptor omits attributes on thrown exception
+ * ERMA-18: erma-lib-src.jar built with incorrect fileset
+
 Version 3.2
  * Added commons-attributes jars
  * ERMA-13: Inheritable attributes passed into TransactionMonitor are not marked as inheritable
