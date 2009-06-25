@@ -46,10 +46,6 @@ public class TransactionMonitor extends AbstractCompositeMonitor {
      * @deprecated use Attribute.BUSINESS_FAILURE instead
      */
     protected static final String BUSINESS_FAILURE = Attribute.BUSINESS_FAILURE;
-    /**
-     * @deprecated use Attribute.TRANSACTION_MONITOR instead
-     */
-    protected static final String TRANSACTION_MONITOR = Attribute.TRANSACTION_MONITOR;
 
     /**
      * Creates a new transaction monitor with the provided

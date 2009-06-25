@@ -3,7 +3,6 @@ package com.orbitz.monitoring.api.monitor;
 import com.orbitz.monitoring.api.Monitor;
 import com.orbitz.monitoring.api.MonitoringEngine;
 import com.orbitz.monitoring.api.MonitoringLevel;
-import com.orbitz.monitoring.api.Attribute;
 import com.orbitz.monitoring.api.monitor.serializable.SerializableMonitor;
 import org.apache.commons.lang.CharSetUtils;
 import org.apache.log4j.Logger;
@@ -25,9 +24,9 @@ public abstract class AbstractMonitor implements Monitor {
 
     private static final Logger log = Logger.getLogger(AbstractMonitor.class);
 
-    protected AttributeMap _attributes;
-    private boolean _processed;
-    protected MonitoringLevel _monitoringLevel = MonitoringLevel.INFO;
+    protected AttributeMap attributes;
+    private boolean processed;
+    protected MonitoringLevel monitoringLevel = MonitoringLevel.INFO;
 
     private static final String invalidCharacters = " \\[\\]*,|()$@|~?&<>\\^";
     private static final Set invalidCharSet =  buildInvalidCharSet();
@@ -39,30 +38,7 @@ public abstract class AbstractMonitor implements Monitor {
      * will need to call init(String) themselves.
      */
     protected AbstractMonitor() {
-        _attributes = createAttributeMap();
-        MonitoringEngine.getInstance().initGlobalAttributes(this);
-    }
-
-    /**
-     * Initializes the attribute map, global attributes and sets the
-     * provided inherited attributes. Subclasses will need to call
-     * init(String) themselves.
-     *
-     * @param inheritedAttributes the collection of inherited attributes
-     */
-    protected AbstractMonitor(Map inheritedAttributes) {
-        this();
-        if(inheritedAttributes != null) {
-            for (Iterator i = inheritedAttributes.entrySet().iterator(); i.hasNext();) {
-                Map.Entry entry = (Map.Entry) i.next();
-                String key = (String) entry.getKey();
-                Object value = entry.getValue();
-                if(value != null && AttributeHolder.class.isAssignableFrom(value.getClass())) {
-                    value = ((AttributeHolder) value).getValue();
-                }
-                set(key, value).lock();
-            }
-        }
+        attributes = createAttributeMap();
     }
 
     /**
@@ -107,167 +83,167 @@ public abstract class AbstractMonitor implements Monitor {
      * @param inheritedAttributes the collection of inherited attributes
      */
     public AbstractMonitor(String name, MonitoringLevel monitoringLevel, Map inheritedAttributes) {
-        this(inheritedAttributes);
-        _monitoringLevel = monitoringLevel;
-        init(name);
+        this();
+        this.monitoringLevel = monitoringLevel;
+        init(name, inheritedAttributes);
     }
 
     // ** PUBLIC METHODS ******************************************************
     public AttributeHolder set(String key, short value) {
-        return _attributes.set(key, value).serializable();
+        return attributes.set(key, value).serializable();
     }
 
     public AttributeHolder set(String key, int value) {
-        return _attributes.set(key, value).serializable();
+        return attributes.set(key, value).serializable();
     }
 
     public AttributeHolder set(String key, long value) {
-        return _attributes.set(key, value).serializable();
+        return attributes.set(key, value).serializable();
     }
 
     public AttributeHolder set(String key, float value) {
-        return _attributes.set(key, value).serializable();
+        return attributes.set(key, value).serializable();
     }
 
     public AttributeHolder set(String key, double value) {
-        return _attributes.set(key, value).serializable();
+        return attributes.set(key, value).serializable();
     }
 
     public AttributeHolder set(String key, char value) {
-        return _attributes.set(key, value).serializable();
+        return attributes.set(key, value).serializable();
     }
 
     public AttributeHolder set(String key, byte value) {
-        return _attributes.set(key, value).serializable();
+        return attributes.set(key, value).serializable();
     }
 
     public AttributeHolder set(String key, boolean value) {
-        return _attributes.set(key, value).serializable();
+        return attributes.set(key, value).serializable();
     }
 
     public AttributeHolder set(String key, Date value) {
-        return _attributes.set(key, value).serializable();
+        return attributes.set(key, value).serializable();
     }
 
     public AttributeHolder set(String key, String value) {
-        return _attributes.set(key, value).serializable();
+        return attributes.set(key, value).serializable();
     }
 
     public AttributeHolder set(String key, Object value) {
-        return _attributes.set(key, value);
+        return attributes.set(key, value);
     }
 
     public void setAll(Map attributes) {
-        _attributes.setAll(attributes);
+        this.attributes.setAll(attributes);
     }
 
     public void setAllAttributeHolders(final Map attributeHolders) {
-        _attributes.setAllAttributeHolders(attributeHolders);
+        attributes.setAllAttributeHolders(attributeHolders);
     }
 
     public void unset(String key) {
-        _attributes.unset(key);
+        attributes.unset(key);
     }
 
     public Object get(String key) {
-        return _attributes.get(key);
+        return attributes.get(key);
     }
 
     public Map getAsMap(String key) {
-        return _attributes.getAsMap(key);
+        return attributes.getAsMap(key);
     }
 
     public List getAsList(String key) {
-        return _attributes.getAsList(key);
+        return attributes.getAsList(key);
     }
 
     public Set getAsSet(String key) {
-        return _attributes.getAsSet(key);
+        return attributes.getAsSet(key);
     }
 
     public String getAsString(String key) {
-        return _attributes.getAsString(key);
+        return attributes.getAsString(key);
     }
 
     public short getAsShort(String key) {
-        return _attributes.getAsShort(key);
+        return attributes.getAsShort(key);
     }
 
     public int getAsInt(String key) {
-        return _attributes.getAsInt(key);
+        return attributes.getAsInt(key);
     }
 
     public long getAsLong(String key) {
-        return _attributes.getAsLong(key);
+        return attributes.getAsLong(key);
     }
 
     public float getAsFloat(String key) {
-        return _attributes.getAsFloat(key);
+        return attributes.getAsFloat(key);
     }
 
     public double getAsDouble(String key) {
-        return _attributes.getAsDouble(key);
+        return attributes.getAsDouble(key);
     }
 
     public char getAsChar(String key) {
-        return _attributes.getAsChar(key);
+        return attributes.getAsChar(key);
     }
 
     public byte getAsByte(String key) {
-        return _attributes.getAsByte(key);
+        return attributes.getAsByte(key);
     }
 
     public boolean getAsBoolean(String key) {
-        return _attributes.getAsBoolean(key);
+        return attributes.getAsBoolean(key);
     }
 
     public Map getAll() {
-        return _attributes.getAll();
+        return attributes.getAll();
     }
 
     public Map getAllSerializable() {
-        return _attributes.getAllSerializable();
+        return attributes.getAllSerializable();
     }
 
     public boolean getAsBoolean(String key, boolean defaultValue) {
-        return _attributes.getAsBoolean(key, defaultValue);
+        return attributes.getAsBoolean(key, defaultValue);
     }
 
     public short getAsShort(String key, short defaultValue) {
-        return _attributes.getAsShort(key, defaultValue);
+        return attributes.getAsShort(key, defaultValue);
     }
 
     public byte getAsByte(String key, byte defaultValue) {
-        return _attributes.getAsByte(key, defaultValue);
+        return attributes.getAsByte(key, defaultValue);
     }
 
     public int getAsInt(String key, int defaultValue) {
-        return _attributes.getAsInt(key, defaultValue);
+        return attributes.getAsInt(key, defaultValue);
     }
 
     public long getAsLong(String key, long defaultValue) {
-        return _attributes.getAsLong(key, defaultValue);
+        return attributes.getAsLong(key, defaultValue);
     }
 
     public float getAsFloat(String key, float defaultValue) {
-        return _attributes.getAsFloat(key, defaultValue);
+        return attributes.getAsFloat(key, defaultValue);
     }
 
     public double getAsDouble(String key, double defaultValue) {
-        return _attributes.getAsDouble(key, defaultValue);
+        return attributes.getAsDouble(key, defaultValue);
     }
 
     public char getAsChar(String key, char defaultValue) {
-        return _attributes.getAsChar(key, defaultValue);
+        return attributes.getAsChar(key, defaultValue);
     }
 
     public final MonitoringLevel getLevel() {
         MonitoringLevel overrideLevel = MonitoringEngine.getInstance().getOverrideLevelForMonitor(this);
-        return (overrideLevel != null ? overrideLevel : _monitoringLevel);
+        return (overrideLevel != null ? overrideLevel : monitoringLevel);
     }
 
     public boolean hasAttribute(String key) {
-        return _attributes.hasAttribute(key);
+        return attributes.hasAttribute(key);
     }
 
     /**
@@ -277,7 +253,7 @@ public abstract class AbstractMonitor implements Monitor {
      */
     public SerializableMonitor getSerializableMomento() {
         MonitoringEngine engine = MonitoringEngine.getInstance();
-        Map serializableAttributes = engine.makeAttributeHoldersSerializable(_attributes.getAllAttributeHolders());
+        Map serializableAttributes = engine.makeAttributeHoldersSerializable(attributes.getAllAttributeHolders());
 
         SerializableMonitor monitor = new SerializableMonitor(null);
         monitor.setAllAttributeHolders(serializableAttributes);
@@ -289,8 +265,8 @@ public abstract class AbstractMonitor implements Monitor {
         StringBuffer buf = new StringBuffer();
 
         buf.append("[").append(getClass()).append(" attributes=");
-        buf.append(_attributes);
-        buf.append(" level=").append(_monitoringLevel).append("]");
+        buf.append(attributes);
+        buf.append(" level=").append(monitoringLevel).append("]");
 
         return buf.toString();
     }
@@ -303,8 +279,9 @@ public abstract class AbstractMonitor implements Monitor {
      * on this monitor.
      *
      * @param name the name of the monitor
+     * @param inheritedAttributes the collection of inherited attributes
      */
-    protected void init(String name) {
+    protected void init(String name, Map inheritedAttributes) {
         MonitoringEngine.getInstance().initMonitor(this);
         if(name != null){
             for (int i = 0; i < name.length(); i++) {
@@ -316,9 +293,31 @@ public abstract class AbstractMonitor implements Monitor {
         }
         set(NAME, name);
 
+        setInheritedAttributes(inheritedAttributes);
+
         MonitoringEngine.getInstance().monitorCreated(this);
 
-        _processed = false;
+        processed = false;
+    }
+
+    /**
+     * Used to set the inherited attributes on this
+     * monitor.
+     *
+     * @param inheritedAttributes the collection of inherited attributes
+     */
+    protected void setInheritedAttributes(Map inheritedAttributes) {
+        if(inheritedAttributes != null) {
+            for(Iterator i = inheritedAttributes.entrySet().iterator(); i.hasNext();) {
+                Map.Entry entry = (Map.Entry) i.next();
+                String key = (String) entry.getKey();
+                Object value = entry.getValue();
+                if(value != null && AttributeHolder.class.isAssignableFrom(value.getClass())) {
+                    value = ((AttributeHolder) value).getValue();
+                }
+                set(key, value).lock();
+            }
+        }
     }
 
     /**
@@ -327,11 +326,11 @@ public abstract class AbstractMonitor implements Monitor {
      * on this monitor.
      */
     protected void process() {
-        if (_processed) {
+        if (processed) {
             log.error("This monitor has already been processed: " + this);
         } else {
             MonitoringEngine.getInstance().process(this);
-            _processed = true;
+            processed = true;
         }
     }
 
@@ -340,7 +339,7 @@ public abstract class AbstractMonitor implements Monitor {
     }
 
     protected AttributeMap getAttributes() {
-        return _attributes;
+        return attributes;
     }
     
     // ** PRIVATE Methods

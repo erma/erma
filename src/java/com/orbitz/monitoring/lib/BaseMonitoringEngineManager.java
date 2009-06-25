@@ -5,6 +5,8 @@ import com.orbitz.monitoring.api.MonitorProcessor;
 import com.orbitz.monitoring.api.MonitorProcessorFactory;
 import com.orbitz.monitoring.api.MonitoringEngine;
 import com.orbitz.monitoring.api.MonitoringLevel;
+import com.orbitz.monitoring.api.InheritableStrategy;
+import com.orbitz.monitoring.api.engine.StackBasedInheritableStrategy;
 import com.orbitz.monitoring.api.monitor.EventMonitor;
 import com.orbitz.monitoring.lib.decomposer.AttributeDecomposer;
 import com.orbitz.monitoring.lib.factory.SimpleMonitorProcessorFactory;
@@ -29,13 +31,14 @@ import java.util.Map;
 public class BaseMonitoringEngineManager {
     private static final Logger log = Logger.getLogger(BaseMonitoringEngineManager.class);
 
-    private MonitorProcessorFactory _factory;
-    private Decomposer _decomposer;
-    private ScheduledExecutorService _scheduledExecutor;
-    private Map _timerTasks;
-    private boolean _monitoringEnabled = true;
+    private MonitorProcessorFactory factory;
+    private Decomposer decomposer;
+    private InheritableStrategy inheritableStrategy;
+    private ScheduledExecutorService scheduledExecutor;
+    private Map timerTasks;
+    private boolean monitoringEnabled = true;
 
-    protected Runnable _startupRunnable;
+    protected Runnable startupRunnable;
 
     public BaseMonitoringEngineManager() {
         this(new SimpleMonitorProcessorFactory(null), null);
@@ -51,19 +54,21 @@ public class BaseMonitoringEngineManager {
             decomposer = new AttributeDecomposer();
         }
 
-        _factory = factory;
-        _decomposer = decomposer;
+        this.factory = factory;
+        this.decomposer = decomposer;
+        this.inheritableStrategy = new StackBasedInheritableStrategy();
     }
 
     public void startup() {
-        MonitoringEngine.getInstance().setMonitoringEnabled(_monitoringEnabled);
+        MonitoringEngine.getInstance().setMonitoringEnabled(monitoringEnabled);
 
-        MonitoringEngine.getInstance().setProcessorFactory(_factory);
-        MonitoringEngine.getInstance().setDecomposer(_decomposer);
-        MonitoringEngine.getInstance().setStartupRunnable(_startupRunnable);
+        MonitoringEngine.getInstance().setProcessorFactory(factory);
+        MonitoringEngine.getInstance().setDecomposer(decomposer);
+        MonitoringEngine.getInstance().setInheritableStrategy(inheritableStrategy);
+        MonitoringEngine.getInstance().setStartupRunnable(startupRunnable);
 
-        if (_timerTasks == null) {
-            _timerTasks = Collections.EMPTY_MAP;
+        if (timerTasks == null) {
+            timerTasks = Collections.EMPTY_MAP;
         }
 
         MonitoringEngine.getInstance().startup();
@@ -72,9 +77,9 @@ public class BaseMonitoringEngineManager {
         monitor.set("eventType", "startup");
         monitor.fire();
 
-        _scheduledExecutor = Executors.newSingleThreadScheduledExecutor();
+        scheduledExecutor = Executors.newSingleThreadScheduledExecutor();
 
-        Iterator iter = _timerTasks.entrySet().iterator();
+        Iterator iter = timerTasks.entrySet().iterator();
         while (iter.hasNext()) {
             Map.Entry entry = (Map.Entry) iter.next();
             long millis = ((Number) entry.getKey()).longValue();
@@ -82,13 +87,13 @@ public class BaseMonitoringEngineManager {
             Iterator it = tasks.iterator();
             while (it.hasNext()) {
                 Runnable task = (Runnable) it.next();
-                _scheduledExecutor.scheduleAtFixedRate(task, millis, millis, TimeUnit.MILLISECONDS);
+                scheduledExecutor.scheduleAtFixedRate(task, millis, millis, TimeUnit.MILLISECONDS);
             }
         }
     }
 
     public void shutdown() {
-        _scheduledExecutor.shutdown();
+        scheduledExecutor.shutdown();
 
         EventMonitor monitor = new EventMonitor("MonitoringEngineManager.lifecycle", MonitoringLevel.ESSENTIAL);
         monitor.set("eventType", "shutdown");
@@ -106,7 +111,7 @@ public class BaseMonitoringEngineManager {
     }
 
     public Map getTimerTasksMap() {
-        return _timerTasks;
+        return timerTasks;
     }
 
     /**
@@ -116,12 +121,12 @@ public class BaseMonitoringEngineManager {
      * @param timerTasks the map of timer tasks
      */
     public void setTimerTasksMap(Map timerTasks) {
-        _timerTasks = timerTasks;
+        this.timerTasks = timerTasks;
     }
 
     public Collection getTimerTasks() {
-        return (_timerTasks != null && _timerTasks.containsKey(new Integer(60000))) ?
-                (Collection) _timerTasks.get(new Integer(60000)) : Collections.EMPTY_SET;
+        return (timerTasks != null && timerTasks.containsKey(new Integer(60000))) ?
+                (Collection) timerTasks.get(new Integer(60000)) : Collections.EMPTY_SET;
     }
 
     /**
@@ -140,7 +145,7 @@ public class BaseMonitoringEngineManager {
      * @param monitoringEnabled set to false to disable all Monitor events.
      */
     public void setMonitoringEnabled(boolean monitoringEnabled) {
-        _monitoringEnabled = monitoringEnabled;
+        this.monitoringEnabled = monitoringEnabled;
     }
 
     /**
@@ -149,42 +154,19 @@ public class BaseMonitoringEngineManager {
      * @return enabled state of MonitoringEngine
      */
     public boolean getMonitoringEnabled() {
-        return _monitoringEnabled;
+        return monitoringEnabled;
+    }
+
+    public InheritableStrategy getInheritableStrategy() {
+        return inheritableStrategy;
+    }
+
+    public void setInheritableStrategy(InheritableStrategy inheritableStrategy) {
+        this.inheritableStrategy = inheritableStrategy;
     }
 
     public void setStartupRunnable(Runnable startupRunnable) {
-        _startupRunnable = startupRunnable;
-    }
-
-    /**
-     * Set the monitoring level at which monitors will be added to event patterns.
-     *
-     * @param levelStr monitoring level
-     *
-     * @@org.springframework.jmx.export.metadata.ManagedOperation
-     * (description="Set event pattern monitoring level")
-     * @@org.springframework.jmx.export.metadata.ManagedOperationParameter
-     * (index=0, name="levelStr", description="Apply this level to event monitoring filtering")
-     */
-    public void updateEventPatternMonitoringLevel(String levelStr) {
-        if (! MonitoringLevel.isValidLevelStr(levelStr)) {
-            throw new IllegalArgumentException("levelStr must match an existing MonitoringLevel");
-        }
-
-        MonitoringLevel level = MonitoringLevel.toLevel(levelStr);
-        MonitoringEngine.getInstance().setEventPatternMonitoringLevel(level);
-    }
-
-    /**
-     * Get the monitoring level at which monitors will be added to event patterns.
-     *
-     * @return string representation of the event pattern level applied to all monitors
-     *
-     * @@org.springframework.jmx.export.metadata.ManagedAttribute
-     * (description="Get event pattern monitoring level")
-     */
-    public String getEventPatternMonitoringLevel() {
-        return MonitoringEngine.getInstance().getEventPatternMonitoringLevel().toString();
+        this.startupRunnable = startupRunnable;
     }
 
     /**
@@ -250,7 +232,7 @@ public class BaseMonitoringEngineManager {
             throw new IllegalArgumentException("levelStr must match an existing MonitoringLevel");
         }
 
-        MonitorProcessor[] processors = _factory.getAllProcessors();
+        MonitorProcessor[] processors = factory.getAllProcessors();
         for (int i = 0; i < processors.length; i++) {
             MonitorProcessor processor = processors[i];
             if (name.equalsIgnoreCase(processor.getName())) {

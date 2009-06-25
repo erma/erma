@@ -80,7 +80,7 @@ public class EventPatternLoggingMonitorProcessorTest extends TestCase {
     }
 
     public void testRenderTransactionContainingChildMonitors() {
-        MonitoringEngine.getInstance().setEventPatternMonitoringLevel(MonitoringLevel.INFO);
+        //MonitoringEngine.getInstance().setEventPatternMonitoringLevel(MonitoringLevel.INFO);
         TransactionMonitor parent = new TransactionMonitor("parent");
         parent.set(Monitor.VMID, _testVMID);
 

@@ -62,7 +62,6 @@ public class SimpleMonitorProcessorFactory implements MonitorProcessorFactory {
         return (MonitorProcessor[])allMps.toArray(new MonitorProcessor[allMps.size()]);
     }
 
-    // ** PRIVATE METHODS *****************************************************
     public Set getAllMonitorProcessors() {
         Set allMps = new LinkedHashSet();
         for (int i = 0; i < _processGroups.length; i++) {

@@ -5,6 +5,8 @@ import com.clarkware.junitperf.LoadTest;
 import com.clarkware.junitperf.TimedTest;
 import com.orbitz.monitoring.api.MonitoringEngine;
 import com.orbitz.monitoring.api.MonitorProcessor;
+import com.orbitz.monitoring.api.engine.MapBasedInheritableStrategy;
+import com.orbitz.monitoring.api.engine.StackBasedInheritableStrategy;
 import com.orbitz.monitoring.test.MockMonitorProcessorFactory;
 import com.orbitz.monitoring.test.MockDecomposer;
 import junit.framework.Test;
@@ -33,11 +35,12 @@ public class TransactionMonitorLoadTest extends TestCase {
         MonitoringEngine mEngine = MonitoringEngine.getInstance();
         mEngine.setDecomposer(new MockDecomposer());
         setFactory(mEngine);
+        mEngine.setInheritableStrategy(new StackBasedInheritableStrategy());
         mEngine.startup();
 
         TestSuite suite = new TestSuite();
 
-        int iterations = 10000;
+        int iterations = 100;
 
         Test simpleTransactionUsage = new TransactionMonitorLoadTest(
                 "testSimpleTransactionUsage");
@@ -59,8 +62,11 @@ public class TransactionMonitorLoadTest extends TestCase {
     // ** TEST METHODS ********************************************************
     public void testSimpleTransactionUsage() {
         TransactionMonitor parent = new TransactionMonitor("parentLoad");
+        parent.setInheritable("foo", "foo");
+        parent.setInheritable("bar", "bar");
 
         TransactionMonitor child = new TransactionMonitor("childLoad");
+        child.setInheritable("baz", "baz");
         child.succeeded();
         child.done();
 

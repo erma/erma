@@ -4,6 +4,7 @@ import com.orbitz.monitoring.api.monitor.EventMonitor;
 import com.orbitz.monitoring.api.monitor.TransactionMonitor;
 import com.orbitz.monitoring.api.monitor.AttributeHolder;
 import com.orbitz.monitoring.api.monitor.serializable.SerializableMonitor;
+import com.orbitz.monitoring.api.engine.StackBasedInheritableStrategy;
 import com.orbitz.monitoring.test.MockDecomposer;
 import com.orbitz.monitoring.test.MockMonitorProcessor;
 import com.orbitz.monitoring.test.MockMonitorProcessorFactory;
@@ -27,8 +28,7 @@ public class MonitoringEngineTest extends TestCase {
     private MockMonitorProcessor _processor;
 
     // ** TEST SUITE METHODS **************************************************
-    protected void setUp()
-            throws Exception {
+    protected void setUp() throws Exception {
         super.setUp();
 
         System.setProperty("orbitz.props", "/dev/null");
@@ -41,12 +41,10 @@ public class MonitoringEngineTest extends TestCase {
         _engine = MonitoringEngine.getInstance();
         _engine.setProcessorFactory(_factory);
         _engine.setDecomposer(new MockDecomposer());
-
-        
+        _engine.setInheritableStrategy(new StackBasedInheritableStrategy());
     }
 
-    protected void tearDown()
-            throws Exception {
+    protected void tearDown() throws Exception {
         super.tearDown();
 
         _engine.shutdown();
@@ -56,6 +54,21 @@ public class MonitoringEngineTest extends TestCase {
     public void testMontoringDefaultEnabledSetting() {
         _engine.startup();
         assertTrue("For engine enabled", _engine.isEnabled());
+    }
+
+    public void testCallingStartupWithoutMonitorStrategySet() {
+        _engine.setInheritableStrategy(null);
+
+        try {
+            _engine.startup();
+            fail("Expected IllegalStateException when monitorStrategy is null at startup");
+        } catch (Exception e) {
+            // Expected
+        }
+
+        // This shouldn't error out because the engine didn't successfully
+        // startup
+        _engine.shutdown();
     }
 
     public void testStartupWithoutProcessorFactorySet() {
@@ -78,8 +91,7 @@ public class MonitoringEngineTest extends TestCase {
 
         try {
             _engine.startup();
-            fail("Expected IllegalStateException when decomposer is null at " +
-                    "startup");
+            fail("Expected IllegalStateException when decomposer is null at startup");
         } catch (IllegalStateException e) {
             // Expected
         }
@@ -93,16 +105,6 @@ public class MonitoringEngineTest extends TestCase {
         _engine.startup();
 
         _factory.assertStartupCalled();
-    }
-
-    public void testCallingStartupWithoutSettingProcessorFactory() {
-        _engine.setProcessorFactory(null);
-
-        try {
-            _engine.startup();
-        } catch (Exception e) {
-            // Expected
-        }
     }
 
     public void testFactoryThrowsExceptionOnStartup() {
@@ -248,6 +250,7 @@ public class MonitoringEngineTest extends TestCase {
         parentMonitor.setInheritable("postInherit", "baz");
         parentMonitor.succeeded();
         parentMonitor.done();
+
         assertEquals("foo", child1Monitor.get("inheritable"));
         assertEquals("child2", child2Monitor.get(Monitor.NAME));
         assertEquals("foo", child2Monitor.get("inheritable"));
@@ -420,6 +423,7 @@ public class MonitoringEngineTest extends TestCase {
         _engine = new MonitoringEngine();
         _engine.setProcessorFactory(_factory);
         _engine.setDecomposer(new MockDecomposer());
+        _engine.setInheritableStrategy(new StackBasedInheritableStrategy());
         _engine.startup();
 
         Map attributeHolders = new HashMap();
@@ -436,6 +440,7 @@ public class MonitoringEngineTest extends TestCase {
         _engine = new MonitoringEngine();
         _engine.setProcessorFactory(_factory);
         _engine.setDecomposer(new MockDecomposer());
+        _engine.setInheritableStrategy(new StackBasedInheritableStrategy());
         _engine.startup();
 
         try {

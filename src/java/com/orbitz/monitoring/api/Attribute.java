@@ -1,79 +1,73 @@
 package com.orbitz.monitoring.api;
 
-/**
- * Created by IntelliJ IDEA.
- * User: smullins
- * Date: Feb 21, 2009
- * Time: 9:20:46 AM
- * To change this template use File | Settings | File Templates.
- */
-public interface Attribute {
+public abstract class Attribute {
     /**
      * The name of this Monitor instance. This name should describe what is
      * being monitored.
      */
-    static final String NAME = "name";
+    public static final String NAME = "name";
 
     /**
      * The VM id of the system that this monitor was monitoring. The
      * MonitoringEngine sets this attribute when it receives the initMonitor()
      * callback.
      */
-    static final String VMID = "vmid";
+    public static final String VMID = "vmid";
 
     /**
      * The host name of the system that this monitor was monitoring. The
      * MonitoringEngine sets this attribute when it receives the initMonitor()
      * callback.
      */
-    static final String HOSTNAME = "hostname";
+    public static final String HOSTNAME = "hostname";
 
     /**
      * The unqiue identifier of the thread that was being monitored. The
      * MonitoringEngine set this attribute when it receives the initMonitor()
      * callback.
      */
-    static final String THREAD_ID = "threadId";
+    public static final String THREAD_ID = "threadId";
 
     /**
      * The time that this monitor was created. The MonitoringEngine sets this
      * attribute when it receives the initMonitor() callback.
      */
-    static final String CREATED_AT = "createdAt";
+    public static final String CREATED_AT = "createdAt";
 
     /**
      * The unqiue identifier of the monitor during a given path of execution. The
      * MonitoringEngine set this attribute when it receives the initMonitor()
      * callback.
      */
-    static final String SEQUENCE_ID = "sequenceId";
+    public static final String SEQUENCE_ID = "sequenceId";
 
     /**
      * The unqiue identifier of the parent monitor during a given path of execution.
      * The MonitoringEngine set this attribute when it receives the initMonitor()
      * callback.
      */
-    static final String PARENT_SEQUENCE_ID = "parentSequenceId";
+    public static final String PARENT_SEQUENCE_ID = "parentSequenceId";
 
     /**
      * The class of this Monitor instance.
      */
-    static final String CLASS_NAME = "className";
+    public static final String CLASS_NAME = "className";
 
 
-    static final String RESULT_CODE = "resultCode";
+    public static final String RESULT_CODE = "resultCode";
 
-    static final String START_TIME = "startTime";
+    public static final String START_TIME = "startTime";
 
-    static final String END_TIME = "endTime";
+    public static final String END_TIME = "endTime";
 
-    static final String LATENCY = "latency";
+    public static final String LATENCY = "latency";
 
-    static final String FAILURE_THROWABLE = "failureThrowable";
+    public static final String FAILURE_THROWABLE = "failureThrowable";
 
-    static final String FAILED = "failed";
+    public static final String FAILED = "failed";
 
-    static final String BUSINESS_FAILURE = "businessFailure";
+    public static final String BUSINESS_FAILURE = "businessFailure";
 
-    static final String TRANSACTION_MONITOR = "TransactionMonitor";
+    public static final String VALUE = "value";
+
 }

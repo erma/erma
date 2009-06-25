@@ -104,12 +104,14 @@ public class AttributeMap implements Serializable {
             String key = (String) entry.getKey();
             Object value = entry.getValue();
 
-            if (AttributeHolder.class.isAssignableFrom(value.getClass())) {
-                AttributeHolder original = (AttributeHolder) value;
-                AttributeHolder copy = (AttributeHolder) original.clone();
-                getAttributes().put(key, copy);
-            } else {
-                set(key, value);
+            if(value != null) {
+                if (AttributeHolder.class.isAssignableFrom(value.getClass())) {
+                    AttributeHolder original = (AttributeHolder) value;
+                    AttributeHolder copy = (AttributeHolder) original.clone();
+                    getAttributes().put(key, copy);
+                } else {
+                    set(key, value);
+                }
             }
         }
     }
