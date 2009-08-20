@@ -1,4 +1,6 @@
 Version 3.3:
+ * ERMA-25: ValueMonitor
+ * ERMA-21: inheritable strategies for MonitoringEngine
  * Added javadocs
  * ERMA-9: Expose renderer in LoggingMonitorProcessor
  * ERMA-11: TransactionMonitorInterceptor omits attributes on thrown exception
