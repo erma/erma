@@ -31,7 +31,6 @@ public class ProcessGroupTest extends TestCase {
 
     protected void tearDown() {
         String foo = MonitoringEngine.getInstance().getOverrideProcessorLevelsListing();
-        System.out.println(foo);
     }
 
     // ** TEST METHODS ********************************************************

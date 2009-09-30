@@ -2,7 +2,6 @@ package com.orbitz.monitoring.api;
 
 import com.orbitz.monitoring.api.monitor.AttributeHolder;
 import com.orbitz.monitoring.api.monitor.AttributeMap;
-import com.orbitz.monitoring.api.monitor.AbstractCompositeMonitor;
 import org.apache.log4j.Logger;
 
 import java.util.Arrays;
@@ -160,6 +159,10 @@ public class MonitoringEngine {
      * @param monitor the monitor to initialize.
      */
     public void initMonitor(Monitor monitor) {
+        initMonitor(monitor, true);
+    }
+    
+    public void initMonitor(Monitor monitor, boolean includeInheritables) {
         if (!isEnabled()) {
             return;
         }
@@ -169,19 +172,11 @@ public class MonitoringEngine {
         String threadId = Integer.toHexString(Thread.currentThread().hashCode());
         monitor.set(Attribute.THREAD_ID, threadId).serializable().lock();
 
-        for (Iterator it = globalAttributes.getAllAttributeHolders().entrySet().iterator(); it.hasNext();) {
-            Map.Entry entry = (Map.Entry) it.next();
-            String key = (String) entry.getKey();
-            AttributeHolder holder = (AttributeHolder)entry.getValue();
+        inheritGlobals(monitor);
 
-            Object value = holder.getValue();
-            AttributeHolder attribute = monitor.set(key, value);
-
-            if (holder.isSerializable()) attribute.serializable();
-            if (holder.isLocked()) attribute.lock();
+        if (includeInheritables) {
+            inheritAttributesFromAncestors(monitor);
         }
-
-        inheritAttributesFromParent(monitor);
     }
 
     /**
@@ -275,7 +270,7 @@ public class MonitoringEngine {
         if (compositeMonitor.getLevel() == null) {
             if (log.isDebugEnabled()) {
                 log.debug("skipping composite monitor with name "+
-                        compositeMonitor.get(Monitor.NAME) + ", it has no defined level");
+                        compositeMonitor.get(Attribute.NAME) + ", it has no defined level");
             }
             return;
         }
@@ -526,7 +521,21 @@ public class MonitoringEngine {
         }
     }
 
-    private void inheritAttributesFromParent(Monitor monitor) {
+    private void inheritGlobals(Monitor monitor) {
+        for (Iterator it = globalAttributes.getAllAttributeHolders().entrySet().iterator(); it.hasNext();) {
+            Map.Entry entry = (Map.Entry) it.next();
+            String key = (String) entry.getKey();
+            AttributeHolder holder = (AttributeHolder)entry.getValue();
+
+            Object value = holder.getValue();
+            AttributeHolder attribute = monitor.set(key, value);
+
+            if (holder.isSerializable()) attribute.serializable();
+            if (holder.isLocked()) attribute.lock();
+        }
+    }
+
+    private void inheritAttributesFromAncestors(Monitor monitor) {
         // Inherit from parent if not set.
         Map attrs = getInheritableAttributes();
 

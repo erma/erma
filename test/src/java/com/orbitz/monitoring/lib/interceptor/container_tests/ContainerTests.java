@@ -27,7 +27,6 @@ public class ContainerTests extends TestCase {
         SimpleService simpleService = (SimpleService) context.getBean("simpleService");
         assertTrue(Proxy.isProxyClass(simpleService.getClass()));
         String s = simpleService.sayHello("Ray");
-        System.out.println(s);
     }
 
     public void testMethodNamePoxyTests() throws Exception {
@@ -35,9 +34,7 @@ public class ContainerTests extends TestCase {
         SimpleService service = (SimpleService) context.getBean("simpleService");
         assertTrue(Proxy.isProxyClass(service.getClass()));
         String s = service.sayHello("Ray");
-        System.out.println(s);
         s = service.sayGoodbye("Ray");
-        System.out.println(s);
     }
 
     public void testAnnotationAutoProxy() throws Exception {
@@ -45,7 +42,6 @@ public class ContainerTests extends TestCase {
         SimpleService simpleService = (SimpleService) context.getBean("simpleService");
         assertTrue(Proxy.isProxyClass(simpleService.getClass()));
         String s = simpleService.sayHello("Ray");
-        System.out.println(s);
     }
 
     public void testBeanNameAutoProxy() throws Exception {
@@ -53,7 +49,6 @@ public class ContainerTests extends TestCase {
         SimpleService simpleService = (SimpleService) context.getBean("simpleService");
         assertTrue(Proxy.isProxyClass(simpleService.getClass()));
         String s = simpleService.sayHello("Ray");
-        System.out.println(s);
     }
 
     public void testAnnotationBasedProxyFactory() throws Exception {
@@ -61,7 +56,6 @@ public class ContainerTests extends TestCase {
         SimpleService simpleService = (SimpleService) context.getBean("simpleService");
         assertTrue(Proxy.isProxyClass(simpleService.getClass()));
         String s = simpleService.sayHello("Ray");
-        System.out.println(s);
     }
 
     private ApplicationContext createContext(String resourceName) throws URISyntaxException {

@@ -217,13 +217,9 @@ public class AttributeDecomposerTest extends TestCase {
 
         ObjectOutputStream oos = new ObjectOutputStream(new ByteArrayOutputStream());
         oos.writeObject(a);
-        System.out.println("Serialized!");
 
         EventMonitor m = new EventMonitor("test");
         m.set("a", _decomposer.decompose(a));
-
-        //assertEquals("a", m.get("a.value"));
-        System.out.println("Decomposed!");
     }
 
     public void testEqualsVsIdentity() throws Exception {
@@ -235,20 +231,9 @@ public class AttributeDecomposerTest extends TestCase {
 
         ObjectOutputStream oos = new ObjectOutputStream(new ByteArrayOutputStream());
         oos.writeObject(a1);
-        System.out.println("Serialized!");
 
         EventMonitor m = new EventMonitor("test");
         m.set("a", _decomposer.decompose(a1));
-
-        /*Set set = m.getAsSet("a.next");
-        Object obj = set.iterator().next();
-        LazyDynaBean bean = (LazyDynaBean) obj;
-
-        assertNotSame(m.get("a"), bean);
-          */
-        //assertEquals("a", m.get("a.value"));
-        //assertEquals("a", bean.get("value"));
-        System.out.println("Decomposed!");
     }
 
     public void testStringBufferSupport() {

@@ -52,7 +52,6 @@ public class ThreadContentionMonitorProcessorTest extends TestCase {
             }
         }
         monitor.done();
-        System.out.println("monitor = " + monitor);
         assertEquals(1, monitor.getAsInt("waitedCount"));
         assertTrue(monitor.getAsLong("waitedTime")>=100);
         assertEquals(0, monitor.getAsInt("blockedCount"));
@@ -84,7 +83,6 @@ public class ThreadContentionMonitorProcessorTest extends TestCase {
         }
         monitor.done();
 
-        System.out.println("monitor = " + monitor);
         assertEquals(0, monitor.getAsInt("waitedCount"));
         assertEquals(0, monitor.getAsLong("waitedTime"));
         assertEquals(1, monitor.getAsInt("blockedCount"));

@@ -1,10 +1,14 @@
 Version 3.3:
- * ERMA-25: ValueMonitor
- * ERMA-21: inheritable strategies for MonitoringEngine
- * Added javadocs
+ * ERMA-4: Add first-class support for resultCode to the ERMA API
  * ERMA-9: Expose renderer in LoggingMonitorProcessor
  * ERMA-11: TransactionMonitorInterceptor omits attributes on thrown exception
+ * ERMA-16: Add an attribute interface to consolidate all common monitor attributes
  * ERMA-18: erma-lib-src.jar built with incorrect fileset
+ * ERMA-21: inheritable strategies for MonitoringEngine
+ * ERMA-25: ValueMonitor
+ * ERMA-26: Tune ValueMonitor for minimal overhead
+ * Added javadocs
+ * Fixed cobertura build target
 
 Version 3.2
  * Added commons-attributes jars

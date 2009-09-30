@@ -11,12 +11,10 @@ public class SimpleServiceImpl implements SimpleService {
 
     @Monitored("HELLO")
     public String sayHello(String name) {
-        System.out.println("SimpleServiceImpl.sayHello");
         return "Hello " + name;
     }
 
     public String sayGoodbye(String name) {
-        System.out.println("SimpleServiceImpl.sayGoodbye");
         return "Goodbye " + name;
     }
 }

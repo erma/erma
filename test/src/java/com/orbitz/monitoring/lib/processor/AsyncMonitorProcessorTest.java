@@ -61,7 +61,6 @@ public class AsyncMonitorProcessorTest extends TestCase {
         List<Monitor> monitorList =  Arrays.asList(monitors);
         boolean checkMonitorCreated = false;
         for(Monitor monitor : monitors) {
-            System.out.println(monitor.getAll());
             if (monitor.get(Monitor.NAME).equals(event.get(Monitor.NAME))) {
               assertEquals(event.get(Monitor.CREATED_AT) , monitor.get(Monitor.CREATED_AT));
               assertEquals(event.get(Monitor.THREAD_ID) , monitor.get(Monitor.THREAD_ID));

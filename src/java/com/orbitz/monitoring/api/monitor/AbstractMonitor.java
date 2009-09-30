@@ -3,6 +3,7 @@ package com.orbitz.monitoring.api.monitor;
 import com.orbitz.monitoring.api.Monitor;
 import com.orbitz.monitoring.api.MonitoringEngine;
 import com.orbitz.monitoring.api.MonitoringLevel;
+import com.orbitz.monitoring.api.Attribute;
 import com.orbitz.monitoring.api.monitor.serializable.SerializableMonitor;
 import org.apache.commons.lang.CharSetUtils;
 import org.apache.log4j.Logger;
@@ -39,6 +40,7 @@ public abstract class AbstractMonitor implements Monitor {
      */
     protected AbstractMonitor() {
         attributes = createAttributeMap();
+        processed = false;
     }
 
     /**
@@ -291,13 +293,11 @@ public abstract class AbstractMonitor implements Monitor {
                 }
             }
         }
-        set(NAME, name);
+        set(Attribute.NAME, name);
 
         setInheritedAttributes(inheritedAttributes);
 
         MonitoringEngine.getInstance().monitorCreated(this);
-
-        processed = false;
     }
 
     /**
