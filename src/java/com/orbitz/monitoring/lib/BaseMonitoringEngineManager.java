@@ -10,9 +10,9 @@ import com.orbitz.monitoring.api.engine.StackBasedInheritableStrategy;
 import com.orbitz.monitoring.api.monitor.EventMonitor;
 import com.orbitz.monitoring.lib.decomposer.AttributeDecomposer;
 import com.orbitz.monitoring.lib.factory.SimpleMonitorProcessorFactory;
-import edu.emory.mathcs.backport.java.util.concurrent.Executors;
-import edu.emory.mathcs.backport.java.util.concurrent.ScheduledExecutorService;
-import edu.emory.mathcs.backport.java.util.concurrent.TimeUnit;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import org.apache.log4j.Logger;
 
 import java.util.Collection;

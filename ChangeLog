@@ -1,3 +1,7 @@
+Version 4.0:
+ * JDK 1.5 minimum required
+ * Gradle build conversion, deps pulled from Maven2 public repository
+
 Version 3.3:
  * ERMA-4: Add first-class support for resultCode to the ERMA API
  * ERMA-9: Expose renderer in LoggingMonitorProcessor

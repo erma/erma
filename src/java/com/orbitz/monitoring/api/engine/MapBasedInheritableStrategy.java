@@ -4,8 +4,8 @@ import com.orbitz.monitoring.api.CompositeMonitor;
 import com.orbitz.monitoring.api.InheritableStrategy;
 import com.orbitz.monitoring.api.Monitor;
 import com.orbitz.monitoring.api.monitor.AttributeHolder;
-import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
-import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import java.util.Collections;
 import java.util.Map;

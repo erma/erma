@@ -8,10 +8,10 @@ import com.orbitz.monitoring.api.MonitoringLevel;
 import com.orbitz.monitoring.api.Attribute;
 import com.orbitz.monitoring.api.monitor.CompositeAttributeHolder;
 import com.orbitz.monitoring.api.monitor.AttributeHolder;
-import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
-import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentMap;
-import edu.emory.mathcs.backport.java.util.concurrent.atomic.AtomicInteger;
-import edu.emory.mathcs.backport.java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 import org.apache.log4j.Logger;
 
 import java.util.HashMap;

@@ -2,7 +2,7 @@ package com.orbitz.monitoring.api.monitor;
 
 import com.orbitz.monitoring.api.AttributeUndefinedException;
 import com.orbitz.monitoring.api.CantCoerceException;
-import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import org.apache.log4j.Logger;
 
 import java.io.Serializable;

@@ -1,0 +1,131 @@
+/*
+ * ERMA Gradle build file.
+ *
+ * To execute build:
+ * $ ./gradlew
+ *
+ * If executing via a pre-installed version of gradle or your IDE, make sure to export GRADLE_OPTS
+ * as defined in this project's gradlew script.
+ */
+
+usePlugin 'java'
+usePlugin 'project-reports'
+
+defaultTasks 'assemble'
+
+def cobSerFile = "${project.buildDir}/cobertura.ser"
+
+configurations {
+    apiConfig
+    libConfig
+    testConfig
+    compile { extendsFrom apiConfig, libConfig, testConfig }
+}
+
+sourceSets {
+    main {
+        java { srcDir 'src/java' }
+    }
+    test {
+        java { srcDir 'test/src/java' }
+        resources { srcDir 'test/src/java' }
+    }
+}
+
+dependencies {
+    /* dependencies for erma-api jar */
+    apiConfig(
+        [group: 'log4j', name: 'log4j', version: '1.2.9'],
+        [group: 'commons-lang', name: 'commons-lang', version: '2.2']
+    )
+    /* dependencies for erma-lib jar */
+    libConfig(
+        [group: 'log4j', name: 'log4j', version: '1.2.9'],
+        [group: 'commons-lang', name: 'commons-lang', version: '2.2'],
+        [group: 'org.springframework', name: 'spring', version: '2.0.6'],
+        [group: 'commons-beanutils', name: 'commons-beanutils', version: '1.7.0'],
+        [group: 'commons-jexl', name: 'commons-jexl', version: '1.0'],
+        [group: 'com.thoughtworks.xstream', name: 'xstream', version: '1.2.2'],
+    )
+    /* dependencies for erma-test jar */
+    testConfig(
+        [group: 'junit', name: 'junit', version: '4.5']
+    )
+    /* dependencies for unit tests */
+    testCompile(
+        [group: 'junitperf', name: 'junitperf', version: '1.8'],
+        [group: 'net.sourceforge.cobertura', name: 'cobertura', version: '1.9.3']
+    )
+}
+
+repositories {
+    mavenCentral()
+}
+
+test {
+    options.systemProperties['net.sourceforge.cobertura.datafile'] = "${cobSerFile}"
+}
+
+/*
+ * Artifact definitions
+ */
+
+['api', 'lib', 'test'].each { artifactType ->
+    task "${artifactType}Jar"(type: Jar, dependsOn: compileJava) {
+        fileSet(dir: sourceSets.main.classesDir) {
+            include("com/orbitz/monitoring/${artifactType}/**/*.class")
+        }
+        appendix = "${artifactType}"
+    }
+
+    task "${artifactType}SrcJar"(type: Jar) {
+        fileSet(dir: 'src/java') {
+            include("com/orbitz/monitoring/${artifactType}/**/*.java")
+        }
+        appendix = "${artifactType}"
+        classifier = 'src'
+    }
+}
+
+artifacts {
+    apiConfig apiJar, apiSrcJar
+    libConfig libJar, libSrcJar
+    testConfig testJar, testSrcJar
+}
+
+/*
+ * Custom tasks
+ */
+
+task idea << {
+    copy {
+       from configurations.testRuntime
+       into "build/ide/libs" 
+    }
+}
+
+task instrument << {
+    ant.taskdef(resource: 'tasks.properties', classpath: configurations.testRuntime.asPath)
+    ant.'cobertura-instrument'(datafile: cobSerFile) {
+        fileset(dir: sourceSets.main.classesDir)
+    }
+}
+
+task testCoverage(dependsOn: [compileJava, instrument, test]) << {
+    def outputdir = "${project.reportsDir}/cobertura"
+
+    ant.taskdef(resource: 'tasks.properties', classpath: configurations.testRuntime.asPath) 
+    ant.'cobertura-report'(
+        destdir: outputdir,
+        format: 'html',
+        srcdir: 'src/java',
+        datafile: cobSerFile)
+
+    println "Test coverage reports available at ${outputdir}/index.html"
+}
+
+task cibuild(dependsOn: [clean, testCoverage, projectReport])
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '0.8'
+}

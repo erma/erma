@@ -11,9 +11,9 @@ import com.orbitz.monitoring.test.MockMonitorProcessor;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedList;
-
-import edu.emory.mathcs.backport.java.util.Collections;
+import java.util.Set;
 
 public class AggregationMonitorProcessorFactoryTest extends TestCase {
 
@@ -26,7 +26,9 @@ public class AggregationMonitorProcessorFactoryTest extends TestCase {
         aggregator = new MockAggregator();
         processor = new MockMonitorProcessor();
         final ProcessGroup[] groups = new ProcessGroup[] {new ProcessGroup(processor)};
-        factory = new AggregationMonitorProcessorFactory(groups, aggregator, Collections.singleton(ValueMonitor.class));
+        Set<Class<? extends Monitor>> clazzes = new HashSet<Class<? extends Monitor>>();
+        clazzes.add(ValueMonitor.class);
+        factory = new AggregationMonitorProcessorFactory(groups, aggregator, clazzes);
     }
 
     public void testLifecycle() {
