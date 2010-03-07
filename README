@@ -3,7 +3,7 @@
 ERMA (Extremely Reusable Monitoring API) is an instrumentation API that has been designed to be applicable for all monitoring needs. The design goal is "to make instrumentation as simple as logging." Lowering the effort needed to add instrumentation will encourage developers to add monitoring code where ever it makes sense.
 
 [wiki](http://erma.wikidot.com/)
-[code](http://github.com/erma-core/erma)
+[code](http://github.com/erma/erma)
 [mail](http://groups.google.com/group/erma-core)
 
 # Build Instructions #
