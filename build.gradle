@@ -46,20 +46,36 @@ dependencies {
         [group: 'commons-beanutils', name: 'commons-beanutils', version: '1.7.0'],
         [group: 'commons-jexl', name: 'commons-jexl', version: '1.0'],
         [group: 'com.thoughtworks.xstream', name: 'xstream', version: '1.2.2'],
+        [group: 'org.mongo', name: 'mongo', version: '2.0-rc0'],
     )
     /* dependencies for erma-test jar */
     testConfig(
-        [group: 'junit', name: 'junit', version: '4.5']
+        [group: 'junit', name: 'junit', version: '4.8.1']
     )
     /* dependencies for unit tests */
     testCompile(
         [group: 'junitperf', name: 'junitperf', version: '1.8'],
-        [group: 'net.sourceforge.cobertura', name: 'cobertura', version: '1.9.3']
+        [group: 'net.sourceforge.cobertura', name: 'cobertura', version: '1.9.3'],
+        [group: 'junit', name: 'junit', version: '4.8.1'],
+        [group: 'org.powermock', name: 'powermock-mockito', version: '1.3.8-full'],
+        [group: 'org.powermock', name: 'mockito-all', version: '1.8.4'],
+        [group: 'org.powermock', name: 'javassist', version: '3.12.0.GA'],
+        [group: 'org.powermock', name: 'objenesis', version: '1.2']
     )
 }
 
 repositories {
     mavenCentral()
+
+    // fetch mongo client from github downloads
+    add(new org.apache.ivy.plugins.resolver.URLResolver()) {
+        name = 'mongo_repo'
+        addArtifactPattern 'http://github.com/mongodb/mongo-java-driver/downloads/[module]-[revision](-[classifier]).[ext]'
+        descriptor = 'optional'
+    }
+
+    // fetch powermock/mockito deps locally
+    flatDir name: 'localRepository', dirs: 'test/lib'
 }
 
 test {

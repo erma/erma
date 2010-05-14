@@ -1,6 +1,7 @@
 Version 4.0:
  * JDK 1.5 minimum required
  * Gradle build conversion, deps pulled from Maven2 public repository
+ * MongoDBMonitorProcessor
 
 Version 3.3:
  * ERMA-4: Add first-class support for resultCode to the ERMA API
