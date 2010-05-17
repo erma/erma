@@ -48,6 +48,8 @@ public class MonitoringEngine {
         monitorLevels = new TreeMap(Collections.reverseOrder());
 
         globalAttributes = new AttributeMap();
+
+        inheritableStrategy = new NoopInheritableStrategy();
     }
 
     public static MonitoringEngine getInstance() {
@@ -660,6 +662,38 @@ public class MonitoringEngine {
 
     private static interface ProcessClosure {
         public void processWithProcessor(Monitor monitor, MonitorProcessor processor);
+    }
+
+    private class NoopInheritableStrategy implements InheritableStrategy {
+        public int clearCurrentThread() {
+            return 0;
+        }
+
+        public void compositeMonitorCompleted(CompositeMonitor monitor) {
+        }
+
+        public void compositeMonitorStarted(CompositeMonitor compositeMonitor) {
+        }
+
+        public CompositeMonitor getCompositeMonitorNamed(String name) throws IllegalArgumentException {
+            return null;
+        }
+
+        public Map getInheritableAttributes() {
+            return new HashMap();
+        }
+
+        public void processMonitorForCompositeMonitor(Monitor monitor) {
+        }
+
+        public void setInheritable(CompositeMonitor monitor, String key, AttributeHolder original) {
+        }
+
+        public void shutdown() {
+        }
+
+        public void startup() {
+        }
     }
 
 }
