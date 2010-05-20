@@ -1,0 +1,42 @@
+/*
+ * ERMA Gradle build file.
+ *
+ * To execute build:
+ * $ ./gradlew
+ *
+ * If executing via a pre-installed version of gradle or your IDE, make sure to export GRADLE_OPTS
+ * as defined in this project's gradlew script.
+ */
+
+// todo : why doesn't this work when set in the gradle.properties for this subproject?
+version = 1.0
+
+dependencies {
+    compile project(':erma-api')
+    compile project(':erma-lib')
+    compile(
+        [group: 'log4j', name: 'log4j', version: '1.2.9'],
+        [group: 'org.mongo', name: 'mongo', version: '2.0-rc0']
+    )
+    /* dependencies for unit tests */
+    testCompile(
+        [group: 'junit', name: 'junit', version: '4.8.1'],
+        [group: 'net.sourceforge.cobertura', name: 'cobertura', version: '1.9.3'],
+        [group: 'org.powermock', name: 'powermock-mockito', version: '1.3.8-full'],
+        [group: 'org.powermock', name: 'mockito-all', version: '1.8.4'],
+        [group: 'org.powermock', name: 'javassist', version: '3.12.0.GA'],
+        [group: 'org.powermock', name: 'objenesis', version: '1.2']
+    )
+}
+
+repositories {
+    // fetch mongo client from github downloads
+    add(new org.apache.ivy.plugins.resolver.URLResolver()) {
+        name = 'mongo_repo'
+        addArtifactPattern 'http://github.com/mongodb/mongo-java-driver/downloads/[module]-[revision](-[classifier]).[ext]'
+        descriptor = 'optional'
+    }
+
+    // fetch powermock/mockito deps locally
+    flatDir name: 'localRepository', dirs: "${project.projectDir}/test/lib"
+}

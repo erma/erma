@@ -14,6 +14,8 @@ ERMA is built with gradle (http://www.gradle.org/).  You can get started quickly
 
 Gradle will automatically be downloaded from the location specified in gradle-wrapper.properties and installed.  You may also run targets from an existing Gradle installation if you choose (in this case substitute gradle for ./gradlew to execute the tasks).
 
+The codebase is divided into multiple subprojects: erma-api, erma-lib and extensions (subprojects in erma-ext).  erma-api contains the basic constructs used to instrument code.  erma-lib contains the objects one would typically spring wire into an application to bootstrap and configure the MonitoringEngine.  erma-ext projects are those that extend ERMA to integrate with other third-party projects.
+
 ## Build Targets ##
 
 list available tasks :
@@ -24,6 +26,6 @@ generate javadocs in build/docs/ :
 
 > `./gradlew javadoc`
 
-run junit tests and generate junit reports in build/reports/tests/ :
+build all source, jars, run junit tests, and generate junit reports in each subproject build/reports/tests/ :
 
-> `./gradlew test`
+> `./gradlew build`

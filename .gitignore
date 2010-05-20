@@ -1,2 +1,7 @@
-target
+.gradle
 reports
+target
+erma-api/build
+erma-lib/build
+erma-ext/erma-mongo-processor/build
+erma.iml
