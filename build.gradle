@@ -1,0 +1,48 @@
+/*
+ * ERMA Gradle build file.
+ *
+ * To execute build:
+ * $ ./gradlew
+ *
+ * If executing via a pre-installed version of gradle or your IDE, make sure to export GRADLE_OPTS
+ * as defined in this project's gradlew script.
+ */  
+
+subprojects {
+    usePlugin 'java'
+    usePlugin 'project-reports'
+
+    defaultTasks 'assemble'
+
+    sourceSets {
+        main {
+            java { srcDir 'src/java' }
+        }
+        test {
+            java { srcDir 'test/src/java' }
+            resources { srcDir 'test/src/java' }
+        }
+    }
+
+    repositories {
+        mavenCentral()
+    }
+
+    // erma-ext/erma-foo-processor sub-project generates jar with basename "erma-foo-processor"
+    def shortProjectName = project.name.split('/')[-1]
+    jar.baseName = shortProjectName
+
+    task srcJar(type: Jar) {
+        from sourceSets.main.java
+        baseName = shortProjectName
+        classifier = 'src'
+    }
+
+    artifacts {
+        archives jar, srcJar
+    }
+
+    task wrapper(type: Wrapper) {
+        gradleVersion = '0.8'
+    }
+}

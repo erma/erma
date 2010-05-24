@@ -1,3 +1,31 @@
-Build instructions:
+# Overview #
 
-This project uses Apache Ant (http://ant.apache.org/) to build.  If you do not already have Ant installed, simply follow the install instructions in the user manual (http://ant.apache.org/manual/install.html#installing).
+ERMA (Extremely Reusable Monitoring API) is an instrumentation API that has been designed to be applicable for all monitoring needs. The design goal is "to make instrumentation as simple as logging." Lowering the effort needed to add instrumentation will encourage developers to add monitoring code where ever it makes sense.
+
+[wiki](http://erma.wikidot.com/)
+[code](http://github.com/erma/erma)
+[mail](http://groups.google.com/group/erma-core)
+
+# Build Instructions #
+
+ERMA is built with gradle (http://www.gradle.org/).  You can get started quickly by using the included gradle wrapper like this:
+
+> `./gradlew`
+
+Gradle will automatically be downloaded from the location specified in gradle-wrapper.properties and installed.  You may also run targets from an existing Gradle installation if you choose (in this case substitute gradle for ./gradlew to execute the tasks).
+
+The codebase is divided into multiple subprojects: erma-api, erma-lib and extensions (subprojects in erma-ext).  erma-api contains the basic constructs used to instrument code.  erma-lib contains the objects one would typically spring wire into an application to bootstrap and configure the MonitoringEngine.  erma-ext projects are those that extend ERMA to integrate with other third-party projects.
+
+## Build Targets ##
+
+list available tasks :
+
+> `./gradlew -t`
+
+generate javadocs in build/docs/ :
+
+> `./gradlew javadoc`
+
+build all source, jars, run junit tests, and generate junit reports in each subproject build/reports/tests/ :
+
+> `./gradlew build`

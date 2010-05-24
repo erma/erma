@@ -1,0 +1,28 @@
+/*
+ * ERMA Gradle build file.
+ *
+ * To execute build:
+ * $ ./gradlew
+ *
+ * If executing via a pre-installed version of gradle or your IDE, make sure to export GRADLE_OPTS
+ * as defined in this project's gradlew script.
+ */
+
+dependencies {
+    /* dependencies for erma-lib jar */
+    compile project(':erma-api')
+    compile(
+        [group: 'log4j', name: 'log4j', version: '1.2.9'],
+        [group: 'commons-lang', name: 'commons-lang', version: '2.2'],
+        [group: 'org.springframework', name: 'spring', version: '2.0.6'],
+        [group: 'commons-beanutils', name: 'commons-beanutils', version: '1.7.0'],
+        [group: 'commons-jexl', name: 'commons-jexl', version: '1.0'],
+        [group: 'com.thoughtworks.xstream', name: 'xstream', version: '1.2.2']
+    )
+    /* dependencies for unit tests */
+    testCompile(
+        [group: 'junitperf', name: 'junitperf', version: '1.8'],
+        [group: 'net.sourceforge.cobertura', name: 'cobertura', version: '1.9.3'],
+        [group: 'junit', name: 'junit', version: '4.8.1']
+    )
+}
