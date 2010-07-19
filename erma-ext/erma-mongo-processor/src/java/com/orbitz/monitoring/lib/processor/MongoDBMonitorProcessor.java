@@ -189,7 +189,6 @@ public class MongoDBMonitorProcessor extends MonitorProcessorAdapter {
             allowedValueClasses = new HashSet<Class>(Arrays.asList(clazzes));
         }
 
-        @Override
         public boolean includeAttribute(String key, Object value) {
             if (value == null) {
                 return true;
@@ -205,7 +204,6 @@ public class MongoDBMonitorProcessor extends MonitorProcessorAdapter {
     }
 
     private class DefaultMongoFactory implements MongoFactory {
-        @Override
         public Mongo getMongo(String host, int port) throws UnknownHostException {
             return new Mongo(host, port);
         }

@@ -9,7 +9,7 @@
  */
 
 // todo : why doesn't this work when set in the gradle.properties for this subproject?
-version = 1.0
+version = 1.1
 
 dependencies {
     compile project(':erma-api')
