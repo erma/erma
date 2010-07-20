@@ -3,6 +3,8 @@ package com.orbitz.monitoring.lib.processor;
 import org.apache.log4j.Logger;
 import com.orbitz.monitoring.api.Monitor;
 import com.orbitz.monitoring.api.monitor.TransactionMonitor;
+import org.springframework.jmx.export.annotation.ManagedAttribute;
+import org.springframework.jmx.export.annotation.ManagedResource;
 
 import java.lang.management.ThreadMXBean;
 import java.lang.management.ManagementFactory;
@@ -20,7 +22,7 @@ import java.lang.management.ThreadInfo;
  * @@org.springframework.jmx.export.metadata.ManagedResource
  * (description="This MonitorProcessor can be dis/enabled.")
  */
-
+@ManagedResource(description="This MonitorProcessor can be dis/enabled.")
 public class ThreadContentionMonitorProcessor
         extends MonitorProcessorAdapter {
 
@@ -61,6 +63,7 @@ public class ThreadContentionMonitorProcessor
      *
      * @return boolean
      */
+    @ManagedAttribute(description="true if this MonitorProcessor is enabled")
     public boolean isEnabled() {
         return enabled;
     }
@@ -68,7 +71,9 @@ public class ThreadContentionMonitorProcessor
     /**
      * @@org.springframework.jmx.export.metadata.ManagedAttribute (description="set to true to enable this MonitorProcessor")
      *
+     * @param enabled boolean enabled status
      */
+    @ManagedAttribute(description="set to true to enable this MonitorProcessor")
     public void setEnabled(boolean enabled) {
         ThreadMXBean tmxbean = ManagementFactory.getThreadMXBean();
         if (tmxbean.isThreadContentionMonitoringSupported()) {

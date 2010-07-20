@@ -9,6 +9,11 @@ import org.apache.commons.jexl.ExpressionFactory;
 import org.apache.commons.jexl.JexlContext;
 import org.apache.commons.jexl.JexlHelper;
 import org.apache.log4j.Logger;
+import org.springframework.jmx.export.annotation.ManagedAttribute;
+import org.springframework.jmx.export.annotation.ManagedOperation;
+import org.springframework.jmx.export.annotation.ManagedOperationParameter;
+import org.springframework.jmx.export.annotation.ManagedOperationParameters;
+import org.springframework.jmx.export.annotation.ManagedResource;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -20,6 +25,7 @@ import java.util.ArrayList;
  * @@org.springframework.jmx.export.metadata.ManagedResource
  * (description="ProcessGroup can be enabled/disabled and MonitoringLevel adjusted")
  */
+@ManagedResource(description="ProcessGroup can be enabled/disabled and MonitoringLevel adjusted")
 public class ProcessGroup {
     private static final Logger log = Logger.getLogger(ProcessGroup.class);
 
@@ -131,6 +137,7 @@ public class ProcessGroup {
      * @@org.springframework.jmx.export.metadata.ManagedAttribute
      * (description="Returns true if this process group is enabled")
      */
+    @ManagedAttribute(description="Returns true if this process group is enabled")
     public boolean isActive() {
         return _active;
     }
@@ -141,6 +148,7 @@ public class ProcessGroup {
      * @@org.springframework.jmx.export.metadata.ManagedOperationParameter
      * (index=0, name="active", description="boolean value for activating the process group")
      */
+    @ManagedAttribute(description="Set to true/false to activate/deactivate the process group")
     public void setActive(boolean active) {
         _active = active;
 
@@ -155,6 +163,7 @@ public class ProcessGroup {
      * @@org.springframework.jmx.export.metadata.ManagedAttribute
      * (description="get the string representation of the monitoring level for this process group")
      */
+    @ManagedAttribute(description="get the string representation of the monitoring level for this process group")
     public String getMonitoringLevel() {
         return _monitoringLevel.toString();
     }
@@ -165,6 +174,9 @@ public class ProcessGroup {
      * @@org.springframework.jmx.export.metadata.ManagedOperationParameter
      * (index=0, name="levelString", description="new MonitoringLevel to apply")
      */
+    @ManagedOperation(description="Set the monitoring level for this process group")
+    @ManagedOperationParameters({
+        @ManagedOperationParameter(name="levelString", description="new MonitoringLevel to apply")})
     public void updateMonitoringLevel(final String levelString) {
         if (! MonitoringLevel.isValidLevelStr(levelString)) {
             throw new IllegalArgumentException("levelString must match an existing MonitoringLevel");

@@ -14,6 +14,11 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import org.apache.log4j.Logger;
+import org.springframework.jmx.export.annotation.ManagedAttribute;
+import org.springframework.jmx.export.annotation.ManagedOperation;
+import org.springframework.jmx.export.annotation.ManagedOperationParameter;
+import org.springframework.jmx.export.annotation.ManagedOperationParameters;
+import org.springframework.jmx.export.annotation.ManagedResource;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -28,6 +33,7 @@ import java.util.Map;
  * @@org.springframework.jmx.export.metadata.ManagedResource
  * (description="Management interface for ERMA MonitoringEngine")
  */
+@ManagedResource(description="Management interface for ERMA MonitoringEngine")
 public class BaseMonitoringEngineManager {
     private static final Logger log = Logger.getLogger(BaseMonitoringEngineManager.class);
 
@@ -177,6 +183,7 @@ public class BaseMonitoringEngineManager {
      * @@org.springframework.jmx.export.metadata.ManagedAttribute
      * (description="Gets a view into monitor level overrides")
      */
+    @ManagedAttribute(description="Gets a view into monitor level overrides")
     public String getOverrideMonitorLevelsListing() {
         return MonitoringEngine.getInstance().getOverrideMonitorLevelsListing();
     }
@@ -195,6 +202,10 @@ public class BaseMonitoringEngineManager {
      * @@org.springframework.jmx.export.metadata.ManagedOperationParameter
      * (index=1, name="levelStr", description="Monitoring level to apply to monitor(s)")
      */
+     @ManagedOperation(description="Sets the monitoring level for the monitor(s)")
+     @ManagedOperationParameters({
+        @ManagedOperationParameter(name="nameStartsWith", description="Apply to all monitor names that start with the given string"),
+        @ManagedOperationParameter(name="levelStr", description="Monitoring level to apply to monitor(s)")})
      public void updateLevelForMonitor(String nameStartsWith, String levelStr) {
         if (nameStartsWith == null) {
             throw new IllegalArgumentException("nameStartsWith cannot be null");
@@ -225,6 +236,10 @@ public class BaseMonitoringEngineManager {
      * @@org.springframework.jmx.export.metadata.ManagedOperationParameter
      * (index=1, name="levelStr", description="Monitoring level to apply to processor")     
      */
+    @ManagedOperation(description="Sets a monitoring level on a MonitorProcessor")
+    @ManagedOperationParameters({
+        @ManagedOperationParameter(name="name", description="processor name as configured in spring bean definition"),
+        @ManagedOperationParameter(name="levelStr", description="Monitoring level to apply to processor")})
     public void addLevelForProcessor(String name, String levelStr) {
         if (name == null) {
             throw new IllegalArgumentException("processor name cannot be null");
@@ -252,6 +267,7 @@ public class BaseMonitoringEngineManager {
      * @@org.springframework.jmx.export.metadata.ManagedAttribute
      * (description="Gets a view into processor level overrides")
      */
+    @ManagedAttribute(description="Gets a view into processor level overrides")
     public String getOverrideProcessorLevelsListing() {
         String returnString = MonitoringEngine.getInstance().getOverrideProcessorLevelsListing();
         return returnString;

@@ -4,6 +4,8 @@ import com.orbitz.monitoring.api.Monitor;
 import com.orbitz.monitoring.api.MonitorProcessor;
 import com.orbitz.monitoring.api.monitor.TransactionMonitor;
 import org.apache.log4j.Logger;
+import org.springframework.jmx.export.annotation.ManagedAttribute;
+import org.springframework.jmx.export.annotation.ManagedResource;
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadMXBean;
@@ -18,7 +20,7 @@ import java.lang.management.ThreadMXBean;
  * @@org.springframework.jmx.export.metadata.ManagedResource
  * (description="This MonitorProcessor can be dis/enabled.")
  */
-
+@ManagedResource(description="This MonitorProcessor can be dis/enabled.")
 public class CPUProfilingMonitorProcessor
         extends MonitorProcessorAdapter {
 
@@ -55,6 +57,7 @@ public class CPUProfilingMonitorProcessor
      *
      * @return boolean
      */
+    @ManagedAttribute(description="true if this feature is enabled")
     public boolean isEnabled() {
         return enabled;
     }
@@ -63,6 +66,7 @@ public class CPUProfilingMonitorProcessor
      * @@org.springframework.jmx.export.metadata.ManagedAttribute (description="set to true to enable this feature")
      *
      */
+    @ManagedAttribute(description="set to true to enable this feature")
     public void setEnabled(boolean enabled) {
         ThreadMXBean tmxbean = ManagementFactory.getThreadMXBean();
         if (tmxbean.isCurrentThreadCpuTimeSupported()) {
