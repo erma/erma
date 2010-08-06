@@ -1,44 +1,50 @@
 package com.orbitz.monitoring.lib.processor;
 
-import com.mongodb.DB;
-import com.mongodb.DBCollection;
-import com.mongodb.DBObject;
-import com.mongodb.Mongo;
-import com.mongodb.MongoException;
-import com.orbitz.monitoring.api.monitor.EventMonitor;
-import com.orbitz.monitoring.api.monitor.TransactionMonitor;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertTrue;
+import static junit.framework.Assert.fail;
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.isA;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.powermock.api.mockito.PowerMockito.mock;
+import static org.powermock.api.mockito.PowerMockito.when;
+
+import java.net.UnknownHostException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
+import junit.framework.AssertionFailedError;
+
+import org.apache.commons.lang.RandomStringUtils;
+import org.apache.commons.lang.math.RandomUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Mockito;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-
-import static junit.framework.Assert.*;
-
-import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.isA;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-
-import static org.powermock.api.mockito.PowerMockito.mock;
-import static org.powermock.api.mockito.PowerMockito.when;
+import com.mongodb.BasicDBObject;
+import com.mongodb.DB;
+import com.mongodb.DBCollection;
+import com.mongodb.DBObject;
+import com.mongodb.Mongo;
+import com.mongodb.MongoException;
+import com.orbitz.monitoring.api.Monitor;
+import com.orbitz.monitoring.api.mappers.MonitorAttributeMapper;
+import com.orbitz.monitoring.api.monitor.EventMonitor;
+import com.orbitz.monitoring.api.monitor.TransactionMonitor;
 
 
 /**
@@ -49,298 +55,256 @@ import static org.powermock.api.mockito.PowerMockito.when;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest( { com.mongodb.DB.class })
-public class MongoDBMonitorProcessorTest {
+public class MongoDBMonitorProcessorTest  {
 
-    private MongoDBMonitorProcessor processor;
-    private DB mockDB;
-    private DBCollection mockCollection;
+	private MongoDBMonitorProcessor processor;
+	private DB mockDB;
+	private DBCollection mockCollection;
 
-    @Before
-    public void setUp() {
-        processor = new MongoDBMonitorProcessor("localhost", 27017, "test");
+	@SuppressWarnings("unchecked")
+	@Before
+	public void setUp() {
+		processor = new MongoDBMonitorProcessor("localhost", 27017, "test");
 
-        final Mongo mockMongo = mock(Mongo.class);
+		final Mongo mockMongo = mock(Mongo.class);
 
-        // must use PowerMock here because DB.getCollection is final
-        mockDB = mock(DB.class);
-        mockCollection = mock(DBCollection.class);
+		// must use PowerMock here because DB.getCollection is final
+		mockDB = mock(DB.class);
+		mockCollection = mock(DBCollection.class);
 
-        when(mockMongo.getDB("test")).thenReturn(mockDB);
-        when(mockDB.getCollection(anyString())).thenReturn(mockCollection);
+		when(mockMongo.getDB("test")).thenReturn(mockDB);
+		when(mockDB.getCollection(anyString())).thenReturn(mockCollection);
 
-        processor.setMongoFactory(new MongoDBMonitorProcessor.MongoFactory() {
-            public Mongo getMongo(String host, int port) throws UnknownHostException {
-                return mockMongo;
-            }
-        });
+		processor.setMongoFactory(new MongoDBMonitorProcessor.MongoFactory() {
+			public Mongo getMongo(String host, int port) throws UnknownHostException {
+				return mockMongo;
+			}
+		});
 
-        processor.setExecutor(new SynchronousExecutor());
-        processor.setFailFastOnStartup(true);
-    }
+		ExecutorService mockExecutor = mock(ExecutorService.class);
 
-    @After
-    public void tearDown() {
-        processor.shutdown();    
-    }
+		Mockito.doAnswer(new Answer() {
 
-    @Test
-    public void testStartupExceptionIgnored() {
-        MongoDBMonitorProcessor mp = new MongoDBMonitorProcessor("localhost", 27017, "test");
+			public Object answer(InvocationOnMock invocation) throws Throwable {
+				Object[] args = invocation.getArguments();
+				Runnable command = (Runnable)args[0];
+				command.run();
 
-        final Mongo mockMongo = mock(Mongo.class);
+				return null;
+			}
+		}).when(mockExecutor).execute((Runnable)anyObject());
 
-        when(mockMongo.getDB("test")).thenThrow(new MongoException("Mongo client exception"));
+		processor.setExecutor(mockExecutor);
+		processor.setFailFastOnStartup(true);
+	}
 
-        mp.setMongoFactory(new MongoDBMonitorProcessor.MongoFactory() {
-            public Mongo getMongo(String host, int port) throws UnknownHostException {
-                return mockMongo;
-            }
-        });
+	@After
+	public void tearDown() {
+		processor.shutdown();
+	}
 
-        // this will result in a test failure if the processor actually tries to process anything
-        // after a failed startup
-        mp.setExecutor(new SynchronousExecutor(true));
+	@Test
+	public void testStartupExceptionIgnored() {
+		MongoDBMonitorProcessor mp = new MongoDBMonitorProcessor("localhost", 27017, "test");
 
-        mp.setFailFastOnStartup(false);
-        mp.startup();
+		final Mongo mockMongo = mock(Mongo.class);
 
-        // monitor will just be ignored
-        mp.process(new EventMonitor("foo"));
-    }
+		when(mockMongo.getDB("test")).thenThrow(new MongoException("Mongo client exception"));
 
-    @Test
-    public void testStartupExceptionRethrown() {
-        MongoDBMonitorProcessor mp = new MongoDBMonitorProcessor("localhost", 27017, "test");
+		mp.setMongoFactory(new MongoDBMonitorProcessor.MongoFactory() {
+			public Mongo getMongo(String host, int port) throws UnknownHostException {
+				return mockMongo;
+			}
+		});
 
-        final Mongo mockMongo = mock(Mongo.class);
+		ExecutorService mockExecutor = mock(ExecutorService.class);
+		Mockito.doThrow(new AssertionFailedError()).when(mockExecutor).execute((Runnable) anyObject());
 
-        when(mockMongo.getDB("test")).thenThrow(new MongoException("Mongo client exception"));
+		// this will result in a test failure if the processor actually tries to process anything
+		// after a failed startup
+		mp.setExecutor(mockExecutor);
+		mp.setFailFastOnStartup(false);
+		mp.startup();
 
-        mp.setMongoFactory(new MongoDBMonitorProcessor.MongoFactory() {
-            public Mongo getMongo(String host, int port) throws UnknownHostException {
-                return mockMongo;
-            }
-        });
+		// monitor will just be ignored
+		mp.process(new EventMonitor("foo"));
+	}
 
-        // this will result in a test failure if the processor actually tries to process anything
-        // after a failed startup
-        mp.setExecutor(new SynchronousExecutor(true));
-
-        mp.setFailFastOnStartup(true);
-
-        try {
-            mp.startup();
-            fail("startup should throw RTE");
-        } catch (RuntimeException e) {
-            // expected            
-        }
-    }
+	@Test
+	public void testStartupExceptionRethrown() {
+		MongoDBMonitorProcessor mp = new MongoDBMonitorProcessor("localhost", 27017, "test");
 
-    @Test
-    public void testNulls() {
-        processor.startup();
-        processor.process(null);
+		final Mongo mockMongo = mock(Mongo.class);
 
-        EventMonitor monitor = new EventMonitor(null);
-        monitor.set("foo", (String)null);
-        processor.process(monitor);
-    }
+		when(mockMongo.getDB("test")).thenThrow(new MongoException("Mongo client exception"));
 
-    @Test
-    public void testProcessSimpleMonitor() {
-        processor.startup();
+		mp.setMongoFactory(new MongoDBMonitorProcessor.MongoFactory() {
+			public Mongo getMongo(String host, int port) throws UnknownHostException {
+				return mockMongo;
+			}
+		});
 
-        processor.process(new EventMonitor("foo"));
+		ExecutorService mockExecutor = mock(ExecutorService.class);
+		Mockito.doThrow(new AssertionFailedError()).when(mockExecutor).execute((Runnable) anyObject());
 
-        verify(mockDB, times(1)).getCollection("foo");
-        verify(mockCollection, times(1)).insert(isA(DBObject.class));
-    }
+		// this will result in a test failure if the processor actually tries to process anything
+		// after a failed startup
+		mp.setExecutor(mockExecutor);
+		mp.setFailFastOnStartup(true);
 
-    @Test
-    public void testProcessMultipleMonitors() {
-        processor.startup();
+		try {
+			mp.startup();
+			fail("startup should throw RTE");
+		} catch (RuntimeException e) {
+			// expected
+		}
+	}
 
-        processor.process(new EventMonitor("foo"));
-        processor.process(new EventMonitor("bar"));
-        processor.process(new TransactionMonitor("baz"));
+	@Test
+	public void testNulls() {
+		processor.startup();
+		processor.process(null);
 
-        verify(mockDB, times(3)).getCollection(anyString());
-        verify(mockCollection, times(3)).insert(isA(DBObject.class));
-    }
+		EventMonitor monitor = new EventMonitor(null);
+		monitor.set("foo", (String)null);
+		processor.process(monitor);
+	}
 
-    @Test
-    public void testAsyncProcess() throws Exception {
-        final int n = 100;
-        CountDownLatch latch = new CountDownLatch(n);
+	@Test
+	public void testProcessSimpleMonitor() {
+		processor.startup();
 
-        processor.setExecutor(new TaskCountingExecutor(4, latch));
-        processor.startup();
+		processor.process(new EventMonitor("foo"));
 
-        for (int i=0; i < n; i++) {
-            processor.process(new EventMonitor("foo"));
-        }
+		verify(mockDB, times(1)).getCollection("foo");
+		verify(mockCollection, times(1)).insert(isA(DBObject.class));
+	}
 
-        latch.await();
+	@Test
+	public void testProcessMultipleMonitors() {
+		processor.startup();
 
-        verify(mockDB, times(n)).getCollection("foo");
-        verify(mockCollection, times(n)).insert(isA(DBObject.class));
-    }
+		processor.process(new EventMonitor("foo"));
+		processor.process(new EventMonitor("bar"));
+		processor.process(new TransactionMonitor("baz"));
 
-    @Test
-    public void testCustomNamespaceProvider() {
-        processor.setAttributeFilter(new MongoDBMonitorProcessor.AttributeFilter() {
-            @Override
-            public boolean includeAttribute(String key, Object value) {
-                return value.toString().startsWith("a");
-            }
-        });
-        processor.startup();
-
-        EventMonitor m = new EventMonitor("aName");
-        m.set("aKey", "aValue");
-        m.set("bKey", "bValue");
-
-        ArgumentCaptor<DBObject> argument = ArgumentCaptor.forClass(DBObject.class);
-
-        processor.process(m);
-
-        verify(mockCollection).insert(argument.capture());
-
-        // BasicDBObject.toString() yields a json rendering of the object
-        String json = argument.getValue().toString();
-        
-        assertTrue(json.contains("aKey"));
-        assertTrue(json.contains("aName"));
-        assertFalse(json.contains("bKey"));
-    }
-
-    @Test
-    public void testDefaultAttributeFilter() {
-        processor.startup();
-        
-        TransactionMonitor tm = new TransactionMonitor("tm");
-
-        tm.set("aKey", "aValue");
-        tm.set("someCount", 100);
-        tm.set("bool", true);
-        tm.set("someFloat", 10.0f);
-        tm.set("someDouble", 20.0d);
-        tm.set("someDate", new Date());
-
-        tm.set("excludeObject", new Object());
-        tm.set("excludeCollection", new ArrayList());
-        tm.set("excludeArray", new String[] {});
-
-        ArgumentCaptor<DBObject> argument = ArgumentCaptor.forClass(DBObject.class);
-
-        processor.process(tm);
-
-        verify(mockCollection).insert(argument.capture());
-
-        // BasicDBObject.toString() yields a json rendering of the object
-        String json = argument.getValue().toString();
-
-        String[] includedKeys = new String[] {"aKey", "someCount", "bool", "someFloat", "someDouble", "someDate"};
-        String[] excludedKeys = new String[] {"excludeObject", "excludeCollection", "excludeArray"};
-
-        for (String k : includedKeys) {
-            assertTrue(json.contains(k));
-        }
-
-        for (String k : excludedKeys) {
-            assertFalse(json.contains(k));
-        }
-    }
-
-    private class TaskCountingExecutor extends ThreadPoolExecutor {
-        private CountDownLatch latch;
-
-        TaskCountingExecutor(int corePoolSize, CountDownLatch latch) {
-            super(corePoolSize, corePoolSize, 0, TimeUnit.SECONDS, new LinkedBlockingQueue());
-            this.latch = latch;
-        }
-
-        @Override
-        protected void afterExecute(Runnable r, Throwable t) {
-            latch.countDown();
-        }
-    }
-
-    private class SynchronousExecutor implements ExecutorService {
-        private boolean failOnRun = false;
-
-        public SynchronousExecutor() {}
-
-        public SynchronousExecutor(boolean failOnRun) {
-            this.failOnRun = failOnRun;
-        }
-
-        @Override
-        public void execute(Runnable command) {
-            if (failOnRun) {
-                fail("Should not be reached");
-            } else {
-                command.run();
-            }
-        }
-
-        @Override
-        public void shutdown() {}
-
-        @Override
-        public List<Runnable> shutdownNow() {
-            return null;
-        }
-
-        @Override
-        public boolean isShutdown() {
-            return false;
-        }
-
-        @Override
-        public boolean isTerminated() {
-            return false;
-        }
-
-        @Override
-        public boolean awaitTermination(long timeout, TimeUnit unit) throws InterruptedException {
-            return false;
-        }
-
-        @Override
-        public <T> Future<T> submit(Callable<T> task) {
-            return null;
-        }
-
-        @Override
-        public <T> Future<T> submit(Runnable task, T result) {
-            return null;
-        }
-
-        @Override
-        public Future<?> submit(Runnable task) {
-            return null;
-        }
-
-        @Override
-        public <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks) throws InterruptedException {
-            return null;
-        }
-
-        @Override
-        public <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks, long timeout, TimeUnit unit) throws InterruptedException {
-            return null;
-        }
-
-        @Override
-        public <T> T invokeAny(Collection<? extends Callable<T>> tasks) throws InterruptedException, ExecutionException {
-            return null;
-        }
-
-        @Override
-        public <T> T invokeAny(Collection<? extends Callable<T>> tasks, long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
-            return null;
-        }
-    }
+		verify(mockDB, times(3)).getCollection(anyString());
+		verify(mockCollection, times(3)).insert(isA(DBObject.class));
+	}
 
+	@Test
+	public void testAsyncProcess() throws Exception {
+		final int n = 100;
+		CountDownLatch latch = new CountDownLatch(n);
+
+		processor.setExecutor(new TaskCountingExecutor(4, latch));
+		processor.startup();
+
+		for (int i=0; i < n; i++) {
+			processor.process(new EventMonitor("foo"));
+		}
+
+		latch.await();
+
+		verify(mockDB, times(n)).getCollection("foo");
+		verify(mockCollection, times(n)).insert(isA(DBObject.class));
+	}
+
+	@Test
+	public void testCustomNamespaceProvider() {
+		processor.startup();
+
+		EventMonitor m = new EventMonitor("aName");
+		m.set("aKey", "aValue");
+		m.set("bKey", "bValue");
+
+		ArgumentCaptor<DBObject> argument = ArgumentCaptor.forClass(DBObject.class);
+
+		processor.process(m);
+
+		verify(mockCollection).insert(argument.capture());
+
+		// BasicDBObject.toString() yields a json rendering of the object
+		String json = argument.getValue().toString();
+
+		assertTrue(json.contains("aKey"));
+		assertTrue(json.contains("aName"));
+		assertTrue(json.contains("bKey"));
+	}
+
+	@Test
+	public void testAttributeMapper()
+	throws Exception
+	{
+		processor.startup();
+		processor.setMapper(new MonitorAttributeMapper() {
+
+			public Map<String, Object> map(Monitor k) {
+				ErmaComplexObject o     = (ErmaComplexObject) k.get("foo");
+				Map<String, Object> map = new HashMap<String, Object>();
+
+				map.put("the_id", o.getId());
+				map.put("the_name", o.getName());
+
+				return map;
+			}
+		});
+
+		ErmaComplexObject foo = ErmaComplexObject.newRandomInstance();
+		EventMonitor monitor  = new EventMonitor(null);
+
+		monitor.set("foo", foo);
+
+		ArgumentCaptor<DBObject> argument = ArgumentCaptor.forClass(DBObject.class);
+
+		processor.process(monitor);
+
+		verify(mockCollection).insert(argument.capture());
+
+		BasicDBObject dbObject = (BasicDBObject)argument.getValue();
+
+		assertEquals("the_id", foo.getId(), dbObject.getLong("the_id"));
+		assertEquals("the_name", foo.getName(), dbObject.get("the_name"));
+
+	}
+
+	public static class ErmaComplexObject {
+		private int id;
+		private String name;
+		public static ErmaComplexObject newRandomInstance() {
+			ErmaComplexObject obj = new ErmaComplexObject();
+
+			obj.id   = RandomUtils.nextInt();
+			obj.name = RandomStringUtils.randomAlphabetic(10);
+
+			return obj;
+		}
+		public int getId() {
+			return id;
+		}
+		public void setId(int id) {
+			this.id = id;
+		}
+		public String getName() {
+			return name;
+		}
+		public void setName(String name) {
+			this.name = name;
+		}
+	}
+
+
+	private class TaskCountingExecutor extends ThreadPoolExecutor {
+		private CountDownLatch latch;
+
+		TaskCountingExecutor(int corePoolSize, CountDownLatch latch) {
+			super(corePoolSize, corePoolSize, 0, TimeUnit.SECONDS, new LinkedBlockingQueue());
+			this.latch = latch;
+		}
+
+		@Override
+		protected void afterExecute(Runnable r, Throwable t) {
+			latch.countDown();
+		}
+	}
 }

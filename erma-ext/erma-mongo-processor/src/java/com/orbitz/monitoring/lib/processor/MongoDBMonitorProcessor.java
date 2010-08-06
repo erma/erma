@@ -1,5 +1,15 @@
 package com.orbitz.monitoring.lib.processor;
 
+import java.net.UnknownHostException;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.RejectedExecutionHandler;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
+import org.apache.log4j.Logger;
+
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
@@ -8,20 +18,8 @@ import com.mongodb.Mongo;
 import com.mongodb.MongoException;
 import com.orbitz.monitoring.api.Attribute;
 import com.orbitz.monitoring.api.Monitor;
-import org.apache.log4j.Logger;
-
-import java.net.UnknownHostException;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.RejectedExecutionHandler;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import com.orbitz.monitoring.api.mappers.MonitorAttributeMapper;
+import com.orbitz.monitoring.lib.mappers.MonitorAttributeMapperImpl;
 
 /**
  * Uses the mongo-java-driver to persist ERMA monitors to MongoDB
@@ -41,13 +39,12 @@ public class MongoDBMonitorProcessor extends MonitorProcessorAdapter {
     private ExecutorService executor;
     private boolean initialized = false;
 
+    private MonitorAttributeMapper mapper;
     private Mongo mongo;
     private DB db;
 
     /* maps monitors instances into MongoDB collections */
     private NamespaceProvider namespaceProvider;
-    /* used to filter the attribute set on each monitor before inserting to db */
-    private AttributeFilter attributeFilter;
     /* used to construct Mongo db client */
     private MongoFactory mongoFactory;
 
@@ -76,8 +73,8 @@ public class MongoDBMonitorProcessor extends MonitorProcessorAdapter {
         executor.execute(new Runnable() {
             public void run() {
                 try {
-                    DBObject dbObject = toDBObject(monitor);
-                    String ns = namespaceProvider.getNamespaceFor(monitor);
+                    DBObject dbObject = new BasicDBObject(mapper.map(monitor));
+                    String ns         = namespaceProvider.getNamespaceFor(monitor);
 
                     DBCollection collection = db.getCollection(ns);
                     collection.insert(dbObject);
@@ -99,12 +96,6 @@ public class MongoDBMonitorProcessor extends MonitorProcessorAdapter {
             logger.debug("Using custom NamespaceProvider : " + namespaceProvider.getClass());
         }
 
-        if (attributeFilter == null) {
-            attributeFilter = new DefaultAttributeFilter();
-        } else {
-            logger.debug("Using custom AttributeFilter : " + attributeFilter.getClass());
-        }
-
         if (executor == null) {
             executor = createThreadPoolExecutor();
         } else {
@@ -115,12 +106,16 @@ public class MongoDBMonitorProcessor extends MonitorProcessorAdapter {
             mongoFactory = new DefaultMongoFactory();
         }
 
+        if (mapper == null) {
+            mapper = new MonitorAttributeMapperImpl(null);
+        }
+
         try {
             mongo = mongoFactory.getMongo(host, port);
             db = mongo.getDB(database);
 
             initialized = true;
-            
+
         } catch (UnknownHostException e) {
             handleStartupException(e);
         } catch (RuntimeException e) {
@@ -130,7 +125,7 @@ public class MongoDBMonitorProcessor extends MonitorProcessorAdapter {
 
     @Override
     public void shutdown() {
-        executor.shutdown();        
+        executor.shutdown();
     }
 
     public void setBufferSize(int bufferSize) {
@@ -147,10 +142,6 @@ public class MongoDBMonitorProcessor extends MonitorProcessorAdapter {
 
     public void setNamespaceProvider(NamespaceProvider namespaceProvider) {
         this.namespaceProvider = namespaceProvider;
-    }
-
-    public void setAttributeFilter(AttributeFilter attributeFilter) {
-        this.attributeFilter = attributeFilter;
     }
 
     public void setMongoFactory(MongoFactory mongoFactory) {
@@ -181,28 +172,6 @@ public class MongoDBMonitorProcessor extends MonitorProcessorAdapter {
         }
     }
 
-    private class DefaultAttributeFilter implements AttributeFilter {
-        Set<Class> allowedValueClasses = new HashSet<Class>();
-
-        public DefaultAttributeFilter() {
-            Class[] clazzes = new Class[] { String.class, Boolean.class, Date.class };
-            allowedValueClasses = new HashSet<Class>(Arrays.asList(clazzes));
-        }
-
-        public boolean includeAttribute(String key, Object value) {
-            if (value == null) {
-                return true;
-            }
-
-            Class clazz = value.getClass();
-            if (Number.class.isAssignableFrom(clazz)) {
-                return true;
-            }
-
-            return allowedValueClasses.contains(clazz);
-        }
-    }
-
     private class DefaultMongoFactory implements MongoFactory {
         public Mongo getMongo(String host, int port) throws UnknownHostException {
             return new Mongo(host, port);
@@ -222,23 +191,6 @@ public class MongoDBMonitorProcessor extends MonitorProcessorAdapter {
             logger.warn("Failed to initialize Mongo client, processor disabled, " +
                     "application and MonitoringEngine unaffected.", e);
         }
-    }
-    
-    private DBObject toDBObject(Monitor monitor) {
-        BasicDBObject dbObject = new BasicDBObject();
-        Map allAttributes = monitor.getAll();
-
-        for (Object o : allAttributes.entrySet()) {
-            Map.Entry attr = (Map.Entry) o;
-            String key = (String) attr.getKey();
-            Object value = attr.getValue();
-
-            if (attributeFilter.includeAttribute(key, value)) {
-                dbObject.put(key, value);
-            }
-        }
-
-        return dbObject;
     }
 
     private ThreadPoolExecutor createThreadPoolExecutor() {
@@ -271,6 +223,10 @@ public class MongoDBMonitorProcessor extends MonitorProcessorAdapter {
         // create a thread pool of size 1 with a bounded buffer
         return new ThreadPoolExecutor(1, 1, 0, TimeUnit.SECONDS, enqueueBuffer,
                 rejectedExecutionHandler);
+    }
+
+    public void setMapper(MonitorAttributeMapper mapper) {
+        this.mapper = mapper;
     }
 
 }
