@@ -45,6 +45,8 @@ public class MongoDBMonitorProcessor extends MonitorProcessorAdapter {
 
     /* maps monitors instances into MongoDB collections */
     private NamespaceProvider namespaceProvider;
+    /* defines monitor sampling logic */
+    private MonitorSampler sampler;
     /* used to construct Mongo db client */
     private MongoFactory mongoFactory;
 
@@ -67,6 +69,9 @@ public class MongoDBMonitorProcessor extends MonitorProcessorAdapter {
     public void process(final Monitor monitor) {
         if (! initialized) return;
         if (monitor == null) return;
+
+        // sample monitors
+        if (! sampler.accept(monitor)) return;
 
         // keep all the work in the background thread(s) so as not to add to latency
         // of the business txn executing in the calling thread
@@ -108,6 +113,14 @@ public class MongoDBMonitorProcessor extends MonitorProcessorAdapter {
 
         if (mapper == null) {
             mapper = new MonitorAttributeMapperImpl(null);
+        }
+
+        if (sampler == null) {
+            sampler = new MonitorSampler() {
+                public boolean accept(Monitor monitor) {
+                    return true;
+                }
+            };
         }
 
         try {
@@ -152,10 +165,6 @@ public class MongoDBMonitorProcessor extends MonitorProcessorAdapter {
 
     public interface NamespaceProvider {
         String getNamespaceFor(Monitor monitor);
-    }
-
-    public interface AttributeFilter {
-        boolean includeAttribute(String key, Object value);
     }
 
     interface MongoFactory {
@@ -229,4 +238,7 @@ public class MongoDBMonitorProcessor extends MonitorProcessorAdapter {
         this.mapper = mapper;
     }
 
+    public void setSampler(MonitorSampler sampler) {
+        this.sampler = sampler;
+    }
 }

@@ -1,9 +1,12 @@
 package com.orbitz.monitoring.lib.mappers;
 
-import static junit.framework.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import com.orbitz.monitoring.api.mappers.MonitorAttributeMapper;
+import com.orbitz.monitoring.api.mappers.ObjectAttributeMapper;
+import com.orbitz.monitoring.api.monitor.EventMonitor;
+import org.apache.commons.lang.RandomStringUtils;
+import org.apache.commons.lang.math.RandomUtils;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -13,16 +16,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.RandomStringUtils;
-import org.apache.commons.lang.math.RandomUtils;
-import org.junit.Before;
-import org.junit.Test;
-
-import com.orbitz.monitoring.api.mappers.MonitorAttributeMapper;
-import com.orbitz.monitoring.api.mappers.ObjectAttributeMapper;
-import com.orbitz.monitoring.api.monitor.EventMonitor;
-import com.orbitz.monitoring.lib.mappers.IdentityAttributeMapperImpl;
-import com.orbitz.monitoring.lib.mappers.MonitorAttributeMapperImpl;
+import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class MonitorAttributeMapperImplTest {
 
