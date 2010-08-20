@@ -43,6 +43,10 @@ public class ProcessGroup {
         _processors = processors;
     }
 
+    public ProcessGroup(List<MonitorProcessor> processors) {
+        _processors = processors.toArray(new MonitorProcessor[processors.size()]);
+    }
+
     /**
      * Returns the list of processors within this ProcessGroup that apply for the
      * MonitoringLevel of the given monitor.
