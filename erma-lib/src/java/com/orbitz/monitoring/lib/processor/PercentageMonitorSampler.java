@@ -1,13 +1,13 @@
 package com.orbitz.monitoring.lib.processor;
 
-import com.orbitz.monitoring.api.Monitor;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
 import org.apache.log4j.Logger;
 import org.springframework.jmx.export.annotation.ManagedAttribute;
 import org.springframework.jmx.export.annotation.ManagedResource;
 
-import java.text.NumberFormat;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
+import com.orbitz.monitoring.api.Monitor;
 
 /**
  * MonitorSampler that accepts a defined percentage of all monitors
@@ -70,7 +70,7 @@ public class PercentageMonitorSampler implements MonitorSampler {
      *
      * @param samplePercentage sample rate as percentage
      */
-    @ManagedAttribute(description="Set the sampling rate.  For e.g. a value of \"33.3\" will result in sampling every 3rd monitor")
+    @ManagedAttribute(description="Set the sampling rate.  For e.g. a value of 33.3 will result in sampling every 3rd monitor")
     public void setSamplePercentage(float samplePercentage) {
         float previousRate = getSamplePercentage();
         setSamplePercentageInternal(samplePercentage);
@@ -85,7 +85,7 @@ public class PercentageMonitorSampler implements MonitorSampler {
     private void setSamplePercentageInternal(float samplePercentage) {
         validateSamplePercentage(samplePercentage);
 
-        sampleRateLock.lock();        
+        sampleRateLock.lock();
         try {
             this.sampleRate = samplePercentage / 100.0f;
             this.populationCount = 0;

@@ -7,8 +7,11 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.log4j.Logger;
+import org.springframework.jmx.export.annotation.ManagedAttribute;
+import org.springframework.jmx.export.annotation.ManagedResource;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
@@ -26,6 +29,7 @@ import com.orbitz.monitoring.lib.mappers.MonitorAttributeMapperImpl;
  *
  * @author Greg Opaczewski
  */
+@ManagedResource(description="MongoDBMonitorProcessor MBean")
 public class MongoDBMonitorProcessor extends MonitorProcessorAdapter {
     private static final Logger logger = Logger.getLogger(MongoDBMonitorProcessor.class.getName());
 
@@ -36,7 +40,12 @@ public class MongoDBMonitorProcessor extends MonitorProcessorAdapter {
     private boolean failFastOnStartup = false;
     private int bufferSize = 1024;
 
+    private AtomicLong totalRejected = new AtomicLong(0);
+    private AtomicLong totalReceived = new AtomicLong(0);
+    private AtomicLong totalSampled  = new AtomicLong(0);
+
     private ExecutorService executor;
+    private BlockingQueue enqueueBuffer;
     private boolean initialized = false;
 
     private MonitorAttributeMapper mapper;
@@ -68,10 +77,15 @@ public class MongoDBMonitorProcessor extends MonitorProcessorAdapter {
     @Override
     public void process(final Monitor monitor) {
         if (! initialized) return;
+
+        incrementCounter(totalReceived);
+
         if (monitor == null) return;
 
         // sample monitors
         if (! sampler.accept(monitor)) return;
+
+        incrementCounter(totalSampled);
 
         // keep all the work in the background thread(s) so as not to add to latency
         // of the business txn executing in the calling thread
@@ -101,11 +115,7 @@ public class MongoDBMonitorProcessor extends MonitorProcessorAdapter {
             logger.debug("Using custom NamespaceProvider : " + namespaceProvider.getClass());
         }
 
-        if (executor == null) {
-            executor = createThreadPoolExecutor();
-        } else {
-            logger.debug("Using custom executor : " + executor.getClass());
-        }
+        executor = createThreadPoolExecutor();
 
         if (mongoFactory == null) {
             mongoFactory = new DefaultMongoFactory();
@@ -147,10 +157,6 @@ public class MongoDBMonitorProcessor extends MonitorProcessorAdapter {
 
     public void setFailFastOnStartup(boolean failFastOnStartup) {
         this.failFastOnStartup = failFastOnStartup;
-    }
-
-    public void setExecutor(ExecutorService executor) {
-        this.executor = executor;
     }
 
     public void setNamespaceProvider(NamespaceProvider namespaceProvider) {
@@ -204,7 +210,7 @@ public class MongoDBMonitorProcessor extends MonitorProcessorAdapter {
 
     private ThreadPoolExecutor createThreadPoolExecutor() {
         // create bounded buffer of size _enqueueBufferSize
-        BlockingQueue enqueueBuffer = new ArrayBlockingQueue(bufferSize);
+        enqueueBuffer = new ArrayBlockingQueue(bufferSize);
 
         // create policy for full buffer scenario - log a warning msg
         RejectedExecutionHandler rejectedExecutionHandler = new RejectedExecutionHandler() {
@@ -212,7 +218,8 @@ public class MongoDBMonitorProcessor extends MonitorProcessorAdapter {
             private long lastLogEventTime = 0;
 
             public void rejectedExecution(Runnable runnable,
-                                          ThreadPoolExecutor threadPoolExecutor) {
+                    ThreadPoolExecutor threadPoolExecutor) {
+                incrementCounter(totalRejected);
                 boolean shouldLog = false;
                 long currentTime = System.currentTimeMillis();
 
@@ -234,11 +241,54 @@ public class MongoDBMonitorProcessor extends MonitorProcessorAdapter {
                 rejectedExecutionHandler);
     }
 
+
+
     public void setMapper(MonitorAttributeMapper mapper) {
         this.mapper = mapper;
     }
 
     public void setSampler(MonitorSampler sampler) {
         this.sampler = sampler;
+    }
+
+    @ManagedAttribute(description="Get the maximum monitor queue size")
+    public int getBufferSize() {
+        return bufferSize;
+    }
+
+    @ManagedAttribute(description="Get the current monitor queue size")
+    public int getMonitorQueueSize() {
+        return enqueueBuffer.size();
+    }
+
+    @ManagedAttribute(description="Get total sampled monitors")
+    public long getTotalSampled() {
+        return totalSampled.get();
+    }
+
+    @ManagedAttribute(description="Get total received monitors")
+    public long getTotalReceived() {
+        return totalReceived.get();
+    }
+
+
+    @ManagedAttribute(description="Get total rejected monitors")
+    public long getTotalRejected() {
+        return totalRejected.get();
+    }
+
+    /**
+     * Implementing an atomic increment that prevents Long overflow
+     * @param atomicLong
+     */
+    private void incrementCounter(AtomicLong atomicLong) {
+        long currentValue;
+        long newValue;
+
+        do {
+            currentValue = atomicLong.get();
+            newValue = (currentValue == Long.MAX_VALUE) ? 1 : (currentValue + 1);
+
+        } while (! atomicLong.compareAndSet(currentValue, newValue) );
     }
 }

@@ -9,7 +9,7 @@
  */
 
 // todo : why doesn't this work when set in the gradle.properties for this subproject?
-version = '1.3'
+version = '1.4'
 
 dependencies {
     compile project(':erma-api')
@@ -18,7 +18,8 @@ dependencies {
         [group: 'log4j', name: 'log4j', version: '1.2.9'],
         [group: 'org.mongo', name: 'mongo', version: '2.0'],
         [group: 'commons-collections', name: 'commons-collections', version: '3.2.1'],
-        [group: 'commons-lang', name: 'commons-lang', version: '2.2']
+        [group: 'commons-lang', name: 'commons-lang', version: '2.2'],
+        [group: 'org.springframework', name: 'spring', version: '2.0.6']
     )
     /* dependencies for unit tests */
     testCompile(
