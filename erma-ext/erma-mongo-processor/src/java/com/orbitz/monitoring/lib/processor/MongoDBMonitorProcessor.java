@@ -101,7 +101,18 @@ public class MongoDBMonitorProcessor extends MonitorProcessorAdapter {
                 } catch (MongoException e) {
                     logger.debug("Mongo client threw exception while attempting to insert : " + monitor, e);
                 } catch (Throwable t) {
+                  boolean logged = false;
+                  StackTraceElement[] stackTrace = t.getStackTrace();
+                  if (stackTrace != null && stackTrace.length > 0) {
+                    StackTraceElement top = stackTrace[0];
+                    if (top.getClassName() != null && top.getClassName().equals("org.bson.BSONEncoder")) {
+                      logger.info(String.format("Encoder exception caught: %s", monitor), t);
+                      logged = true;
+                    }
+                  }
+                  if (!logged) {
                     logger.debug("Caught throwable processing : + " + monitor, t);
+                  }
                 }
             }
         });
