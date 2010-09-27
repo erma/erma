@@ -107,7 +107,7 @@ public class MongoDBMonitorProcessorTest  {
 
         final RuntimeException exception = new RuntimeException();
         exception.setStackTrace(new StackTraceElement[] {
-            new StackTraceElement("org.bson.BSONEncoder", "putNumber", "BSONEncoder.java", 269),n
+            new StackTraceElement("org.bson.BSONEncoder", "putNumber", "BSONEncoder.java", 269),
           });
 
         final MonitorSampler sampler = new PercentageMonitorSampler(100);
