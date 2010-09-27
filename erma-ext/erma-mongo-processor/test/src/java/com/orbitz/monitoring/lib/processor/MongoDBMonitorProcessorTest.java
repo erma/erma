@@ -51,6 +51,7 @@ import com.orbitz.monitoring.api.mappers.MonitorAttributeMapper;
 import com.orbitz.monitoring.api.monitor.EventMonitor;
 import com.orbitz.monitoring.api.monitor.TransactionMonitor;
 import com.orbitz.monitoring.lib.processor.MongoDBMonitorProcessor.NamespaceProvider;
+import java.math.BigDecimal;
 
 
 /**
@@ -96,6 +97,32 @@ public class MongoDBMonitorProcessorTest  {
     public void tearDown() {
         mongoProcessor.shutdown();
     }
+
+    @Test
+    public void testEncodingExceptionLogging()
+    throws Exception {
+        final EventMonitor monitor = new EventMonitor("fooMonitor");
+
+        monitor.set("foo", "bar");
+
+        final RuntimeException exception = new RuntimeException();
+        exception.setStackTrace(new StackTraceElement[] {
+            new StackTraceElement("org.bson.BSONEncoder", "putNumber", "BSONEncoder.java", 269),n
+          });
+
+        final MonitorSampler sampler = new PercentageMonitorSampler(100);
+        final MonitorAttributeMapper bigDecimalMapper = new MonitorAttributeMapper() {
+            public Map<String, Object> map(Monitor monitor) {
+              throw exception;
+            }
+          };
+
+        mongoProcessor.setMapper(bigDecimalMapper);
+        mongoProcessor.startup();
+        mongoProcessor.setSampler(sampler);
+        mongoProcessor.process(monitor);
+    }
+
 
     @Test
     public void testMongoProcessorMongoExceptionHandling()
