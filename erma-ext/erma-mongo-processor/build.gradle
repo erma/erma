@@ -16,7 +16,7 @@ dependencies {
     compile project(':erma-lib')
     compile(
         [group: 'log4j', name: 'log4j', version: '1.2.9'],
-        [group: 'org.mongo', name: 'mongo', version: '2.0'],
+        [group: 'org.mongodb', name: 'mongo-java-driver', version: '2.0'],
         [group: 'commons-collections', name: 'commons-collections', version: '3.2.1'],
         [group: 'commons-lang', name: 'commons-lang', version: '2.2'],
         [group: 'org.springframework', name: 'spring', version: '2.0.6']
