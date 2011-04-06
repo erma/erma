@@ -10,7 +10,9 @@ import org.mockito.Mockito;
 /**
  * Test case to ensure that {@link NoOpInheritableStrategy} provides the full
  * {@link InheritableStrategy} interface without throwing exceptions or interacting with
- * {@link Monitor} objects.
+ * {@link Monitor} objects.<br />
+ * Created: Apr 6, 2011
+ * @author John VanDerpol
  */
 public class NoOpInheritableStrategyTest extends TestCase {
     private CompositeMonitor monitor;
