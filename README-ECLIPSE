@@ -1,0 +1,14 @@
+---------------------------------
+ Setting up your Eclipse project
+---------------------------------
+
+Current for Eclipse 3.6:
+
+1. Create a variable called LOCAL_REPOSITORY pointing to the place where Gradle is storing your
+   cached jars
+  1. Window -> Preferences
+  2. Java -> Build Path -> Classpath Variables
+  3. New...
+  4. Name: GRADLE_REPOSITORY
+  5. Path: Usually ~/.gradle/cache or ~/.something
+  6. OK
