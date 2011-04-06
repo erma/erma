@@ -11,7 +11,8 @@ import java.util.Map;
  * A strategy that doesn't provide any inheritance. This should be used to improve running time and
  * reduce memory usage when inheritance isn't needed.<br />
  * Created Apr 6, 2011
- * @author John VanDerpol
+ * @author cgarvey
+ * 
  */
 public class NoOpInheritableStrategy implements InheritableStrategy {
     
