@@ -22,7 +22,8 @@ dependencies {
         [group: 'junitperf', name: 'junitperf', version: '1.8'],
         [group: 'net.sourceforge.cobertura', name: 'cobertura', version: '1.9.3'],
         [group: 'junit', name: 'junit', version: '4.8.1'],
-        [group: 'commons-beanutils', name: 'commons-beanutils', version: '1.7.0']
+        [group: 'commons-beanutils', name: 'commons-beanutils', version: '1.7.0'],
+        [group: 'org.mockito', name: 'mockito-all', version: '1.8.1']
     )
 }
 
