@@ -1,3 +1,8 @@
+Version 4.4.1:
+ * Added NoOpInheritableStrategy
+ * Fixed the build
+ * Removed locally stored Powermock to use the version from MavenCentral
+
 Version 4.1:
  * Added Spring JMX annotations to erma-lib mbeans
 
