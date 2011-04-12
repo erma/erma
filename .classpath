@@ -16,7 +16,6 @@
 	<classpathentry kind="var" path="GRADLE_REPOSITORY/com.thoughtworks.xstream/xstream/jars/xstream-1.2.2.jar"/>
 	<classpathentry kind="var" path="GRADLE_REPOSITORY/org.mongodb/mongo-java-driver/jars/mongo-java-driver-2.0.jar"/>
 	<classpathentry kind="var" path="GRADLE_REPOSITORY/commons-collections/commons-collections/jars/commons-collections-3.2.1.jar"/>
-	<classpathentry kind="var" path="GRADLE_REPOSITORY/junitperf/junitperf/jars/junitperf-1.8.jar"/>
 	<classpathentry kind="var" path="GRADLE_REPOSITORY/org.powermock/powermock-api-mockito/jars/powermock-api-mockito-1.4.8.jar"/>
 	<classpathentry kind="var" path="GRADLE_REPOSITORY/org.mockito/mockito-all/jars/mockito-all-1.8.5.jar"/>
 	<classpathentry kind="var" path="GRADLE_REPOSITORY/org.powermock/powermock-core/jars/powermock-core-1.4.8.jar"/>

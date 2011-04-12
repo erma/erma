@@ -21,7 +21,6 @@ dependencies {
     )
     /* dependencies for unit tests */
     testCompile(
-        [group: 'junitperf', name: 'junitperf', version: '1.8'],
         [group: 'net.sourceforge.cobertura', name: 'cobertura', version: '1.9.3'],
         [group: 'junit', name: 'junit', version: '4.8.1']
     )
