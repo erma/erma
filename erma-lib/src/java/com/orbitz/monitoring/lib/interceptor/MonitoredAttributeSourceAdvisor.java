@@ -1,49 +1,76 @@
 package com.orbitz.monitoring.lib.interceptor;
 
-import org.apache.log4j.Logger;
+import com.orbitz.monitoring.api.annotation.Monitored;
+import java.lang.reflect.Method;
 import org.springframework.aop.ClassFilter;
 import org.springframework.aop.support.StaticMethodMatcherPointcutAdvisor;
 
-import java.lang.reflect.Method;
-
 /**
+ * Provides support for method interception in Spring
  * @author Ray Krueger
  */
 public class MonitoredAttributeSourceAdvisor extends StaticMethodMatcherPointcutAdvisor {
-
-    private static final Logger log = Logger.getLogger(MonitoredAttributeSourceAdvisor.class);
+    private static final long serialVersionUID = 1L;
+    
+    private final TransactionMonitorInterceptor interceptor;
     private final MonitoredAttributeSource monitoredAttributeSource;
-
-    public MonitoredAttributeSourceAdvisor(MonitoredAttributeSource monitoredAttributeSource) {
+    
+    /**
+     * Creates a new monitor pointcut advisor that ignores {@link Object} methods
+     * @param monitoredAttributeSource provides access to {@link MonitoredAttribute monitored
+     *        attributes} for a {@link TransactionMonitorInterceptor}
+     */
+    public MonitoredAttributeSourceAdvisor(final MonitoredAttributeSource monitoredAttributeSource) {
         this(new TransactionMonitorInterceptor(monitoredAttributeSource));
     }
-
-    public MonitoredAttributeSourceAdvisor(TransactionMonitorInterceptor interceptor) {
-        setAdvice(interceptor);
+    
+    /**
+     * Creates a new monitor pointcut advisor that ignores {@link Object} methods<br />
+     * TODO: Version 5: Remove this constructor or reduce its visibility to default
+     * @deprecated Use
+     *             {@link MonitoredAttributeSourceAdvisor#MonitoredAttributeSourceAdvisor(MonitoredAttributeSource)}
+     *             instead
+     * @param interceptor the interceptor to apply to {@link Monitored} annotated methods
+     */
+    @Deprecated
+    public MonitoredAttributeSourceAdvisor(final TransactionMonitorInterceptor interceptor) {
+        this.interceptor = interceptor;
+        setAdvice(this.interceptor);
         this.monitoredAttributeSource = interceptor.getMonitoredAttributeSource();
-
-        //Exclude java.lang.Object methods by default
         setClassFilter(new ClassFilter() {
-            public boolean matches(Class clazz) {
+            @SuppressWarnings({"rawtypes", "unchecked"})
+            public boolean matches(final Class clazz) {
                 return !clazz.isAssignableFrom(Object.class);
             }
         });
     }
-
-    public boolean matches(Method method, Class targetClassCandidate) {
-
-        Class targetClass = (targetClassCandidate != null) ? targetClassCandidate : method.getDeclaringClass();
-
-        boolean match = getClassFilter().matches(targetClass)
-                && monitoredAttributeSource.getMonitoredAttribute(method, targetClass) != null;
-
-        if (log.isDebugEnabled() && match) {
-            log.debug("Pointcut match: [" + method + "]");
-        }
-
-        return match;
-
+    
+    /**
+     * Indicates whether the fully qualified class name will be prepended to monitor names
+     * @return true if the class name will be prepended, false otherwise
+     */
+    public boolean isPrependClassName() {
+        return this.interceptor.isPrependClassName();
     }
-
-
+    
+    /**
+     * @see org.springframework.aop.MethodMatcher#matches(java.lang.reflect.Method, java.lang.Class)
+     */
+    public boolean matches(final Method method,
+            @SuppressWarnings("rawtypes") final Class targetClassCandidate) {
+        final Class<?> targetClass = (targetClassCandidate != null) ? targetClassCandidate : method
+                .getDeclaringClass();
+        final boolean match = getClassFilter().matches(targetClass)
+                && monitoredAttributeSource.getMonitoredAttribute(method, targetClass) != null;
+        return match;
+    }
+    
+    /**
+     * Sets a flag indicating whether the fully qualified class name will be prepended to monitor
+     * names
+     * @param prependClassName true if the class name will be prepended, false otherwise
+     */
+    public void setPrependClassName(final boolean prependClassName) {
+        this.interceptor.setPrependClassName(prependClassName);
+    }
 }
