@@ -1,3 +1,7 @@
+Version 4.5:
+ * ERMA-30: Added support for disabling prepending of class names to monitor names when using the
+            Monitored annotation
+
 Version 4.4.1:
  * Added NoOpInheritableStrategy
  * Fixed the build
