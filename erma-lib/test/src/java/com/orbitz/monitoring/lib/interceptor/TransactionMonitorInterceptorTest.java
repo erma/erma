@@ -14,12 +14,11 @@ import org.aopalliance.intercept.MethodInvocation;
  * @author Connor Garvey
  */
 public class TransactionMonitorInterceptorTest extends TestCase {
-    
     private void doTestCreateTransactionMonitor(final boolean prependClassName, final String name,
-            final String expectedName) {
+            final String expectedName) throws Exception {
         final Object invocationThis = new Object();
         final Class<?> invocationClass = invocationThis.getClass();
-        final Method method = Object.class.getMethods()[0];
+        final Method method = Object.class.getMethod("hashCode");
         final MonitoredAttributeSource monitoredAttributeSource = mock(MonitoredAttributeSource.class);
         final TransactionMonitorInterceptor interceptor = new TransactionMonitorInterceptor(
                 monitoredAttributeSource);
@@ -37,8 +36,9 @@ public class TransactionMonitorInterceptorTest extends TestCase {
     
     /**
      * Tests TransactionMonitorInterceptor.createTransactionMonitor(MethodInvocation)
+     * @throws Exception in case of failure
      */
-    public void testCreateTransactionMonitorDoNotPrependClassName() {
+    public void testCreateTransactionMonitorDoNotPrependClassName() throws Exception {
         final boolean prependClassName = false;
         final String name = "somethingunique";
         final String expectedName = name;
@@ -47,11 +47,34 @@ public class TransactionMonitorInterceptorTest extends TestCase {
     
     /**
      * Tests TransactionMonitorInterceptor.createTransactionMonitor(MethodInvocation)
+     * @throws Exception in case of failure
      */
-    public void testCreateTransactionMonitorPrependClassName() {
+    public void testCreateTransactionMonitorDoNotPrependClassNameNullName() throws Exception {
+        final boolean prependClassName = false;
+        final String name = null;
+        final String expectedName = "java.lang.Object.hashCode";
+        doTestCreateTransactionMonitor(prependClassName, name, expectedName);
+    }
+    
+    /**
+     * Tests TransactionMonitorInterceptor.createTransactionMonitor(MethodInvocation)
+     * @throws Exception in case of failure
+     */
+    public void testCreateTransactionMonitorPrependClassName() throws Exception {
         final boolean prependClassName = true;
         final String name = "somethingunique";
         final String expectedName = "java.lang.Object." + name;
+        doTestCreateTransactionMonitor(prependClassName, name, expectedName);
+    }
+    
+    /**
+     * Tests TransactionMonitorInterceptor.createTransactionMonitor(MethodInvocation)
+     * @throws Exception in case of failure
+     */
+    public void testCreateTransactionMonitorPrependClassNameNullName() throws Exception {
+        final boolean prependClassName = true;
+        final String name = null;
+        final String expectedName = "java.lang.Object.hashCode";
         doTestCreateTransactionMonitor(prependClassName, name, expectedName);
     }
     

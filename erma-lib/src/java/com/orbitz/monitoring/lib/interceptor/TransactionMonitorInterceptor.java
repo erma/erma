@@ -48,14 +48,15 @@ public class TransactionMonitorInterceptor implements MethodInterceptor {
     
     @VisibleForTesting
     TransactionMonitor createTransactionMonitor(final MethodInvocation invocation) {
-        final String monitorName = getMonitorName(invocation);
         final MonitoringLevel level = getMonitoringLevel(invocation);
-        if (this.prependClassName && (monitorName != null)) {
-            return new TransactionMonitor(invocation.getMethod().getDeclaringClass(), monitorName,
-                    level);
+        final String nameFromAnnotation = getNameFromAnnotation(invocation);
+        if (this.prependClassName || (nameFromAnnotation == null)) {
+            final String name = nameFromAnnotation == null ? invocation.getMethod().getName()
+                    : nameFromAnnotation;
+            return new TransactionMonitor(invocation.getMethod().getDeclaringClass(), name, level);
         }
         else {
-            return new TransactionMonitor(monitorName, level);
+            return new TransactionMonitor(nameFromAnnotation, level);
         }
     }
     
@@ -96,6 +97,15 @@ public class TransactionMonitorInterceptor implements MethodInterceptor {
         else {
             return attribute.getMonitorName();
         }
+    }
+    
+    private String getNameFromAnnotation(final MethodInvocation invocation) {
+        final MonitoredAttribute attribute = getAttribute(invocation);
+        final String monitorName = attribute.getMonitorName();
+        if (attribute == null || StringUtils.trimToNull(monitorName) == null) {
+            return null;
+        }
+        return monitorName;
     }
     
     private boolean includeArguments(final MethodInvocation invocation) {

@@ -25,7 +25,8 @@ import java.lang.annotation.Target;
 public @interface Monitored {
     
     /**
-     * The name to use for the monitor. If a value is not specified, the method name will be used.
+     * The name to use for the monitor. If a value is not specified, the method name will be used.<br />
+     * TODO: Version 5: Change the default to null
      */
     String value() default "";
     
