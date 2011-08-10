@@ -8,8 +8,6 @@
  * as defined in this project's gradlew script.
  */
 
-//usePlugin 'java'
-
 dependencies {
     /* dependencies for erma-api jar */
     compile(

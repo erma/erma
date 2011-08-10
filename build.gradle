@@ -6,49 +6,72 @@
  *
  * If executing via a pre-installed version of gradle or your IDE, make sure to export GRADLE_OPTS
  * as defined in this project's gradlew script.
- */  
+ */
+
+dependsOnChildren()
+
+allprojects {
+  apply plugin: 'java'
+  apply plugin: 'project-reports'
+  
+  defaultTasks 'assemble'
+  
+  buildscript {
+    // using a variable to make wiki look cleaner
+    def githubBase = 'https://github.com/valkolovos/gradle_cobertura/raw/master/ivy'
+    apply from: "${githubBase}/gradle_cobertura/gradle_cobertura/1.0-rc4/coberturainit.gradle"
+  }
+}
+
+task dist(dependsOn: assemble) << {
+  File explodedDist = new File(buildDir.getCanonicalPath() + File.separator + 'dist')
+  explodedDist.mkdirs()
+  for (project in subprojects) {
+    for (archiveTask in project.tasks.withType(Jar)) {
+      copy {
+        from archiveTask.archivePath
+        into explodedDist
+      }
+    }
+  }
+}
 
 subprojects {
-    usePlugin 'java'
-    usePlugin 'project-reports'
-    
-    buildscript {
-        // using a variable to make wiki look cleaner
-        def githubBase = 'https://github.com/valkolovos/gradle_cobertura/raw/master/ivy'
-        apply from: "${githubBase}/gradle_cobertura/gradle_cobertura/1.0-rc4/coberturainit.gradle"
+  sourceSets {
+    main {
+      java { srcDir 'src/java' }
     }
-
-    defaultTasks 'assemble'
-
-    sourceSets {
-        main {
-            java { srcDir 'src/java' }
-        }
-        test {
-            java { srcDir 'test/src/java' }
-            resources { srcDir 'test/src/java' }
-        }
+    test {
+      java { srcDir 'test/src/java' }
+      resources { srcDir 'test/src/java' }
     }
-
-    repositories {
-        mavenCentral()
-    }
-
-    // erma-ext/erma-foo-processor sub-project generates jar with basename "erma-foo-processor"
-    def shortProjectName = project.name.split('/')[-1]
-    jar.baseName = shortProjectName
-
-    task srcJar(type: Jar) {
-        from sourceSets.main.java
-        baseName = shortProjectName
-        classifier = 'src'
-    }
-
-    artifacts {
-        archives jar, srcJar
-    }
-
-    task wrapper(type: Wrapper) {
-        gradleVersion = '0.8'
-    }
+  }
+  
+  repositories {
+    mavenCentral()
+  }
+  
+  // erma/abc sub-project generates jar with basename "abc"
+  def shortProjectName = project.name.split('/')[-1]
+  jar.baseName = shortProjectName
+  
+  task sourceJar(type: Jar) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+    baseName = shortProjectName
+  }
+  
+  task javadocJar(type: Jar, dependsOn:javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+    basename = shortProjectName
+  }
+  
+  artifacts {
+    archives jar, sourceJar, javadocJar
+  }
+  
+  task wrapper(type: Wrapper) {
+    gradleVersion = '1.0-milestone-1'
+  }
 }
