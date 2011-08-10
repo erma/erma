@@ -1,6 +1,6 @@
 .gradle
 reports
-target
+build
 erma-api/build
 erma-lib/build
 erma-ext/erma-mongo-processor/build
