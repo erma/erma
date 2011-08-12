@@ -12,15 +12,6 @@ dependsOnChildren()
 
 allprojects {
   apply plugin: 'java'
-  apply plugin: 'project-reports'
-  
-  defaultTasks 'assemble'
-  
-  buildscript {
-    // using a variable to make wiki look cleaner
-    def githubBase = 'https://github.com/valkolovos/gradle_cobertura/raw/master/ivy'
-    apply from: "${githubBase}/gradle_cobertura/gradle_cobertura/1.0-rc4/coberturainit.gradle"
-  }
 }
 
 task dist(dependsOn: assemble) << {
@@ -37,6 +28,17 @@ task dist(dependsOn: assemble) << {
 }
 
 subprojects {
+  apply plugin: 'project-reports'
+  apply plugin: 'signing'
+  
+  defaultTasks 'assemble'
+  
+  buildscript {
+    // using a variable to make wiki look cleaner
+    def githubBase = 'https://github.com/valkolovos/gradle_cobertura/raw/master/ivy'
+    apply from: "${githubBase}/gradle_cobertura/gradle_cobertura/1.0-rc4/coberturainit.gradle"
+  }
+  
   sourceSets {
     main {
       java { srcDir 'src/java' }
