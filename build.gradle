@@ -12,9 +12,14 @@ dependsOnChildren()
 
 allprojects {
   apply plugin: 'java'
+  apply plugin: 'signing'
+  
+  signing {
+    sign configurations.archives
+  }
 }
 
-task dist(dependsOn: assemble) << {
+task dist(dependsOn: signArchives) << {
   File explodedDist = new File(buildDir.getCanonicalPath() + File.separator + 'dist')
   explodedDist.mkdirs()
   for (project in subprojects) {
@@ -29,7 +34,6 @@ task dist(dependsOn: assemble) << {
 
 subprojects {
   apply plugin: 'project-reports'
-  apply plugin: 'signing'
   
   defaultTasks 'assemble'
   
