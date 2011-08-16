@@ -7,6 +7,8 @@
  * If executing via a pre-installed version of gradle or your IDE, make sure to export GRADLE_OPTS
  * as defined in this project's gradlew script.
  */
+ 
+import org.gradle.plugins.signing.Sign
 
 dependsOnChildren()
 
@@ -19,14 +21,20 @@ allprojects {
   }
 }
 
-task dist(dependsOn: signArchives) << {
-  File explodedDist = new File(buildDir.getCanonicalPath() + File.separator + 'dist')
-  explodedDist.mkdirs()
+task dist(dependsOn: [build, signArchives]) << {
+  File distFolder = new File(buildDir.getCanonicalPath() + File.separator + 'dist')
+  distFolder.mkdirs()
   for (project in subprojects) {
     for (archiveTask in project.tasks.withType(Jar)) {
       copy {
         from archiveTask.archivePath
-        into explodedDist
+        into distFolder
+      }
+    }
+    for (signTask in project.tasks.withType(Sign)) {
+      copy {
+        from signTask.signatureFiles
+        into distFolder
       }
     }
   }
