@@ -27,3 +27,4 @@ dependencies {
         [group: 'org.mockito', name: 'mockito-all', version: '1.8.5']
     )
 }
+

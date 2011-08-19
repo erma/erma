@@ -15,6 +15,7 @@ dependsOnChildren()
 allprojects {
   apply plugin: 'java'
   apply plugin: 'signing'
+  apply plugin: 'maven'
   
   signing {
     sign configurations.archives
@@ -40,7 +41,7 @@ task dist(dependsOn: [build, signArchives]) << {
   }
 }
 
-subprojects {
+subprojects { subproject ->
   apply plugin: 'project-reports'
   
   defaultTasks 'assemble'
@@ -63,6 +64,53 @@ subprojects {
   
   repositories {
     mavenCentral()
+  }
+  
+  def pomConfig = {
+    name project.projectName
+    description project.description
+    packaging 'jar'
+    url 'https://github.com/erma/erma'
+    inceptionYear '2008'
+    licenses {
+      license {
+        name 'The Apache Software License, Version 2.0'
+        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+        distribution 'repo'
+      }
+    }
+    scm {
+      connection 'scm:git:https://github.com/erma/erma.git'
+      developerConnection 'scm:git:git@github.com:erma/erma.git'
+      url 'https://github.com/erma/erma'
+    }
+    developers {
+      developer {
+        id 'ConnorWGarvey'
+        name 'Connor Garvey'
+        email 'connorwgarvey@gmail.com'
+        url 'http://www.connorgarvey.com'
+        organization 'Orbitz Worldwide, LLC'
+        organizationUrl 'http://www.orbitz.com'
+        roles {
+          role 'developer'
+        }
+        timezone '-6'
+      }
+    }
+  }
+  
+  subproject.basePomConfig = pomConfig
+  
+  configure(install.repositories.mavenInstaller) {
+    pom.project pomConfig
+  }
+  
+  uploadArchives {
+    repositories.mavenDeployer {
+      repository(url: 'file://localhost/tmp/erma/')
+      pom.project pomConfig
+    }
   }
   
   // erma/abc sub-project generates jar with basename "abc"
