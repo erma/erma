@@ -14,15 +14,12 @@ dependsOnChildren()
 
 allprojects {
   apply plugin: 'java'
-  apply plugin: 'signing'
-  apply plugin: 'maven'
-  
-  signing {
-    sign configurations.archives
-  }
 }
 
-task dist(dependsOn: [build, signArchives]) << {
+task projectDist() << {
+}
+
+task dist(dependsOn: [projectDist]) << {
   File distFolder = new File(buildDir.getCanonicalPath() + File.separator + 'dist')
   distFolder.mkdirs()
   for (project in subprojects) {
@@ -42,7 +39,13 @@ task dist(dependsOn: [build, signArchives]) << {
 }
 
 subprojects { subproject ->
+  apply plugin: 'signing'
+  apply plugin: 'maven'
   apply plugin: 'project-reports'
+  
+  signing {
+    sign configurations.archives
+  }
   
   defaultTasks 'assemble'
   
@@ -127,6 +130,9 @@ subprojects { subproject ->
     classifier = 'javadoc'
     from javadoc.destinationDir
     basename = shortProjectName
+  }
+  
+  task projectDist(dependsOn: [build, signArchives]) << {
   }
   
   artifacts {
