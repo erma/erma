@@ -12,10 +12,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 /**
@@ -200,11 +200,10 @@ public abstract class AbstractCompositeMonitor extends AbstractMonitor implement
    * @param inheritedAttributes the collection of inherited attributes
    */
   @Override
-  protected void setInheritedAttributes(final Map inheritedAttributes) {
+  protected void setInheritedAttributes(final Map<String, Object> inheritedAttributes) {
     if (inheritedAttributes != null) {
-      for (final Iterator i = inheritedAttributes.entrySet().iterator(); i.hasNext();) {
-        final Map.Entry entry = (Map.Entry)i.next();
-        final String key = (String)entry.getKey();
+      for (final Entry<String, Object> entry : inheritedAttributes.entrySet()) {
+        final String key = entry.getKey();
         Object value = entry.getValue();
         if (value != null && AttributeHolder.class.isAssignableFrom(value.getClass())) {
           value = ((AttributeHolder)value).getValue();

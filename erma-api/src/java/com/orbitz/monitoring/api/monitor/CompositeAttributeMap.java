@@ -80,12 +80,11 @@ public class CompositeAttributeMap extends AttributeMap {
    * Generate a new map of key -> value containing all inheritable attributes
    * @return map of inheritable attributes
    */
-  public Map getAllInheritable() {
-    final Map allInheritable = new HashMap();
-    for (final Iterator i = getAttributes().entrySet().iterator(); i.hasNext();) {
-      final Map.Entry entry = (Map.Entry)i.next();
-      final String key = (String)entry.getKey();
-      final CompositeAttributeHolder attributeHolder = (CompositeAttributeHolder)entry.getValue();
+  public Map<String, Object> getAllInheritable() {
+    final Map<String, Object> allInheritable = new HashMap<String, Object>();
+    for (final Entry<String, CompositeAttributeHolder> entry : findCompositeAttributes().entrySet()) {
+      final String key = entry.getKey();
+      final CompositeAttributeHolder attributeHolder = entry.getValue();
       
       if (attributeHolder.isInheritable()) {
         final Object value = attributeHolder.getValue();
@@ -101,7 +100,7 @@ public class CompositeAttributeMap extends AttributeMap {
    */
   public Map<String, CompositeAttributeHolder> getAllInheritableAttributeHolders() {
     final Map<String, CompositeAttributeHolder> allInheritable = new HashMap<String, CompositeAttributeHolder>();
-    for (final Entry<String, CompositeAttributeHolder> entry : getAllAttributeHolders().entrySet()) {
+    for (final Entry<String, CompositeAttributeHolder> entry : findCompositeAttributes().entrySet()) {
       final String key = entry.getKey();
       final CompositeAttributeHolder attributeHolder = entry.getValue();
       

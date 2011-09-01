@@ -1,5 +1,7 @@
 package com.orbitz.monitoring.api.monitor;
 
+import com.google.common.base.Predicates;
+import com.google.common.collect.Maps;
 import com.orbitz.monitoring.api.AttributeUndefinedException;
 import com.orbitz.monitoring.api.CantCoerceException;
 import java.io.Serializable;
@@ -34,7 +36,7 @@ public class AttributeMap implements Serializable {
    */
   private static final long serialVersionUID = 2L;
   
-  private ConcurrentHashMap<String, CompositeAttributeHolder> attributes;
+  private ConcurrentHashMap<String, AttributeHolder> attributes;
   
   protected static final Pattern p = Pattern.compile("[a-zA-Z_]+[a-zA-Z_0-9]*");
   
@@ -51,6 +53,16 @@ public class AttributeMap implements Serializable {
   
   public ConcurrentHashMap getAttributes() {
     return attributes;
+  }
+  
+  /**
+   * Finds all {@link CompositeAttributeHolder composite attributes}
+   * @return a new map containing the composite attributes
+   */
+  @SuppressWarnings({"unchecked", "rawtypes"})
+  public Map<String, CompositeAttributeHolder> findCompositeAttributes() {
+    return (Map)Maps
+        .filterValues(attributes, Predicates.instanceOf(CompositeAttributeHolder.class));
   }
   
   public AttributeHolder set(final String key, final short value) {
@@ -344,8 +356,8 @@ public class AttributeMap implements Serializable {
     return all;
   }
   
-  public Map<String, CompositeAttributeHolder> getAllAttributeHolders() {
-    return new HashMap<String, CompositeAttributeHolder>(attributes);
+  public Map<String, AttributeHolder> getAllAttributeHolders() {
+    return new HashMap<String, AttributeHolder>(attributes);
   }
   
   public Map getAllSerializable() {
@@ -451,7 +463,7 @@ public class AttributeMap implements Serializable {
           + "] violates attribute name restriction, attribute not added.");
     }
     
-    CompositeAttributeHolder attributeHolder = attributes.get(key);
+    AttributeHolder attributeHolder = attributes.get(key);
     
     if (attributeHolder == null) {
       // create a new holder in the map with the given value
