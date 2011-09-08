@@ -114,17 +114,24 @@ subprojects { subproject ->
     pom.project pomConfig
   }
   
-  print '--------------------------------------------------------------------' + sonatypeUserName
-  print '--------------------------------------------------------------------' + sonatypePassword
-  
   uploadArchives {
-    repositories.mavenDeployer {
-      name = 'Maven Central Deployer'
-      configuration = configurations.deployerJars
-      repository(url: 'https://oss.sonatype.org/service/local/staging/deploy/maven2') {
-        authentication(userName: sonatypeUserName, password: sonatypePassword)
+    if (project.hasProperty('sonatypeUserName') && project.hasProperty('sonatypePassword')) {
+      dependsOn << [ signArchives ]
+      repositories.mavenDeployer {
+        beforeDeployment { deployment ->
+          signPom(deployment)
+        }
+        name = 'Maven Central Deployer'
+        configuration = configurations.archives
+        repository(url: 'https://oss.sonatype.org/service/local/staging/deploy/maven2') {
+          authentication(userName: sonatypeUserName, password: sonatypePassword)
+        }
+        snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+          authentication(userName: sonatypeUserName, password: sonatypePassword)
+        }
+  //      repository(url: "file://localhost/tmp/myRepo/")
+        pom.project pomConfig
       }
-      pom.project pomConfig
     }
   }
   
