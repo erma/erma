@@ -83,9 +83,9 @@ subprojects { subproject ->
       }
     }
     scm {
-      connection 'scm:git:https://github.com/erma/erma.git'
+      connection 'scm:git:git@github.com:erma/erma.git'
       developerConnection 'scm:git:git@github.com:erma/erma.git'
-      url 'https://github.com/erma/erma'
+      url 'git@github.com:erma/erma.git'
     }
     developers {
       developer {
@@ -101,6 +101,11 @@ subprojects { subproject ->
         timezone '-6'
       }
     }
+    parent {
+      groupId 'org.sonatype.oss'
+      artifactId 'oss-parent'
+      version '7'
+    }
   }
   
   subproject.basePomConfig = pomConfig
@@ -109,9 +114,16 @@ subprojects { subproject ->
     pom.project pomConfig
   }
   
+  print '--------------------------------------------------------------------' + sonatypeUserName
+  print '--------------------------------------------------------------------' + sonatypePassword
+  
   uploadArchives {
     repositories.mavenDeployer {
-      repository(url: 'file://localhost/tmp/erma/')
+      name = 'Maven Central Deployer'
+      configuration = configurations.deployerJars
+      repository(url: 'https://oss.sonatype.org/service/local/staging/deploy/maven2') {
+        authentication(userName: sonatypeUserName, password: sonatypePassword)
+      }
       pom.project pomConfig
     }
   }
@@ -140,6 +152,6 @@ subprojects { subproject ->
   }
   
   task wrapper(type: Wrapper) {
-    gradleVersion = '1.0-milestone-1'
+    gradleVersion = '1.0-milestone-4'
   }
 }
