@@ -120,6 +120,11 @@ subprojects { subproject ->
       repositories.mavenDeployer {
         beforeDeployment { deployment ->
           signPom(deployment)
+          for (signTask in project.tasks.withType(Sign)) {
+            for (signature in signTask.signatures) {
+              deployment.addArtifact(signature)
+            }
+          }
         }
         name = 'Maven Central Deployer'
         configuration = configurations.archives
@@ -129,7 +134,7 @@ subprojects { subproject ->
         snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
           authentication(userName: sonatypeUserName, password: sonatypePassword)
         }
-  //      repository(url: "file://localhost/tmp/myRepo/")
+//        repository(url: "file://localhost/tmp/myRepo/")
         pom.project pomConfig
       }
     }
