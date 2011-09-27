@@ -37,10 +37,10 @@ public class MonitoringEngine {
   private Decomposer decomposer;
   private InheritableStrategy inheritableStrategy;
   
-  private AttributeMap globalAttributes;
+  private final AttributeMap globalAttributes;
   
-  private Map monitorProcessorLevels;
-  private Map monitorLevels;
+  private final Map monitorProcessorLevels;
+  private final Map monitorLevels;
   
   private Runnable startupRunnable;
   
@@ -328,21 +328,17 @@ public class MonitoringEngine {
    */
   public Map<String, Serializable> makeAttributeHoldersSerializable(
       final Map<String, ? extends AttributeHolder> attributeHolders) {
-    
     if (!isEnabled()) {
       return new HashMap<String, Serializable>();
     }
-    
     final Map<String, Serializable> renderedAttributes = new HashMap<String, Serializable>(
         attributeHolders.size());
     for (final Entry<String, ? extends AttributeHolder> entry : attributeHolders.entrySet()) {
-      final String key = entry.getKey();
       final AttributeHolder holder = entry.getValue();
       if (holder.isSerializable()) {
-        renderedAttributes.put(key, decomposer.decompose(holder));
+        renderedAttributes.put(entry.getKey(), decomposer.decompose(holder));
       }
     }
-    
     return renderedAttributes;
   }
   

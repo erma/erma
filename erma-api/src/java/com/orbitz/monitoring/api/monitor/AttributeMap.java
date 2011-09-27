@@ -1,5 +1,6 @@
 package com.orbitz.monitoring.api.monitor;
 
+import com.google.common.base.Function;
 import com.google.common.base.Predicates;
 import com.google.common.collect.Maps;
 import com.orbitz.monitoring.api.AttributeUndefinedException;
@@ -7,9 +8,9 @@ import com.orbitz.monitoring.api.CantCoerceException;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
@@ -36,7 +37,7 @@ public class AttributeMap implements Serializable {
    */
   private static final long serialVersionUID = 2L;
   
-  private ConcurrentHashMap<String, AttributeHolder> attributes;
+  private final ConcurrentHashMap<String, AttributeHolder> attributes;
   
   protected static final Pattern p = Pattern.compile("[a-zA-Z_]+[a-zA-Z_0-9]*");
   
@@ -51,7 +52,11 @@ public class AttributeMap implements Serializable {
     }
   }
   
-  public ConcurrentHashMap getAttributes() {
+  /**
+   * Gets the raw map of strings to attribute holders
+   * @return the map
+   */
+  public ConcurrentHashMap<String, AttributeHolder> getAttributes() {
     return attributes;
   }
   
@@ -97,6 +102,12 @@ public class AttributeMap implements Serializable {
     return internalSetAttribute(key, Boolean.valueOf(value));
   }
   
+  /**
+   * Sets a value into the map
+   * @param key the key
+   * @param value the value, which should not be an {@link AttributeHolder}
+   * @return the {@link AttributeHolder} that was created to hold the specified value
+   */
   public AttributeHolder set(final String key, final Object value) {
     return internalSetAttribute(key, value);
   }
@@ -105,16 +116,19 @@ public class AttributeMap implements Serializable {
     setAllAttributeHolders(attributes);
   }
   
-  public void setAllAttributeHolders(final Map attributeHolders) {
+  /**
+   * Sets zero or more attribute holders from a collection. If an entry value is an
+   * {@link AttributeHolder}, it is cloned and its clone is put in this map. If it is not an
+   * {@link AttributeHolder}, it is placed in a new attribute holder and put in this map.
+   * @param attributeHolders a map of string keys to their holders or not holders. Really, anything.
+   */
+  public void setAllAttributeHolders(final Map<String, Object> attributeHolders) {
     if (attributeHolders == null) {
       return;
     }
-    
-    for (final Iterator i = attributeHolders.entrySet().iterator(); i.hasNext();) {
-      final Map.Entry entry = (Map.Entry)i.next();
-      final String key = (String)entry.getKey();
+    for (Entry<String, Object> entry : attributeHolders.entrySet()) {
+      final String key = entry.getKey();
       final Object value = entry.getValue();
-      
       if (value != null) {
         if (AttributeHolder.class.isAssignableFrom(value.getClass())) {
           final AttributeHolder original = (AttributeHolder)value;
@@ -136,40 +150,52 @@ public class AttributeMap implements Serializable {
     attributes.clear();
   }
   
+  /**
+   * Gets the value of a key
+   * @param key the key to find
+   * @return the value at the specified key
+   * @throws AttributeUndefinedException if the key doesn't exist
+   */
   public Object get(final String key) {
-    if (hasAttribute(key)) {
-      final AttributeHolder attributeHolder = attributes.get(key);
-      return attributeHolder.getValue();
+    if (this.hasAttribute(key)) {
+      AttributeHolder attribute = attributes.get(key);
+      return (attribute == null) ? attribute : attribute.getValue();
     }
-    else {
-      throw new AttributeUndefinedException(key);
-    }
+    throw new AttributeUndefinedException(key);
   }
   
-  public Map getAsMap(final String key) {
+  /**
+   * Gets a map value from the map
+   * @param key the key of the value to find
+   * @return the map at the specified key
+   */
+  @SuppressWarnings("unchecked")
+  public <K, V> Map<K, V> getAsMap(final String key) {
     final Object value = get(key);
-    
     if (value instanceof Map) {
-      return (Map)value;
+      return (Map<K, V>)value;
     }
     else {
       throw new CantCoerceException(key, value, "Map");
     }
   }
   
-  public List getAsList(final String key) {
+  /**
+   * Gets the specified value as a list. If the value is a list or null, it will be returned. If the
+   * value is an array, it will be converted to a list.
+   * @param key the key of the value to find
+   * @return the value
+   */
+  @SuppressWarnings("unchecked")
+  public <T> List<T> getAsList(final String key) {
     Object value = get(key);
-    
-    if (value != null && !(value instanceof List)) {
-      if (value instanceof Object[]) {
-        value = Arrays.asList((Object[])value);
-      }
-      else {
-        throw new CantCoerceException(key, value, "List");
-      }
+    if ((value == null) || (value instanceof List)) {
+      return (List<T>)value;
     }
-    
-    return (List)value;
+    if (value instanceof Object[]) {
+      return (List<T>)Arrays.asList((Object[])value);
+    }
+    throw new CantCoerceException(key, value, "List");
   }
   
   public Set getAsSet(final String key) {
@@ -343,33 +369,36 @@ public class AttributeMap implements Serializable {
     return ((Boolean)value).booleanValue();
   }
   
-  public Map getAll() {
-    final Map all = new HashMap();
-    for (final Iterator i = attributes.entrySet().iterator(); i.hasNext();) {
-      final Map.Entry entry = (Map.Entry)i.next();
-      final String key = (String)entry.getKey();
-      final AttributeHolder attributeHolder = (AttributeHolder)entry.getValue();
-      
-      final Object value = attributeHolder.getValue();
-      all.put(key, value);
-    }
-    return all;
+  /**
+   * Gets all values from this attribute map
+   * @return a map of all keys to all values
+   */
+  @SuppressWarnings("unchecked")
+  public <V> Map<String, V> getAll() {
+    return Maps.transformValues(attributes, new Function<AttributeHolder, V>() {
+      public V apply(final AttributeHolder attribute) {
+        return (V)attribute.getValue();
+      }
+    });
   }
   
   public Map<String, AttributeHolder> getAllAttributeHolders() {
     return new HashMap<String, AttributeHolder>(attributes);
   }
   
-  public Map getAllSerializable() {
-    final Map allSerializable = new HashMap();
-    for (final Iterator i = attributes.entrySet().iterator(); i.hasNext();) {
-      final Map.Entry entry = (Map.Entry)i.next();
-      final String key = (String)entry.getKey();
-      final AttributeHolder attributeHolder = (AttributeHolder)entry.getValue();
-      
+  /**
+   * Gets the items from this map that have indicated they are {@link Serializable} through
+   * {@link AttributeHolder#isSerializable()}.
+   * @return a new map of keys to the {@link Serializable} values.
+   */
+  public <V> Map<String, V> getAllSerializable() {
+    final Map<String, V> allSerializable = new HashMap<String, V>();
+    for (Entry<String, AttributeHolder> entry : attributes.entrySet()) {
+      final AttributeHolder attributeHolder = entry.getValue();
       if (attributeHolder.isSerializable()) {
-        final Object value = attributeHolder.getValue();
-        allSerializable.put(key, value);
+        @SuppressWarnings("unchecked")
+        final V value = (V)attributeHolder.getValue();
+        allSerializable.put(entry.getKey(), value);
       }
     }
     return allSerializable;

@@ -40,7 +40,7 @@ public abstract class AbstractCompositeMonitor extends AbstractMonitor implement
     SERIALIZABLE = Collections.unmodifiableSet(set);
   }
   
-  private List<Monitor> _childMonitors = new LinkedList<Monitor>();
+  private final List<Monitor> _childMonitors = new LinkedList<Monitor>();
   
   /**
    * Create a new composite monitor with the provided name.
@@ -159,15 +159,13 @@ public abstract class AbstractCompositeMonitor extends AbstractMonitor implement
     return holder;
   }
   
-  public Map getInheritableAttributes() {
+  public Map<String, Object> getInheritableAttributes() {
     final CompositeAttributeMap compositeMap = (CompositeAttributeMap)attributes;
-    
     return compositeMap.getAllInheritable();
   }
   
-  public Map getInheritableAttributeHolders() {
+  public Map<String, CompositeAttributeHolder> getInheritableAttributeHolders() {
     final CompositeAttributeMap compositeMap = (CompositeAttributeMap)attributes;
-    
     return compositeMap.getAllInheritableAttributeHolders();
   }
   

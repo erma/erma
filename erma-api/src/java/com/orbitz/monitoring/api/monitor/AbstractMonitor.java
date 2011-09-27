@@ -5,6 +5,7 @@ import com.orbitz.monitoring.api.Monitor;
 import com.orbitz.monitoring.api.MonitoringEngine;
 import com.orbitz.monitoring.api.MonitoringLevel;
 import com.orbitz.monitoring.api.monitor.serializable.SerializableMonitor;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -15,21 +16,22 @@ import org.apache.log4j.Logger;
 
 /**
  * A base implementation of {@link Monitor} that contains all common aspects of monitors.
- * 
  * @author Doug Barth
  */
 public abstract class AbstractMonitor implements Monitor {
-  
   private static final Logger log = Logger.getLogger(AbstractMonitor.class);
-  
+  /**
+   * Attributes, pairs of keys and values, that have been set on this monitor
+   */
   protected AttributeMap attributes;
   private boolean processed;
+  /**
+   * Determines which monitors will be processed
+   */
   protected MonitoringLevel monitoringLevel = MonitoringLevel.INFO;
   
   private static final String invalidCharacters = " \\[\\]*,|()$@|~?&<>\\^";
-  private static final Set invalidCharSet = buildInvalidCharSet();
-  
-  // ** CONSTRUCTORS ********************************************************
+  private static final Set<Character> invalidCharSet = buildInvalidCharSet();
   
   /**
    * Initializes the attribute map and global attributes. Subclasses will need to call init(String)
@@ -62,11 +64,10 @@ public abstract class AbstractMonitor implements Monitor {
   /**
    * Initializes the attribute map, global attributes, sets the provided inherited attributes and
    * calls init(String).
-   * 
    * @param name the name of the monitor
    * @param inheritedAttributes the collection of inherited attributes
    */
-  public AbstractMonitor(final String name, final Map inheritedAttributes) {
+  public AbstractMonitor(final String name, final Map<String, Object> inheritedAttributes) {
     this(name, MonitoringLevel.INFO, inheritedAttributes);
   }
   
@@ -85,7 +86,6 @@ public abstract class AbstractMonitor implements Monitor {
     init(name, inheritedAttributes);
   }
   
-  // ** PUBLIC METHODS ******************************************************
   public AttributeHolder set(final String key, final short value) {
     return attributes.set(key, value).serializable();
   }
@@ -130,11 +130,11 @@ public abstract class AbstractMonitor implements Monitor {
     return attributes.set(key, value);
   }
   
-  public void setAll(final Map attributes) {
+  public void setAll(final Map<String, Object> attributes) {
     this.attributes.setAll(attributes);
   }
   
-  public void setAllAttributeHolders(final Map attributeHolders) {
+  public void setAllAttributeHolders(final Map<String, Object> attributeHolders) {
     attributes.setAllAttributeHolders(attributeHolders);
   }
   
@@ -146,12 +146,16 @@ public abstract class AbstractMonitor implements Monitor {
     return attributes.get(key);
   }
   
-  public Map getAsMap(final String key) {
+  /**
+   * @see com.orbitz.monitoring.api.Monitor#getAsMap(java.lang.String)
+   */
+  public <K, V> Map<K, V> getAsMap(final String key) {
     return attributes.getAsMap(key);
   }
   
-  public List getAsList(final String key) {
-    return attributes.getAsList(key);
+  public <T> List<T> getAsList(final String key) {
+    List<T> result = attributes.getAsList(key);
+    return result;
   }
   
   public Set getAsSet(final String key) {
@@ -194,11 +198,15 @@ public abstract class AbstractMonitor implements Monitor {
     return attributes.getAsBoolean(key);
   }
   
-  public Map getAll() {
-    return attributes.getAll();
+  public <V> Map<String, V> getAll() {
+    Map<String, V> result = attributes.getAll();
+    return result;
   }
   
-  public Map getAllSerializable() {
+  /**
+   * @see com.orbitz.monitoring.api.Monitor#getAllSerializable()
+   */
+  public <V> Map<String, V> getAllSerializable() {
     return attributes.getAllSerializable();
   }
   
@@ -245,18 +253,15 @@ public abstract class AbstractMonitor implements Monitor {
   }
   
   /**
-   * Get a serializable version of this monitor.
-   * 
-   * @return the serializable monitor
+   * Get a {@link Serializable} version of this monitor.
+   * @return the {@link Serializable} monitor
    */
   public SerializableMonitor getSerializableMomento() {
     final MonitoringEngine engine = MonitoringEngine.getInstance();
-    final Map serializableAttributes = engine.makeAttributeHoldersSerializable(attributes
-        .getAllAttributeHolders());
-    
+    final Map<String, Serializable> serializableAttributes = engine
+        .makeAttributeHoldersSerializable(attributes.getAllAttributeHolders());
     final SerializableMonitor monitor = new SerializableMonitor(null);
     monitor.setAllAttributeHolders(serializableAttributes);
-    
     return monitor;
   }
   
@@ -327,20 +332,27 @@ public abstract class AbstractMonitor implements Monitor {
     }
   }
   
+  /**
+   * Creates a new {@link AttributeMap}
+   * @return a new attribute map
+   */
   protected AttributeMap createAttributeMap() {
     return new AttributeMap();
   }
   
+  /**
+   * Gets the attributes, pairs of keys and values, for this monitor
+   * @return the attributes
+   */
   protected AttributeMap getAttributes() {
     return attributes;
   }
   
-  // ** PRIVATE Methods
-  private static Set buildInvalidCharSet() {
-    final Set set = new HashSet();
+  private static Set<Character> buildInvalidCharSet() {
+    final Set<Character> set = new HashSet<Character>();
     final char[] invalidArr = invalidCharacters.toCharArray();
     for (int i = 0; i < invalidArr.length; i++) {
-      set.add(new Character(invalidArr[i]));
+      set.add(Character.valueOf(invalidArr[i]));
     }
     return set;
   }
