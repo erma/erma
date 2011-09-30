@@ -316,7 +316,7 @@ public interface Monitor {
    * @param key the string that identifies the attribute
    * @return the value of this attribute, cast to a Set, or null if undefined
    */
-  Set getAsSet(String key);
+  <T> Set<T> getAsSet(String key);
   
   /**
    * Get the attribute value for the given key as a boolean. If the key is undefined, the provided

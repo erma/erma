@@ -23,5 +23,6 @@
 	<classpathentry kind="var" path="GRADLE_REPOSITORY/org.powermock/powermock-module-junit4-common/jars/powermock-module-junit4-common-1.4.8.jar"/>
 	<classpathentry kind="var" path="GRADLE_REPOSITORY/org.powermock/powermock-api-support/jars/powermock-api-support-1.4.8.jar"/>
 	<classpathentry kind="var" path="GRADLE_REPOSITORY/com.google.guava/guava/jars/guava-r08.jar"/>
+	<classpathentry kind="var" path="GRADLE_REPOSITORY/commons-logging/commons-logging/jars/commons-logging-1.1.1.jar"/>
 	<classpathentry kind="output" path="idebuild"/>
 </classpath>

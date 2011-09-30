@@ -158,7 +158,7 @@ public abstract class AbstractMonitor implements Monitor {
     return result;
   }
   
-  public Set getAsSet(final String key) {
+  public <T> Set<T> getAsSet(final String key) {
     return attributes.getAsSet(key);
   }
   
@@ -288,7 +288,7 @@ public abstract class AbstractMonitor implements Monitor {
     MonitoringEngine.getInstance().initMonitor(this);
     if (name != null) {
       for (int i = 0; i < name.length(); i++) {
-        if (invalidCharSet.contains(new Character(name.charAt(i)))) {
+        if (invalidCharSet.contains(Character.valueOf(name.charAt(i)))) {
           name = CharSetUtils.delete(name, invalidCharacters);
           break;
         }

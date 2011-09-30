@@ -1,223 +1,333 @@
 package com.orbitz.monitoring.lib.factory;
 
-import junit.framework.TestCase;
-import com.orbitz.monitoring.api.monitor.EventMonitor;
-import com.orbitz.monitoring.api.MonitoringLevel;
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
+
+import com.google.common.collect.Iterables;
+import com.orbitz.monitoring.api.Monitor;
 import com.orbitz.monitoring.api.MonitorProcessor;
 import com.orbitz.monitoring.api.MonitoringEngine;
+import com.orbitz.monitoring.api.MonitoringLevel;
+import com.orbitz.monitoring.api.monitor.EventMonitor;
 import com.orbitz.monitoring.test.MockMonitorProcessor;
-
-import java.util.List;
+import java.util.Collections;
+import junit.framework.AssertionFailedError;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
- * Unit tests for {@link ProcessGroup}.
- *
- * <p>(c) 2000-04 Orbitz, LLC. All Rights Reserved.
- *
+ * Tests {@link ProcessGroup}.
  * @author Doug Barth
  */
 
-public class ProcessGroupTest extends TestCase {
-    // ** PRIVATE DATA ********************************************************
-    private ProcessGroup _pGroup;
-
-    // ** TEST SUITE METHODS **************************************************
-    protected void setUp()
-            throws Exception {
-        super.setUp();
-
-        _pGroup = new ProcessGroup(new MockMonitorProcessor());
+public class ProcessGroupTest {
+  private static final String MONITOR_PROCESSOR_NAME = "monitorProcessorName";
+  private ProcessGroup processGroup;
+  
+  @Before
+  public void setUp() throws Exception {
+    processGroup = new ProcessGroup(new MockMonitorProcessor());
+  }
+  
+  @After
+  public void tearDown() {
+    MonitoringEngine.getInstance().getOverrideProcessorLevelsListing();
+  }
+  
+  private void assertElementsEqual(final Iterable<? extends Object> expected,
+      final Iterable<? extends Object> actual) {
+    if (!Iterables.elementsEqual(expected, actual)) {
+      throw new AssertionFailedError("Expected " + Iterables.toString(expected) + " but was "
+          + Iterables.toString(actual));
     }
-
-    protected void tearDown() {
-        String foo = MonitoringEngine.getInstance().getOverrideProcessorLevelsListing();
+  }
+  
+  private void assertSize(final String message, final int size, final Iterable<Object> iterable) {
+    int count = 0;
+    for (Object o : iterable) {
+      count++;
     }
-
-    // ** TEST METHODS ********************************************************
-    public void testDeactivate() {
-        _pGroup.setActive(false);
-        assertEquals("Deactivated group should return 0 processors", 0,
-                _pGroup.getProcessorsFor(new EventMonitor("foo")).size());
+    if (count != size) {
+      throw new AssertionFailedError(message == null ? "Expected size " + size + " but was "
+          + count : message);
     }
-
-    public void testMonitoringLevelNoLevelForProcessor() {
-        ProcessGroup processGroup = new ProcessGroup(new MockMonitorProcessor());
-        assertEquals("Default process group level should be INFO", MonitoringLevel.INFO.toString(),
-                processGroup.getMonitoringLevel());
-
-        EventMonitor event = new EventMonitor("baz", MonitoringLevel.DEBUG);
-
-        List processors = processGroup.getProcessorsFor(event);
-        assertEquals("No processor should process this monitor b/c its level is DEBUG", 0, processors.size());
-
-        EventMonitor event2 = new EventMonitor("baz", MonitoringLevel.INFO);
-
-        processors = processGroup.getProcessorsFor(event2);
-
-        assertEquals("Processor should process this monitor b/c its level is INFO", 1, processors.size());
-
-        EventMonitor event3 = new EventMonitor("baz", MonitoringLevel.ESSENTIAL);
-
-        processors = processGroup.getProcessorsFor(event3);
-        assertEquals("Processor should process this monitor b/c its level is ESSENTIAL", 1, processors.size());
-    }
-
-    public void testMonitoringLevelForProcessor() {
-        MonitorProcessor mp = new MockMonitorProcessor("mpA");
-        ProcessGroup processGroup = new ProcessGroup(mp);
-
-        MonitoringEngine.getInstance().addProcessorLevel("mpA",MonitoringLevel.DEBUG);
-
-        EventMonitor event = new EventMonitor("baz", MonitoringLevel.DEBUG);
-
-        List processors = processGroup.getProcessorsFor(event);
-        assertEquals("Processor should process this monitor b/c its level is DEBUG", 1, processors.size());
-
-        MonitoringEngine.getInstance().addProcessorLevel("mpA",MonitoringLevel.ESSENTIAL);
-
-        processors = processGroup.getProcessorsFor(event);
-        assertEquals("No processor should process this monitor b/c its level is DEBUG", 0, processors.size());
-    }
-
-    public void testMonitoringLevelForProcessGroup() {
-        ProcessGroup processGroup = new ProcessGroup(new MockMonitorProcessor());
-
-        EventMonitor event = new EventMonitor("baz");
-
-        List processors = processGroup.getProcessorsFor(event);
-        assertEquals("ProcessorGroup should process INFO monitors by default", 1, processors.size());
-
-        event = new EventMonitor("baz", MonitoringLevel.DEBUG);
-
-        processors = processGroup.getProcessorsFor(event);
-        assertEquals("ProcessorGroup should not process DEBUG monitors by default", 0, processors.size());
-
-        processGroup.updateMonitoringLevel(MonitoringLevel.DEBUG.toString());
-
-        processors = processGroup.getProcessorsFor(event);
-        assertEquals("ProcessorGroup should apply this monitor b/c its level is DEBUG", 1, processors.size());
-
-        event = new EventMonitor("baz", MonitoringLevel.ESSENTIAL);
-
-        processors = processGroup.getProcessorsFor(event);
-        assertEquals("ProcessorGroup should apply this monitor b/c its level is DEBUG", 1, processors.size());
-    }
-
-    public void testMonitoringLevelForProcessorAndProcessGroup() {
-        MonitorProcessor mp = new MockMonitorProcessor("mpA");
-        ProcessGroup processGroup = new ProcessGroup(mp);
-
-        EventMonitor event = new EventMonitor("baz", MonitoringLevel.DEBUG);
-        processGroup.updateMonitoringLevel(MonitoringLevel.DEBUG.toString());
-
-        MonitoringEngine.getInstance().addProcessorLevel("mpA",MonitoringLevel.INFO);
-
-        List processors = processGroup.getProcessorsFor(event);
-        assertEquals("No processor should process this monitor b/c its level is DEBUG", 0, processors.size());
-
-        event = new EventMonitor("baz", MonitoringLevel.DEBUG);
-        processGroup.updateMonitoringLevel(MonitoringLevel.INFO.toString());
-
-        MonitoringEngine.getInstance().addProcessorLevel("mpA",MonitoringLevel.DEBUG);
-
-        processors = processGroup.getProcessorsFor(event);
-        assertEquals("Processor should process this monitor b/c its level is DEBUG", 1, processors.size());
-    }
+  }
+  
+  private Monitor makeMonitor() {
+    Monitor monitor = mock(Monitor.class);
+    when(monitor.getLevel()).thenReturn(MonitoringLevel.ESSENTIAL);
+    return monitor;
+  }
+  
+  private ProcessGroup makeProcessGroup() {
+    MonitoringEngine engine = mock(MonitoringEngine.class);
+    MonitorProcessor processor = mock(MonitorProcessor.class);
+    ProcessGroup group = spy(new ProcessGroup(processor));
+    when(group.findMonitoringEngine()).thenReturn(engine);
+    when(group.matchesExpressionFor(any(Monitor.class))).thenReturn(true);
+    when(processor.getName()).thenReturn(MONITOR_PROCESSOR_NAME);
+    when(engine.getProcessorLevel(MONITOR_PROCESSOR_NAME)).thenReturn(MonitoringLevel.INFO);
+    return group;
+  }
+  
+  @Test
+  public void testDeactivate() {
+    processGroup.setActive(false);
+    assertFalse("Deactivated group should return 0 processors",
+        processGroup.getProcessorsFor(new EventMonitor("foo")).iterator().hasNext());
+  }
+  
+  /**
+   * @see ProcessGroup#getProcessorsFor(Monitor)
+   */
+  @Test
+  public void testGetProcessorsForInactive() {
+    ProcessGroup group = makeProcessGroup();
+    when(group.isActive()).thenReturn(false);
+    assertEquals(Collections.emptyList(), group.getProcessorsFor(makeMonitor()));
+  }
+  
+  /**
+   * @see ProcessGroup#getProcessorsFor(Monitor)
+   */
+  @Test
+  public void testGetProcessorsForGroupLevel() {
+    ProcessGroup group = makeProcessGroup();
+    when(group.findMonitoringEngine().getProcessorLevel(MONITOR_PROCESSOR_NAME)).thenReturn(null);
+    assertElementsEqual(group.getAllProcessors(), group.getProcessorsFor(makeMonitor()));
+  }
+  
+  /**
+   * @see ProcessGroup#getProcessorsFor(Monitor)
+   */
+  @Test
+  public void testGetProcessorsForLowerGroupLevel() {
+    Monitor monitor = makeMonitor();
+    ProcessGroup group = makeProcessGroup();
+    when(group.findMonitoringEngine().getProcessorLevel(MONITOR_PROCESSOR_NAME)).thenReturn(null);
+    when(monitor.getLevel()).thenReturn(MonitoringLevel.DEBUG);
+    assertElementsEqual(Collections.emptyList(), group.getProcessorsFor(monitor));
+  }
+  
+  /**
+   * @see ProcessGroup#getProcessorsFor(Monitor)
+   */
+  @Test
+  public void testGetProcessorsForLowerMonitorLevel() {
+    ProcessGroup group = makeProcessGroup();
+    Monitor monitor = makeMonitor();
+    when(monitor.getLevel()).thenReturn(MonitoringLevel.DEBUG);
+    assertElementsEqual(Collections.emptyList(), group.getProcessorsFor(monitor));
+  }
+  
+  /**
+   * @see ProcessGroup#getProcessorsFor(Monitor)
+   */
+  @Test
+  public void testGetProcessorsForMonitorLevel() {
+    ProcessGroup group = makeProcessGroup();
+    assertElementsEqual(group.getAllProcessors(), group.getProcessorsFor(makeMonitor()));
+  }
+  
+  /**
+   * @see ProcessGroup#getProcessorsFor(Monitor)
+   */
+  @Test
+  public void testGetProcessorsForMonitorDoesNotMatchExpression() {
+    Monitor monitor = makeMonitor();
+    ProcessGroup group = makeProcessGroup();
+    when(group.matchesExpressionFor(monitor)).thenReturn(false);
+    assertElementsEqual(Collections.emptyList(), group.getProcessorsFor(monitor));
+  }
+  
+  @Test
+  public void testMonitoringLevelNoLevelForProcessor() {
+    ProcessGroup processGroup = new ProcessGroup(new MockMonitorProcessor());
+    assertEquals("Default process group level should be INFO", MonitoringLevel.INFO.toString(),
+        processGroup.getMonitoringLevel());
     
-    public void testNameMatching() {
-        // Null name expression
-        List processors = _pGroup.getProcessorsFor(new EventMonitor("foo"));
-        assertEquals("Processor should appy to monitor", 1, processors.size());
-        processors = _pGroup.getProcessorsFor(new EventMonitor("bar"));
-        assertEquals("Processor should appy to monitor", 1, processors.size());
-
-        _pGroup.setExpression("m.get('name').matches('.*')");
-        processors = _pGroup.getProcessorsFor(new EventMonitor("foo"));
-        assertEquals("Processor should appy to monitor", 1, processors.size());
-
-        processors = _pGroup.getProcessorsFor(new EventMonitor("bar"));
-        assertEquals("Processor should appy to monitor", 1, processors.size());
-
-        _pGroup.setExpression("m.get('name').matches('foo')");
-
-        processors = _pGroup.getProcessorsFor(new EventMonitor("foo"));
-        assertEquals("Processor should appy to monitor", 1, processors.size());
-
-        processors = _pGroup.getProcessorsFor(new EventMonitor("bar"));
-        assertEquals("Processor should appy to monitor", 0, processors.size());
-    }
-
-    public void testUserDataMatching() {
-        EventMonitor noUserData = new EventMonitor("noUserData");
-
-        EventMonitor barUserData = new EventMonitor("barUserData");
-        barUserData.set("foo", "bar");
-        barUserData.set("bar", "baz");
-
-        EventMonitor bazUserData = new EventMonitor("bazUserData");
-        bazUserData.set("foo", "baz");
-
-        // Null user data expression
-
-        List processors = _pGroup.getProcessorsFor(noUserData);
-        assertEquals("Processor should appy to monitor", 1, processors.size());
-
-        processors = _pGroup.getProcessorsFor(barUserData);
-        assertEquals("Processor should appy to monitor", 1, processors.size());
-
-        processors = _pGroup.getProcessorsFor(bazUserData);
-        assertEquals("Processor should appy to monitor", 1, processors.size());
-
-        _pGroup.setExpression("m.get('foo').matches('.*')");
-        processors = _pGroup.getProcessorsFor(noUserData);
-        assertEquals("Processor should appy to monitor", 0, processors.size());
-
-        processors = _pGroup.getProcessorsFor(barUserData);
-        assertEquals("Processor should appy to monitor", 1, processors.size());
-
-        processors = _pGroup.getProcessorsFor(bazUserData);
-        assertEquals("Processor should appy to monitor", 1, processors.size());
-
-        _pGroup.setExpression("m.get('foo').matches('bar')");
-        processors = _pGroup.getProcessorsFor(noUserData);
-        assertEquals("Processor should appy to monitor", 0, processors.size());
-
-        processors = _pGroup.getProcessorsFor(barUserData);
-        assertEquals("Processor should appy to monitor", 1, processors.size());
-
-        processors = _pGroup.getProcessorsFor(bazUserData);
-        assertEquals("Processor should appy to monitor", 0, processors.size());
-
-        _pGroup.setExpression("m.get('bar').matches('bar')");
-        processors = _pGroup.getProcessorsFor(noUserData);
-        assertEquals("Processor should appy to monitor", 0, processors.size());
-
-        processors = _pGroup.getProcessorsFor(barUserData);
-        assertEquals("Processor should appy to monitor", 0, processors.size());
-
-        processors = _pGroup.getProcessorsFor(bazUserData);
-        assertEquals("Processor should appy to monitor", 0, processors.size());
-
-        _pGroup.setExpression("m.get('bar').matches('baz')");
-        processors = _pGroup.getProcessorsFor(noUserData);
-        assertEquals("Processor should appy to monitor", 0, processors.size());
-
-        processors = _pGroup.getProcessorsFor(barUserData);
-        assertEquals("Processor should appy to monitor", 1, processors.size());
-
-        processors = _pGroup.getProcessorsFor(bazUserData);
-        assertEquals("Processor should appy to monitor", 0, processors.size());
-    }
-
-    public void testNonsenseMatching() {
-        _pGroup.setExpression("m.bar");
-
-        List processors = _pGroup.getProcessorsFor(new EventMonitor("test"));
-        assertEquals("Processor should appy to monitor", 0, processors.size());
-
-        _pGroup.setExpression("m.name");
-
-        processors = _pGroup.getProcessorsFor(new EventMonitor("test"));
-        assertEquals("Processor should appy to monitor", 0, processors.size());
-    }
+    EventMonitor event = new EventMonitor("baz", MonitoringLevel.DEBUG);
+    
+    Iterable processors = processGroup.getProcessorsFor(event);
+    assertFalse("No processor should process this monitor b/c its level is DEBUG", processors
+        .iterator().hasNext());
+    
+    EventMonitor event2 = new EventMonitor("baz", MonitoringLevel.INFO);
+    
+    processors = processGroup.getProcessorsFor(event2);
+    
+    assertSize("Processor should process this monitor b/c its level is INFO", 1, processors);
+    
+    EventMonitor event3 = new EventMonitor("baz", MonitoringLevel.ESSENTIAL);
+    
+    processors = processGroup.getProcessorsFor(event3);
+    assertSize("Processor should process this monitor b/c its level is ESSENTIAL", 1, processors);
+  }
+  
+  @Test
+  public void testMonitoringLevelForProcessor() {
+    MonitorProcessor mp = new MockMonitorProcessor("mpA");
+    ProcessGroup processGroup = new ProcessGroup(mp);
+    
+    MonitoringEngine.getInstance().addProcessorLevel("mpA", MonitoringLevel.DEBUG);
+    
+    EventMonitor event = new EventMonitor("baz", MonitoringLevel.DEBUG);
+    
+    Iterable processors = processGroup.getProcessorsFor(event);
+    assertSize("Processor should process this monitor b/c its level is DEBUG", 1, processors);
+    
+    MonitoringEngine.getInstance().addProcessorLevel("mpA", MonitoringLevel.ESSENTIAL);
+    
+    processors = processGroup.getProcessorsFor(event);
+    assertSize("No processor should process this monitor b/c its level is DEBUG", 0, processors);
+  }
+  
+  @Test
+  public void testMonitoringLevelForProcessGroup() {
+    ProcessGroup processGroup = new ProcessGroup(new MockMonitorProcessor());
+    
+    EventMonitor event = new EventMonitor("baz");
+    
+    Iterable processors = processGroup.getProcessorsFor(event);
+    assertSize("ProcessorGroup should process INFO monitors by default", 1, processors);
+    
+    event = new EventMonitor("baz", MonitoringLevel.DEBUG);
+    
+    processors = processGroup.getProcessorsFor(event);
+    assertSize("ProcessorGroup should not process DEBUG monitors by default", 0, processors);
+    
+    processGroup.updateMonitoringLevel(MonitoringLevel.DEBUG.toString());
+    
+    processors = processGroup.getProcessorsFor(event);
+    assertSize("ProcessorGroup should apply this monitor b/c its level is DEBUG", 1, processors);
+    
+    event = new EventMonitor("baz", MonitoringLevel.ESSENTIAL);
+    
+    processors = processGroup.getProcessorsFor(event);
+    assertSize("ProcessorGroup should apply this monitor b/c its level is DEBUG", 1, processors);
+  }
+  
+  @Test
+  public void testMonitoringLevelForProcessorAndProcessGroup() {
+    MonitorProcessor mp = new MockMonitorProcessor("mpA");
+    ProcessGroup processGroup = new ProcessGroup(mp);
+    
+    EventMonitor event = new EventMonitor("baz", MonitoringLevel.DEBUG);
+    processGroup.updateMonitoringLevel(MonitoringLevel.DEBUG.toString());
+    
+    MonitoringEngine.getInstance().addProcessorLevel("mpA", MonitoringLevel.INFO);
+    
+    Iterable processors = processGroup.getProcessorsFor(event);
+    assertSize("No processor should process this monitor b/c its level is DEBUG", 0, processors);
+    
+    event = new EventMonitor("baz", MonitoringLevel.DEBUG);
+    processGroup.updateMonitoringLevel(MonitoringLevel.INFO.toString());
+    
+    MonitoringEngine.getInstance().addProcessorLevel("mpA", MonitoringLevel.DEBUG);
+    
+    processors = processGroup.getProcessorsFor(event);
+    assertSize("Processor should process this monitor b/c its level is DEBUG", 1, processors);
+  }
+  
+  @Test
+  public void testNameMatching() {
+    // Null name expression
+    Iterable processors = processGroup.getProcessorsFor(new EventMonitor("foo"));
+    assertSize("Processor should appy to monitor", 1, processors);
+    processors = processGroup.getProcessorsFor(new EventMonitor("bar"));
+    assertSize("Processor should appy to monitor", 1, processors);
+    
+    processGroup.setExpression("m.get('name').matches('.*')");
+    processors = processGroup.getProcessorsFor(new EventMonitor("foo"));
+    assertSize("Processor should appy to monitor", 1, processors);
+    
+    processors = processGroup.getProcessorsFor(new EventMonitor("bar"));
+    assertSize("Processor should appy to monitor", 1, processors);
+    
+    processGroup.setExpression("m.get('name').matches('foo')");
+    
+    processors = processGroup.getProcessorsFor(new EventMonitor("foo"));
+    assertSize("Processor should appy to monitor", 1, processors);
+    
+    processors = processGroup.getProcessorsFor(new EventMonitor("bar"));
+    assertSize("Processor should appy to monitor", 0, processors);
+  }
+  
+  @Test
+  public void testUserDataMatching() {
+    EventMonitor noUserData = new EventMonitor("noUserData");
+    
+    EventMonitor barUserData = new EventMonitor("barUserData");
+    barUserData.set("foo", "bar");
+    barUserData.set("bar", "baz");
+    
+    EventMonitor bazUserData = new EventMonitor("bazUserData");
+    bazUserData.set("foo", "baz");
+    
+    // Null user data expression
+    
+    Iterable processors = processGroup.getProcessorsFor(noUserData);
+    assertSize("Processor should appy to monitor", 1, processors);
+    
+    processors = processGroup.getProcessorsFor(barUserData);
+    assertSize("Processor should appy to monitor", 1, processors);
+    
+    processors = processGroup.getProcessorsFor(bazUserData);
+    assertSize("Processor should appy to monitor", 1, processors);
+    
+    processGroup.setExpression("m.get('foo').matches('.*')");
+    processors = processGroup.getProcessorsFor(noUserData);
+    assertSize("Processor should appy to monitor", 0, processors);
+    
+    processors = processGroup.getProcessorsFor(barUserData);
+    assertSize("Processor should appy to monitor", 1, processors);
+    
+    processors = processGroup.getProcessorsFor(bazUserData);
+    assertSize("Processor should appy to monitor", 1, processors);
+    
+    processGroup.setExpression("m.get('foo').matches('bar')");
+    processors = processGroup.getProcessorsFor(noUserData);
+    assertSize("Processor should appy to monitor", 0, processors);
+    
+    processors = processGroup.getProcessorsFor(barUserData);
+    assertSize("Processor should appy to monitor", 1, processors);
+    
+    processors = processGroup.getProcessorsFor(bazUserData);
+    assertSize("Processor should appy to monitor", 0, processors);
+    
+    processGroup.setExpression("m.get('bar').matches('bar')");
+    processors = processGroup.getProcessorsFor(noUserData);
+    assertSize("Processor should appy to monitor", 0, processors);
+    
+    processors = processGroup.getProcessorsFor(barUserData);
+    assertSize("Processor should appy to monitor", 0, processors);
+    
+    processors = processGroup.getProcessorsFor(bazUserData);
+    assertSize("Processor should appy to monitor", 0, processors);
+    
+    processGroup.setExpression("m.get('bar').matches('baz')");
+    processors = processGroup.getProcessorsFor(noUserData);
+    assertSize("Processor should appy to monitor", 0, processors);
+    
+    processors = processGroup.getProcessorsFor(barUserData);
+    assertSize("Processor should appy to monitor", 1, processors);
+    
+    processors = processGroup.getProcessorsFor(bazUserData);
+    assertSize("Processor should appy to monitor", 0, processors);
+  }
+  
+  @Test
+  public void testNonsenseMatching() {
+    processGroup.setExpression("m.bar");
+    
+    Iterable processors = processGroup.getProcessorsFor(new EventMonitor("test"));
+    assertSize("Processor should appy to monitor", 0, processors);
+    
+    processGroup.setExpression("m.name");
+    
+    processors = processGroup.getProcessorsFor(new EventMonitor("test"));
+    assertSize("Processor should appy to monitor", 0, processors);
+  }
 }

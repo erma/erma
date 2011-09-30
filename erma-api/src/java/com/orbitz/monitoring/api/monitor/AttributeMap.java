@@ -198,13 +198,19 @@ public class AttributeMap implements Serializable {
     throw new CantCoerceException(key, value, "List");
   }
   
-  public Set getAsSet(final String key) {
-    final Object value = get(key);
-    
-    if (value instanceof Set) {
-      return (Set)value;
+  /**
+   * Gets the value at the specified key as a set
+   * @param key the key of the value to retrieve
+   * @return the value
+   * @throws CantCoerceException if the value is not a set
+   */
+  @SuppressWarnings("unchecked")
+  public <T> Set<T> getAsSet(final String key) {
+    Object value = get(key);
+    try {
+      return (Set<T>)value;
     }
-    else {
+    catch (ClassCastException ex) {
       throw new CantCoerceException(key, value, "Set");
     }
   }
