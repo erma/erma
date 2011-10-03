@@ -2,6 +2,7 @@ package com.orbitz.monitoring.api.monitor;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicates;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.orbitz.monitoring.api.AttributeUndefinedException;
 import com.orbitz.monitoring.api.CantCoerceException;
@@ -192,10 +193,30 @@ public class AttributeMap implements Serializable {
     if ((value == null) || (value instanceof List)) {
       return (List<T>)value;
     }
+    // TODO: Remove coercion. If the client wants to get a list, they should put a list in.
     if (value instanceof Object[]) {
-      return (List<T>)Arrays.asList((Object[])value);
+      final List<?> result = Arrays.asList((Object[])value);
+      return Lists.transform(result, new Function<Object, T>() {
+        public T apply(final Object in) {
+          if (in instanceof Object[]) {
+            return (T)convertToList(Arrays.asList((Object[])in));
+          }
+          return (T)in;
+        }
+      });
     }
     throw new CantCoerceException(key, value, "List");
+  }
+  
+  private List<?> convertToList(final List<?> array) {
+    return Lists.transform(array, new Function<Object, Object>() {
+      public Object apply(final Object in) {
+        if (in instanceof Object[]) {
+          return convertToList(Arrays.asList((Object[])in));
+        }
+        return in;
+      }
+    });
   }
   
   /**

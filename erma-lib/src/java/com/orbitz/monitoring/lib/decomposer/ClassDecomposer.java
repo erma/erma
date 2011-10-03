@@ -4,17 +4,18 @@ import java.io.Serializable;
 import java.util.IdentityHashMap;
 
 /**
- * Returns the full qualiified class name for a given Class object
- *
+ * Returns the fully qualified class name for a given Class object
  * @author Operations Architecture
  */
 class ClassDecomposer extends AbstractAttributeDecomposerStep {
-    Serializable createMutableContainer(Object o) {
-        return (Serializable) ((Class)o).getName();
-    }
-
-    void decomposeInto(Object o, Serializable container,
-                       IdentityHashMap alreadyDecomposed) {
-        // No-op
-    }
+  @Override
+  Serializable createMutableContainer(final Object o) {
+    return ((Class<?>)o).getName();
+  }
+  
+  @Override
+  void decomposeInto(final Object o, final Serializable container,
+      final IdentityHashMap<Object, Serializable> alreadyDecomposed) {
+    // No-op
+  }
 }

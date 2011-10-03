@@ -3,14 +3,17 @@ package com.orbitz.monitoring.api;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
+import com.google.common.collect.Lists;
 import com.orbitz.monitoring.api.monitor.AttributeHolder;
 import com.orbitz.monitoring.api.monitor.AttributeMap;
 import com.orbitz.monitoring.api.monitor.CompositeAttributeHolder;
 import com.orbitz.monitoring.api.monitor.CompositeAttributeMap;
 import com.orbitz.monitoring.api.monitor.TransactionMonitor;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import org.apache.commons.beanutils.PropertyUtilsBean;
 import org.junit.After;
@@ -47,6 +50,58 @@ public class AttributeMapTest {
     AttributeHolder holder = attributes.set("foo", "baz").serializable();
     assertEquals("Value should be updated", "baz", attributes.get("foo"));
     assertTrue("Serializable should be true", holder.isSerializable());
+  }
+  
+  /**
+   * @see AttributeMap#getAsList(String)
+   */
+  @Test
+  public void testGetAsList() {
+    String key = "key";
+    List<String> value = new ArrayList<String>();
+    AttributeMap map = spy(new AttributeMap());
+    doReturn(value).when(map).get(key);
+    assertSame(value, map.getAsList(key));
+  }
+  
+  /**
+   * @see AttributeMap#getAsList(String)
+   */
+  @Test
+  public void testGetAsListArray() {
+    String key = "key";
+    String[] value = new String[] {"a", "b", "c"};
+    AttributeMap map = spy(new AttributeMap());
+    doReturn(value).when(map).get(key);
+    assertEquals(Lists.newArrayList(value), map.getAsList(key));
+  }
+  
+  /**
+   * @see AttributeMap#getAsList(String)
+   */
+  @Test
+  public void testGetAsList2DArray() {
+    String key = "key";
+    String[][] value = new String[][] {new String[] {"a"}, new String[] {"b"}, new String[] {"c"}};
+    AttributeMap map = spy(new AttributeMap());
+    doReturn(value).when(map).get(key);
+    final List<List<String>> actual = map.getAsList(key);
+    assertEquals(actual.get(0).get(0), "a");
+    assertEquals(actual.get(1).get(0), "b");
+    assertEquals(actual.get(2).get(0), "c");
+  }
+  
+  /**
+   * @see AttributeMap#getAsList(String)
+   */
+  @Test
+  public void testGetAsList3DArray() {
+    String key = "key";
+    String[][][] value = new String[][][] {new String[][] {new String[] {"a"}}};
+    AttributeMap map = spy(new AttributeMap());
+    doReturn(value).when(map).get(key);
+    final List<List<List<String>>> actual = map.getAsList(key);
+    assertEquals(actual.get(0).get(0).get(0), "a");
   }
   
   /**
