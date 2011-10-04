@@ -8,7 +8,6 @@ import org.apache.commons.beanutils.LazyDynaBean;
 import org.apache.commons.beanutils.MethodUtils;
 import org.apache.commons.beanutils.WrapDynaBean;
 import org.apache.commons.beanutils.WrapDynaClass;
-import org.apache.log4j.Logger;
 
 /**
  * Given an object, this class reflects over its JavaBean attributes and creates a Serializable
@@ -17,8 +16,6 @@ import org.apache.log4j.Logger;
  * @author Doug Barth
  */
 class ReflectiveDecomposer extends AbstractAttributeDecomposerStep {
-  private static final Logger log = Logger.getLogger(ReflectiveDecomposer.class);
-  
   private final AttributeDecomposer.Step _delegate;
   
   public ReflectiveDecomposer(final AttributeDecomposer.Step delegate) {

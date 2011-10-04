@@ -3,49 +3,138 @@ package com.orbitz.monitoring.api.monitor;
 import junit.framework.TestCase;
 
 /**
- * Test cases for AttributeHolder
- * <p/>
- * <p>(c) 2000-08 Orbitz, LLC. All Rights Reserved.</p>
+ * Tests {@link AttributeHolder}
  */
 public class AttributeHolderTest extends TestCase {
-
-    public void testEquals() {
-        AttributeHolder a1 = new AttributeHolder(null);
-        AttributeHolder a2 = new AttributeHolder(null);
-        assertEquals(a1, a2);
-
-        // metadata doesn't matter when testing for equality
-        a2.lock().serializable();
-        assertEquals(a1, a2);
-
-        assertFalse(a1.equals("aString"));
-        assertFalse(a1.equals(null));
-
-        a1 = new AttributeHolder("a");
-        assertFalse(a1.equals(a2));
-        a2 = new AttributeHolder("a");
-        assertTrue(a1.equals(a2));
-
-        a1 = new AttributeHolder(null);
-        assertFalse(a2.equals(a1));
-
-        a1 = new AttributeHolder("b");
-        assertFalse(a1.equals(a2));
-    }
-
-    public void testToString() {
-        AttributeHolder ah = new AttributeHolder("a");
-        assertEquals("a", ah.toString());
-
-        ah = new AttributeHolder(null);
-        assertEquals("null", ah.toString());
-    }
-
-    public void testHashCode() {
-        AttributeHolder ah = new AttributeHolder("a");
-        assertEquals("a".hashCode(), ah.hashCode());
-
-        ah = new AttributeHolder(null);
-        assertEquals("null".hashCode(), ah.hashCode());
-    }
+  /**
+   * @see AttributeHolder#equals(Object)
+   */
+  public void testEqualsNullValues() {
+    AttributeHolder holder1 = new AttributeHolder(null);
+    AttributeHolder holder2 = new AttributeHolder(null);
+    assertEquals(holder1, holder2);
+  }
+  
+  /**
+   * @see AttributeHolder#equals(Object)
+   */
+  public void testEqualsNullValuesOneLocked() {
+    AttributeHolder holder1 = new AttributeHolder(null);
+    AttributeHolder holder2 = new AttributeHolder(null).lock();
+    assertFalse(holder1.equals(holder2));
+  }
+  
+  /**
+   * @see AttributeHolder#equals(Object)
+   */
+  public void testEqualsNullValuesBothLocked() {
+    AttributeHolder holder1 = new AttributeHolder(null).lock();
+    AttributeHolder holder2 = new AttributeHolder(null).lock();
+    assertEquals(holder1, holder2);
+  }
+  
+  /**
+   * @see AttributeHolder#equals(Object)
+   */
+  public void testEqualsNullValuesOneSerializable() {
+    AttributeHolder holder1 = new AttributeHolder(null);
+    AttributeHolder holder2 = new AttributeHolder(null).serializable();
+    // Should pass because the serializable flag wasn't ever set because "null" is not serializable
+    assertEquals(holder1, holder2);
+  }
+  
+  /**
+   * @see AttributeHolder#equals(Object)
+   */
+  public void testEqualsNullValuesBothSerializable() {
+    AttributeHolder holder1 = new AttributeHolder(null).serializable();
+    AttributeHolder holder2 = new AttributeHolder(null).serializable();
+    assertEquals(holder1, holder2);
+  }
+  
+  /**
+   * @see AttributeHolder#equals(Object)
+   */
+  public void testEqualsNotNullValuesOneSerializable() {
+    AttributeHolder holder1 = new AttributeHolder("a");
+    AttributeHolder holder2 = new AttributeHolder("a").serializable();
+    assertFalse(holder1.equals(holder2));
+  }
+  
+  /**
+   * @see AttributeHolder#equals(Object)
+   */
+  public void testEqualsNotNullValuesBothSerializable() {
+    AttributeHolder holder1 = new AttributeHolder("a").serializable();
+    AttributeHolder holder2 = new AttributeHolder("a").serializable();
+    assertEquals(holder1, holder2);
+  }
+  
+  /**
+   * @see AttributeHolder#equals(Object)
+   */
+  public void testEqualsDifferentType() {
+    AttributeHolder holder = new AttributeHolder(null);
+    assertFalse(holder.equals("aString"));
+  }
+  
+  /**
+   * @see AttributeHolder#equals(Object)
+   */
+  public void testEqualsNull() {
+    AttributeHolder holder = new AttributeHolder(null);
+    assertFalse(holder.equals(null));
+  }
+  
+  /**
+   * @see AttributeHolder#equals(Object)
+   */
+  public void testEqualsNotNullNullValues() {
+    AttributeHolder holder1 = new AttributeHolder("a");
+    AttributeHolder holder2 = new AttributeHolder(null);
+    assertFalse(holder1.equals(holder2));
+  }
+  
+  /**
+   * @see AttributeHolder#equals(Object)
+   */
+  public void testEqualsEqualValues() {
+    AttributeHolder holder1 = new AttributeHolder("a");
+    AttributeHolder holder2 = new AttributeHolder("a");
+    assertTrue(holder1.equals(holder2));
+  }
+  
+  /**
+   * @see AttributeHolder#equals(Object)
+   */
+  public void testEqualsNullNotNullValues() {
+    AttributeHolder holder1 = new AttributeHolder(null);
+    AttributeHolder holder2 = new AttributeHolder("a");
+    assertFalse(holder1.equals(holder2));
+  }
+  
+  /**
+   * @see AttributeHolder#equals(Object)
+   */
+  public void testEqualsNotEqualValues() {
+    AttributeHolder holder1 = new AttributeHolder("a");
+    AttributeHolder holder2 = new AttributeHolder("b");
+    assertFalse(holder1.equals(holder2));
+  }
+  
+  public void testToString() {
+    AttributeHolder ah = new AttributeHolder("a");
+    assertEquals("a", ah.toString());
+    
+    ah = new AttributeHolder(null);
+    assertEquals("null", ah.toString());
+  }
+  
+  public void testHashCode() {
+    AttributeHolder ah = new AttributeHolder("a");
+    assertEquals("a".hashCode(), ah.hashCode());
+    
+    ah = new AttributeHolder(null);
+    assertEquals("null".hashCode(), ah.hashCode());
+  }
 }
