@@ -212,7 +212,6 @@ public class AttributeMap implements Serializable {
    * @return If the value is a {@link Boolean}, it is returned. If its {@link Object#toString()}
    *         matches the words "true" or "false", one of those values is returned. If the key
    *         doesn't exist, the specified default value is returned.
-   * @throws AttributeUndefinedException if the key doesn't exist
    * @throws CantCoerceException if the key exists, but the value is not a boolean and can't be
    *         converted to one
    */
@@ -256,7 +255,6 @@ public class AttributeMap implements Serializable {
    *         {@link Object#toString()} is called and the result is passed to
    *         {@link Byte#parseByte(String)}. If the key doesn't exist, the specified default value
    *         is returned.
-   * @throws AttributeUndefinedException if the key doesn't exist
    * @throws CantCoerceException if the key exists, but the value is not a byte and can't be
    *         converted to one
    */
