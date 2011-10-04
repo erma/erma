@@ -1,6 +1,7 @@
-.gradle
-build
-erma-lib/build
-erma-ext/erma-mongo-processor/build
-erma.iml
+/.gradle
+/build
+/erma-api/build
+/erma-lib/build
+/erma-ext/erma-mongo-processor/build
+/erma.iml
 /idebuild

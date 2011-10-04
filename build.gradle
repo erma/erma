@@ -38,6 +38,20 @@ task dist(dependsOn: [projectDist]) << {
   }
 }
 
+task publishJavadoc(dependsOn: [javadoc]) << {
+  String docFolder = project.rootDir.getCanonicalPath() + File.separator + 'docs' + File.separator
+  new File(docFolder).delete()
+  for (project in subprojects) {
+    def shortProjectName = project.name.split('/')[-1]
+    File projectDocFolder = new File(docFolder + shortProjectName)
+    projectDocFolder.mkdirs()
+    copy {
+      from project.javadoc.destinationDir
+      into projectDocFolder
+    }
+  }
+}
+
 subprojects { subproject ->
   apply plugin: 'signing'
   apply plugin: 'maven'
