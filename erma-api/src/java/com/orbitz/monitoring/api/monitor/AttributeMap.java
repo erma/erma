@@ -94,6 +94,11 @@ public class AttributeMap implements Serializable {
     return attributeHolder;
   }
   
+  /**
+   * Creates a new {@link CompositeAttributeHolder} holding the specified value
+   * @param value the value to hold
+   * @return the holder
+   */
   protected CompositeAttributeHolder createHolderForValue(final Object value) {
     return new CompositeAttributeHolder(value);
   }
@@ -135,6 +140,11 @@ public class AttributeMap implements Serializable {
     });
   }
   
+  /**
+   * Creates a new map with the same mapping of {@link String strings} to {@link AttributeHolder
+   * attribute holders} as this map
+   * @return the new map
+   */
   public Map<String, AttributeHolder> getAllAttributeHolders() {
     return new HashMap<String, AttributeHolder>(attributes);
   }

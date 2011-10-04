@@ -39,7 +39,8 @@ task dist(dependsOn: [projectDist]) << {
 }
 
 task publishJavadoc(dependsOn: [javadoc]) << {
-  String docFolder = project.buildDir.getCanonicalPath() + File.separator + 'docs' + File.separator
+  def sep = File.separator
+  String docFolder = project.buildDir.getCanonicalPath() + sep + 'docs' + sep
   assert new File(docFolder).deleteDir()
   for (project in subprojects) {
     def shortProjectName = project.name.split('/')[-1]
@@ -50,25 +51,36 @@ task publishJavadoc(dependsOn: [javadoc]) << {
       into projectDocFolder
     }
   }
-  File checkoutFolder = new File(project.buildDir.getCanonicalPath() + File.separator + 'docspublish')
-  File checkoutDocsFolder = new File(checkoutFolder.getCanonicalPath() + File.separator + 'docs')
+  File checkoutFolder = new File(project.buildDir.getCanonicalPath() + sep + 'docspublish')
+  File checkoutProjectFolder = new File(checkoutFolder.getCanonicalPath() + sep + 'erma')
+  File checkoutDocsFolder = new File(checkoutProjectFolder.getCanonicalPath() + sep + 'docs')
   assert checkoutFolder.deleteDir()
   checkoutFolder.mkdirs()
-  def process = 'git clone git@github.com:erma/erma.git -b gh-pages'.execute([], checkoutFolder)
+  def command = 'git clone git@github.com:erma/erma.git -b gh-pages'
+  logger.info(command)
+  def process = command.execute([], checkoutFolder)
   process.waitFor()
   assert process.exitValue() == 0
   assert checkoutDocsFolder.deleteDir()
+  checkoutDocsFolder.mkdirs()
   copy {
     from new File(docFolder)
-    into checkoutFolder
+    into checkoutDocsFolder
   }
-  process = 'git add .'.execute([], checkoutFolder)
+  command = 'git add .'
+  logger.info(command)
+  process = command.execute([], checkoutProjectFolder)
   process.waitFor()
   assert process.exitValue() == 0
-  process = 'git commit -m "Updating documentation"'.execute([], checkoutFolder)
+  def commandList = ['git', 'commit', '-m', 'Updated documentation']
+  logger.info('***** NOTE: The Git commit will fail if there aren\'t any changes *****')
+  logger.info(commandList.join(' '))
+  process = commandList.execute([], checkoutProjectFolder)
   process.waitFor()
   assert process.exitValue() == 0
-  process = 'git push'.execute([], checkoutFolder)
+  command = 'git push'
+  logger.info(command)
+  process = command.execute([], checkoutProjectFolder)
   process.waitFor()
   assert process.exitValue() == 0
 }
