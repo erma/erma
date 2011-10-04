@@ -122,19 +122,37 @@ public class AttributeHolderTest extends TestCase {
     assertFalse(holder1.equals(holder2));
   }
   
-  public void testToString() {
-    AttributeHolder ah = new AttributeHolder("a");
-    assertEquals("a", ah.toString());
-    
-    ah = new AttributeHolder(null);
-    assertEquals("null", ah.toString());
+  /**
+   * @see AttributeHolder#toString()
+   */
+  public void testToStringStringValue() {
+    AttributeHolder holder = new AttributeHolder("a");
+    assertEquals("a", holder.toString());
   }
   
-  public void testHashCode() {
-    AttributeHolder ah = new AttributeHolder("a");
-    assertEquals("a".hashCode(), ah.hashCode());
-    
-    ah = new AttributeHolder(null);
-    assertEquals("null".hashCode(), ah.hashCode());
+  /**
+   * @see AttributeHolder#toString()
+   */
+  public void testToStringNullValue() {
+    AttributeHolder holder = new AttributeHolder(null);
+    assertEquals("null", holder.toString());
+  }
+  
+  /**
+   * @see AttributeHolder#hashCode()
+   */
+  public void testHashCodeStringValue() {
+    AttributeHolder holder1 = new AttributeHolder("a");
+    AttributeHolder holder2 = new AttributeHolder("a");
+    assertEquals(holder1.hashCode(), holder2.hashCode());
+  }
+  
+  /**
+   * @see AttributeHolder#hashCode()
+   */
+  public void testHashCodeNullValue() {
+    AttributeHolder holder1 = new AttributeHolder(null);
+    AttributeHolder holder2 = new AttributeHolder(null);
+    assertEquals(holder1.hashCode(), holder2.hashCode());
   }
 }
