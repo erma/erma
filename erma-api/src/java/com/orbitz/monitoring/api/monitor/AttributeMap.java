@@ -128,6 +128,22 @@ public class AttributeMap implements Serializable {
   }
   
   /**
+   * Gets the value at the specified key, checking for null
+   * @param key the key to find
+   * @return the value at the key
+   * @throws AttributeUndefinedException if the key doesn't exist or if its value is null
+   */
+  public Object getNotNull(final String key) {
+    // TODO: If the documentation for this class is correct, AttributeMap does not support null
+    // values. If that is true, this method should be removed.
+    Object result = this.get(key);
+    if (result == null) {
+      throw new AttributeUndefinedException(key);
+    }
+    return result;
+  }
+  
+  /**
    * Gets all values from this attribute map
    * @return a map of all keys to all values
    */
@@ -167,26 +183,39 @@ public class AttributeMap implements Serializable {
     return allSerializable;
   }
   
+  /**
+   * Gets the value at the specified key as a boolean
+   * @param key the key to find
+   * @return If the value is a {@link Boolean}, it is returned. If its {@link Object#toString()}
+   *         matches the words "true" or "false", one of those values is returned.
+   * @throws AttributeUndefinedException if the key doesn't exist
+   * @throws CantCoerceException if the value is not a boolean and can't be converted to one
+   */
   public boolean getAsBoolean(final String key) {
-    final Object value = get(key);
-    
-    if (value == null) {
-      throw new AttributeUndefinedException(key);
+    final Object value = getNotNull(key);
+    if (value instanceof Boolean) {
+      return ((Boolean)value);
     }
-    
-    if (!(value instanceof Boolean)) {
-      if ("true".equalsIgnoreCase(value.toString())) {
-        return true;
-      }
-      else if ("false".equalsIgnoreCase(value.toString())) {
-        return false;
-      }
-      throw new CantCoerceException(key, value, "boolean");
+    if ("true".equalsIgnoreCase(value.toString())) {
+      return true;
     }
-    
-    return ((Boolean)value).booleanValue();
+    if ("false".equalsIgnoreCase(value.toString())) {
+      return false;
+    }
+    throw new CantCoerceException(key, value, "boolean");
   }
   
+  /**
+   * Gets the value at the specified key as a boolean
+   * @param key the key of the value
+   * @param defaultValue the value to return if the specified key doesn't exist
+   * @return If the value is a {@link Boolean}, it is returned. If its {@link Object#toString()}
+   *         matches the words "true" or "false", one of those values is returned. If the key
+   *         doesn't exist, the specified default value is returned.
+   * @throws AttributeUndefinedException if the key doesn't exist
+   * @throws CantCoerceException if the key exists, but the value is not a boolean and can't be
+   *         converted to one
+   */
   public boolean getAsBoolean(final String key, final boolean defaultValue) {
     if (!hasAttribute(key)) {
       return defaultValue;
@@ -196,31 +225,47 @@ public class AttributeMap implements Serializable {
     }
   }
   
+  /**
+   * Gets the value at the specified key as a byte
+   * @param key the key of the value
+   * @return If the value is a {@link Number}, its byte value is returned. Otherwise, its
+   *         {@link Object#toString()} is called and the result is passed to
+   *         {@link Byte#parseByte(String)}.
+   * @throws AttributeUndefinedException if the key doesn't exist
+   * @throws CantCoerceException if the key exists, but the value is not a byte and can't be
+   *         converted to one
+   */
   public byte getAsByte(final String key) {
-    final Object value = get(key);
-    
-    if (value == null) {
-      throw new AttributeUndefinedException(key);
+    final Object value = getNotNull(key);
+    if (value instanceof Number) {
+      return ((Number)value).byteValue();
     }
-    
-    if (!(value instanceof Number)) {
-      try {
-        return Byte.parseByte(value.toString());
-      }
-      catch (final NumberFormatException e) {
-        throw new CantCoerceException(key, value, "byte");
-      }
+    try {
+      return Byte.parseByte(value.toString());
     }
-    
-    return ((Number)value).byteValue();
+    catch (final NumberFormatException e) {
+      throw new CantCoerceException(key, value, "byte");
+    }
   }
   
+  /**
+   * Gets the value at the specified key as a byte
+   * @param key the key of the value
+   * @param defaultValue the value to return if the key doesn't exist
+   * @return If the value is a {@link Number}, its byte value is returned. Otherwise, its
+   *         {@link Object#toString()} is called and the result is passed to
+   *         {@link Byte#parseByte(String)}. If the key doesn't exist, the specified default value
+   *         is returned.
+   * @throws AttributeUndefinedException if the key doesn't exist
+   * @throws CantCoerceException if the key exists, but the value is not a byte and can't be
+   *         converted to one
+   */
   public byte getAsByte(final String key, final byte defaultValue) {
-    if (!(hasAttribute(key))) {
-      return defaultValue;
+    if (hasAttribute(key)) {
+      return getAsByte(key);
     }
     else {
-      return getAsByte(key);
+      return defaultValue;
     }
   }
   
