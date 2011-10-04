@@ -1,7 +1,5 @@
 .gradle
-reports
 build
-erma-api/build
 erma-lib/build
 erma-ext/erma-mongo-processor/build
 erma.iml

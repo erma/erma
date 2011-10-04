@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dependencies>
+  <artifactgroup type="compile">
+    <artifact name="log4j" project="log4j" group="apache" type="jar" version="1.2.9" expireMinutes="0" />
+    <artifact name="commons-lang" project="commons" group="apache" type="jar" version="2.2" expireMinutes="0" />
+    <artifact name="junit" project="junit" group="misc" type="jar" version="4.8.1" expireMinutes="0" />
+  </artifactgroup>
+</dependencies>

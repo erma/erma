@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dependencies>
+  <artifactgroup type="compile">
+    <artifact name="log4j" project="log4j" group="apache" type="jar" version="1.2.9" expireMinutes="0" />
+    <artifact name="commons-lang" project="commons" group="apache" type="jar" version="2.2" expireMinutes="0" />
+    <artifact name="spring" project="springframework" group="springframework" type="jar" version="2.0.6" expireMinutes="0" />
+    <artifact name="commons-beanutils" project="commons" group="apache" type="jar" version="1.7" expireMinutes="0" />
+    <artifact name="commons-jexl" project="commons" group="apache" type="jar" version="1.0" expireMinutes="0" />
+    <artifact name="xstream" project="xstream" group="codehaus" type="jar" version="1.2.2" expireMinutes="0" />
+  </artifactgroup>
+</dependencies>
