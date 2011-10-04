@@ -39,8 +39,8 @@ task dist(dependsOn: [projectDist]) << {
 }
 
 task publishJavadoc(dependsOn: [javadoc]) << {
-  String docFolder = project.rootDir.getCanonicalPath() + File.separator + 'docs' + File.separator
-  new File(docFolder).delete()
+  String docFolder = project.buildDir.getCanonicalPath() + File.separator + 'docs' + File.separator
+  assert new File(docFolder).deleteDir()
   for (project in subprojects) {
     def shortProjectName = project.name.split('/')[-1]
     File projectDocFolder = new File(docFolder + shortProjectName)
@@ -50,6 +50,27 @@ task publishJavadoc(dependsOn: [javadoc]) << {
       into projectDocFolder
     }
   }
+  File checkoutFolder = new File(project.buildDir.getCanonicalPath() + File.separator + 'docspublish')
+  File checkoutDocsFolder = new File(checkoutFolder.getCanonicalPath() + File.separator + 'docs')
+  assert checkoutFolder.deleteDir()
+  checkoutFolder.mkdirs()
+  def process = 'git clone git@github.com:erma/erma.git -b gh-pages'.execute([], checkoutFolder)
+  process.waitFor()
+  assert process.exitValue() == 0
+  assert checkoutDocsFolder.deleteDir()
+  copy {
+    from new File(docFolder)
+    into checkoutFolder
+  }
+  process = 'git add .'.execute([], checkoutFolder)
+  process.waitFor()
+  assert process.exitValue() == 0
+  process = 'git commit -m "Updating documentation"'.execute([], checkoutFolder)
+  process.waitFor()
+  assert process.exitValue() == 0
+  process = 'git push'.execute([], checkoutFolder)
+  process.waitFor()
+  assert process.exitValue() == 0
 }
 
 subprojects { subproject ->
