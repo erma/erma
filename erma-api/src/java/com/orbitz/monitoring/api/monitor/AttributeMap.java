@@ -128,22 +128,6 @@ public class AttributeMap implements Serializable {
   }
   
   /**
-   * Gets the value at the specified key, checking for null
-   * @param key the key to find
-   * @return the value at the key
-   * @throws AttributeUndefinedException if the key doesn't exist or if its value is null
-   */
-  public Object getNotNull(final String key) {
-    // TODO: If the documentation for this class is correct, AttributeMap does not support null
-    // values. If that is true, this method should be removed.
-    Object result = this.get(key);
-    if (result == null) {
-      throw new AttributeUndefinedException(key);
-    }
-    return result;
-  }
-  
-  /**
    * Gets all values from this attribute map
    * @return a map of all keys to all values
    */
@@ -267,26 +251,39 @@ public class AttributeMap implements Serializable {
     }
   }
   
+  /**
+   * Gets the value at the specified key as a character
+   * @param key the key of the value
+   * @return If the value is a {@link Character}, the value. If it is a {@link String} and is of
+   *         length 1, the character of the string.
+   * @throws AttributeUndefinedException if the key doesn't exist
+   * @throws CantCoerceException if the key exists, but the value is not a character and can't be
+   *         converted to one
+   */
   public char getAsChar(final String key) {
-    final Object value = get(key);
-    
-    if (value == null) {
-      throw new AttributeUndefinedException(key);
+    final Object value = getNotNull(key);
+    if (value instanceof Character) {
+      return ((Character)value);
     }
-    
-    if (!(value instanceof Character)) {
-      if (value instanceof String) {
-        final String stringValue = (String)value;
-        if (stringValue.length() == 1) {
-          return stringValue.charAt(0);
-        }
+    if (value instanceof String) {
+      final String stringValue = (String)value;
+      if (stringValue.length() == 1) {
+        return stringValue.charAt(0);
       }
-      throw new CantCoerceException(key, value, "char");
     }
-    
-    return ((Character)value).charValue();
+    throw new CantCoerceException(key, value, "char");
   }
   
+  /**
+   * Gets the value at the specified key as a character
+   * @param key the key of the value
+   * @param defaultValue the value to return if the key doesn't exist
+   * @return If the value is a {@link Character}, the value. If it is a {@link String} and is of
+   *         length 1, the character of the string. If the value doesn't exist, defaultValue.
+   * @throws AttributeUndefinedException if the key doesn't exist
+   * @throws CantCoerceException if the key exists, but the value is not a character and can't be
+   *         converted to one
+   */
   public char getAsChar(final String key, final char defaultValue) {
     if (!hasAttribute(key)) {
       return defaultValue;
@@ -296,25 +293,38 @@ public class AttributeMap implements Serializable {
     }
   }
   
+  /**
+   * Gets the value at the specified key as a double
+   * @param key the key of the value
+   * @return If the value is a {@link Number}, the value's {@link Number#doubleValue()}. Otherwise,
+   *         its {@link Object#toString()} is called and the result is parsed as a double.
+   * @throws AttributeUndefinedException if the key doesn't exist
+   * @throws CantCoerceException if the key exists, but the value is not a double and can't be
+   *         converted to one
+   */
   public double getAsDouble(final String key) {
-    final Object value = get(key);
-    
-    if (value == null) {
-      throw new AttributeUndefinedException(key);
+    final Object value = getNotNull(key);
+    if (value instanceof Number) {
+      return ((Number)value).doubleValue();
     }
-    
-    if (!(value instanceof Number)) {
-      try {
-        return Double.parseDouble(value.toString());
-      }
-      catch (final NumberFormatException e) {
-        throw new CantCoerceException(key, value, "double");
-      }
+    try {
+      return Double.parseDouble(value.toString());
     }
-    
-    return ((Number)value).doubleValue();
+    catch (final NumberFormatException e) {
+      throw new CantCoerceException(key, value, "double");
+    }
   }
   
+  /**
+   * Gets the value at the specified key as a double
+   * @param key the key of the value
+   * @param defaultValue the value to return if the key doesn't exist
+   * @return If the value is a {@link Number}, the value's {@link Number#doubleValue()}. If it is
+   *         not a number, its {@link Object#toString()} is called and the result is parsed as a
+   *         double. If the key doesn't exist, defaultValue.
+   * @throws CantCoerceException if the key exists, but the value is not a double and can't be
+   *         converted to one
+   */
   public double getAsDouble(final String key, final double defaultValue) {
     if (!(hasAttribute(key))) {
       return defaultValue;
@@ -324,25 +334,38 @@ public class AttributeMap implements Serializable {
     }
   }
   
+  /**
+   * Gets the value at the specified key as a float
+   * @param key the key of the value
+   * @return If the value is a {@link Number}, the value's {@link Number#floatValue()}. Otherwise,
+   *         its {@link Object#toString()} is called and the result is parsed as a float.
+   * @throws AttributeUndefinedException if the key doesn't exist
+   * @throws CantCoerceException if the key exists, but the value is not a float and can't be
+   *         converted to one
+   */
   public float getAsFloat(final String key) {
-    final Object value = get(key);
-    
-    if (value == null) {
-      throw new AttributeUndefinedException(key);
+    final Object value = getNotNull(key);
+    if (value instanceof Number) {
+      return ((Number)value).floatValue();
     }
-    
-    if (!(value instanceof Number)) {
-      try {
-        return Float.parseFloat(value.toString());
-      }
-      catch (final NumberFormatException e) {
-        throw new CantCoerceException(key, value, "float");
-      }
+    try {
+      return Float.parseFloat(value.toString());
     }
-    
-    return ((Number)value).floatValue();
+    catch (final NumberFormatException e) {
+      throw new CantCoerceException(key, value, "float");
+    }
   }
   
+  /**
+   * Gets the value at the specified key as a float
+   * @param key the key of the value
+   * @param defaultValue the value to return if the key doesn't exist
+   * @return If the value is a {@link Number}, the value's {@link Number#floatValue()}. If it is not
+   *         a number, its {@link Object#toString()} is called and the result is parsed as a float.
+   *         If the key doesn't exist, defaultValue.
+   * @throws CantCoerceException if the key exists, but the value is not a float and can't be
+   *         converted to one
+   */
   public float getAsFloat(final String key, final float defaultValue) {
     if (!(hasAttribute(key))) {
       return defaultValue;
@@ -352,25 +375,38 @@ public class AttributeMap implements Serializable {
     }
   }
   
+  /**
+   * Gets the value at the specified key as an integer
+   * @param key the key of the value
+   * @return If the value is a {@link Number}, the value's {@link Number#intValue()}. Otherwise, its
+   *         {@link Object#toString()} is called and the result is parsed as an integer.
+   * @throws AttributeUndefinedException if the key doesn't exist
+   * @throws CantCoerceException if the key exists, but the value is not an integer and can't be
+   *         converted to one
+   */
   public int getAsInt(final String key) {
-    final Object value = get(key);
-    
-    if (value == null) {
-      throw new AttributeUndefinedException(key);
+    final Object value = getNotNull(key);
+    if (value instanceof Number) {
+      return ((Number)value).intValue();
     }
-    
-    if (!(value instanceof Number)) {
-      try {
-        return Integer.parseInt(value.toString());
-      }
-      catch (final NumberFormatException e) {
-        throw new CantCoerceException(key, value, "int");
-      }
+    try {
+      return Integer.parseInt(value.toString());
     }
-    
-    return ((Number)value).intValue();
+    catch (final NumberFormatException e) {
+      throw new CantCoerceException(key, value, "int");
+    }
   }
   
+  /**
+   * Gets the value at the specified key as an integer
+   * @param key the key of the value
+   * @param defaultValue the value to return if the key doesn't exist
+   * @return If the value is a {@link Number}, the value's {@link Number#intValue()}. If it is not a
+   *         number, its {@link Object#toString()} is called and the result is parsed as an integer.
+   *         If the key does not exist, defaultValue.
+   * @throws CantCoerceException if the key exists, but the value is not an integer and can't be
+   *         converted to one
+   */
   public int getAsInt(final String key, final int defaultValue) {
     if (!(hasAttribute(key))) {
       return defaultValue;
@@ -381,14 +417,17 @@ public class AttributeMap implements Serializable {
   }
   
   /**
-   * Gets the specified value as a list. If the value is a list or null, it will be returned. If the
-   * value is an array, it will be converted to a list.
-   * @param key the key of the value to find
-   * @return the value
+   * Gets the value at the specified key as a list
+   * @param key the key of the value
+   * @return If the value is a list or null, the value. If it's an array, it will be converted to a
+   *         list, along with any sub-arrays.
+   * @throws CantCoerceException if the key exists, but the value is not a list and can't be
+   *         converted to one
    */
   @SuppressWarnings("unchecked")
   public <T> List<T> getAsList(final String key) {
     Object value = get(key);
+    // TODO: Other methods throw AttributeUndefinedException if the value is null. Be consistent.
     if ((value == null) || (value instanceof List)) {
       return (List<T>)value;
     }
@@ -407,25 +446,38 @@ public class AttributeMap implements Serializable {
     throw new CantCoerceException(key, value, "List");
   }
   
+  /**
+   * Gets the value at the specified key as a long
+   * @param key the key of the value
+   * @return If the value is a {@link Number}, the value's {@link Number#longValue()}. Otherwise,
+   *         its {@link Object#toString()} is called and the result is parsed as a long.
+   * @throws AttributeUndefinedException if the key doesn't exist
+   * @throws CantCoerceException if the key exists, but the value is not a long and can't be
+   *         converted to one
+   */
   public long getAsLong(final String key) {
-    final Object value = get(key);
-    
-    if (value == null) {
-      throw new AttributeUndefinedException(key);
+    final Object value = getNotNull(key);
+    if (value instanceof Number) {
+      return ((Number)value).longValue();
     }
-    
-    if (!(value instanceof Number)) {
-      try {
-        return Long.parseLong(value.toString());
-      }
-      catch (final NumberFormatException e) {
-        throw new CantCoerceException(key, value, "long");
-      }
+    try {
+      return Long.parseLong(value.toString());
     }
-    
-    return ((Number)value).longValue();
+    catch (final NumberFormatException e) {
+      throw new CantCoerceException(key, value, "long");
+    }
   }
   
+  /**
+   * Gets the value at the specified key as a long
+   * @param key the key of the value
+   * @param defaultValue the value to return if the key doesn't exist
+   * @return If the value is a {@link Number}, the value's {@link Number#longValue()}. If it's not a
+   *         number, its {@link Object#toString()} is called and the result is parsed as a long. If
+   *         the key doesn't exist, defaultValue.
+   * @throws CantCoerceException if the key exists, but the value is not a long and can't be
+   *         converted to one
+   */
   public long getAsLong(final String key, final long defaultValue) {
     if (!(hasAttribute(key))) {
       return defaultValue;
@@ -436,9 +488,11 @@ public class AttributeMap implements Serializable {
   }
   
   /**
-   * Gets a map value from the map
-   * @param key the key of the value to find
-   * @return the map at the specified key
+   * Gets the value at the specified key as a map
+   * @param key the key of the value
+   * @return the value
+   * @throws AttributeUndefinedException if the key doesn't exist
+   * @throws CantCoerceException if the value is not a set
    */
   @SuppressWarnings("unchecked")
   public <K, V> Map<K, V> getAsMap(final String key) {
@@ -453,8 +507,9 @@ public class AttributeMap implements Serializable {
   
   /**
    * Gets the value at the specified key as a set
-   * @param key the key of the value to retrieve
+   * @param key the key of the value
    * @return the value
+   * @throws AttributeUndefinedException if the key doesn't exist
    * @throws CantCoerceException if the value is not a set
    */
   @SuppressWarnings("unchecked")
@@ -468,25 +523,39 @@ public class AttributeMap implements Serializable {
     }
   }
   
+  /**
+   * Gets the value at the specified key as a short
+   * @param key the key of the value
+   * @return If the value is a {@link Number}, the value's {@link Number#shortValue()}. Otherwise,
+   *         its {@link Object#toString()} is called and the result is parsed as a short.
+   * @throws AttributeUndefinedException if the key doesn't exist
+   * @throws CantCoerceException if the key exists, but the value is not a short and can't be
+   *         converted to one
+   */
   public short getAsShort(final String key) {
-    final Object value = get(key);
-    
-    if (value == null) {
-      throw new AttributeUndefinedException(key);
+    final Object value = getNotNull(key);
+    if (value instanceof Number) {
+      return ((Number)value).shortValue();
     }
-    
-    if (!(value instanceof Number)) {
-      try {
-        return Short.parseShort(value.toString());
-      }
-      catch (final NumberFormatException e) {
-        throw new CantCoerceException(key, value, "short");
-      }
+    try {
+      return Short.parseShort(value.toString());
     }
-    
-    return ((Number)value).shortValue();
+    catch (final NumberFormatException e) {
+      throw new CantCoerceException(key, value, "short");
+    }
   }
   
+  /**
+   * Gets the value at the specified key as a short
+   * @param key the key of the value
+   * @param defaultValue the value to return if the key doesn't exist
+   * @return If the value is a {@link Number}, the value's {@link Number#shortValue()}. If the value
+   *         is not a number, its {@link Object#toString()} is called and the result is parsed as a
+   *         short. If the key doesn't exist, defaultValue.
+   * @throws AttributeUndefinedException if the key doesn't exist
+   * @throws CantCoerceException if the key exists, but the value is not a short and can't be
+   *         converted to one
+   */
   public short getAsShort(final String key, final short defaultValue) {
     if (!(hasAttribute(key))) {
       return defaultValue;
@@ -496,9 +565,15 @@ public class AttributeMap implements Serializable {
     }
   }
   
+  /**
+   * Gets the value at the specified key as a string
+   * @param key the key of the value
+   * @return the result of the value's {@link Object#toString()}
+   * @throws AttributeUndefinedException if the key doesn't exist
+   */
   public String getAsString(final String key) {
     final Object attribute = get(key);
-    
+    // TODO: Other methods throw AttributeUndefinedException if the value is null. Be consistent.
     return attribute == null ? null : attribute.toString();
   }
   
@@ -510,27 +585,55 @@ public class AttributeMap implements Serializable {
     return attributes;
   }
   
+  /**
+   * Gets the value at the specified key, checking for null
+   * @param key the key to find
+   * @return the value at the key
+   * @throws AttributeUndefinedException if the key doesn't exist or if its value is null
+   */
+  public Object getNotNull(final String key) {
+    // TODO: If the documentation for this class is correct, AttributeMap does not support null
+    // values. If that is true, this method should be removed.
+    Object result = this.get(key);
+    if (result == null) {
+      throw new AttributeUndefinedException(key);
+    }
+    return result;
+  }
+  
+  /**
+   * Determines whether a key exists
+   * @param key the key to check
+   * @return true if it exists, false otherwise
+   */
   public boolean hasAttribute(final String key) {
     return attributes.containsKey(key);
   }
   
+  /**
+   * Puts an attribute into the map.
+   * <ul>
+   * <li>If the key does not exist, the new value is put.</li>
+   * <li>If the key exists, but the related {@link AttributeHolder} is locked (
+   * {@link AttributeHolder#isLocked()}), nothing happens</li>
+   * <li>If the key exists and the related {@link AttributeHolder} is not locked (
+   * {@link AttributeHolder#isLocked()}), the new value is put and the settings of the existing
+   * {@link AttributeHolder}, such as {@link AttributeHolder#isSerializable()} and
+   * {@link CompositeAttributeHolder#isInheritable()}, are copied to the new holder.</li>
+   * </ul>
+   * @param key the key of the value to put
+   * @param value the value to put
+   * @return if the value was put, the new {@link AttributeHolder}. Otherwise, the the
+   *         {@link AttributeHolder} of value that already existed for the specified key.
+   */
   protected AttributeHolder internalSetAttribute(final String key, final Object value) {
-    final Matcher m = ATTRIBUTE_NAME_PATTERN.matcher(key);
-    if (!m.matches()) {
-      throw new IllegalArgumentException("Attribute [" + key
-          + "] violates attribute name restriction, attribute not added.");
-    }
-    
+    verifyValidKey(key);
     AttributeHolder attributeHolder = attributes.get(key);
-    
     if (attributeHolder == null) {
-      // create a new holder in the map with the given value
       attributeHolder = createHolderForValue(value);
       attributes.put(key, attributeHolder);
     }
     else {
-      // if an existing attribute holder is locked, just ignore the attempt to
-      // overwrite its value
       if (attributeHolder.isLocked()) {
         if (logger.isDebugEnabled()) {
           logger.debug("Attempt to overwrite locked attribute with key '" + key + "'");
@@ -541,10 +644,18 @@ public class AttributeMap implements Serializable {
         attributes.put(key, attributeHolder);
       }
     }
-    
     return attributeHolder;
   }
   
+  /**
+   * Sets a value. See {@link #internalSetAttribute(String, Object)} for information about whether
+   * the value will be set and how it will be set.
+   * @param key the key that identifies the value
+   * @param value the value to set
+   * @return if the new value was put into the map, the {@link AttributeHolder} created to hold it.
+   *         If the new value was not put, the {@link AttributeHolder} for the value that already
+   *         existed in the map.
+   */
   public AttributeHolder set(final String key, final boolean value) {
     return internalSetAttribute(key, Boolean.valueOf(value));
   }
@@ -624,5 +735,13 @@ public class AttributeMap implements Serializable {
   
   public void unset(final String key) {
     attributes.remove(key);
+  }
+  
+  private void verifyValidKey(final String key) {
+    final Matcher matcher = ATTRIBUTE_NAME_PATTERN.matcher(key);
+    if (!matcher.matches()) {
+      throw new IllegalArgumentException("Attribute [" + key
+          + "] violates attribute name restriction, attribute not added.");
+    }
   }
 }
