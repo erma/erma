@@ -10,36 +10,47 @@ import com.orbitz.monitoring.api.monitor.CompositeAttributeHolder;
 import com.orbitz.monitoring.api.monitor.CompositeAttributeMap;
 import com.orbitz.monitoring.api.monitor.TransactionMonitor;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import org.apache.commons.beanutils.PropertyUtilsBean;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 /**
- * AttributeMapTest will unit test all functionality for the AttributeMap and AttributeHolder
- * classes. This includes testing the meta data about attributes (lock, serializable, inheritable)
+ * Tests {@link AttributeMap}, {@link AttributeHolder}, {@link CompositeAttributeMap} and
+ * {@link CompositeAttributeHolder}. This includes testing the meta data about attributes (lock,
+ * serializable, inheritable)<br>
+ * TODO: This should only test {@link AttributeMap}
  */
 public class AttributeMapTest {
   private AttributeMap attributes;
   private CompositeAttributeMap compositeAttributes;
   
+  /**
+   * Prepares for each test
+   */
   @Before
   public void setUp() {
     compositeAttributes = new CompositeAttributeMap();
     attributes = new AttributeMap();
   }
   
+  /**
+   * Cleans up after each test
+   */
   @After
   public void tearDown() {
     compositeAttributes = null;
     attributes = null;
   }
   
+  /**
+   * @see AttributeMap#get(String)
+   * @see AttributeMap#set(String, Object)
+   * @see AttributeHolder#serializable()
+   */
   @Test
   public void testAdd() {
     attributes.set("foo", "bar");
@@ -139,6 +150,12 @@ public class AttributeMapTest {
     map.getAsSet(key);
   }
   
+  /**
+   * @see AttributeMap#set(String, Object)
+   * @see AttributeHolder#serializable()
+   * @see AttributeHolder#lock()
+   * @see AttributeHolder#notSerializable()
+   */
   @Test
   public void testMetaData() {
     AttributeHolder holder = attributes.set("foo", "bar");
@@ -166,6 +183,11 @@ public class AttributeMapTest {
     
   }
   
+  /**
+   * @see CompositeAttributeHolder#setInheritable(boolean)
+   * @see CompositeAttributeMap#set(String, Object)
+   * @see TransactionMonitor
+   */
   @Test
   public void testCompositeAttribute() {
     CompositeAttributeHolder holder = (CompositeAttributeHolder)compositeAttributes.set("foo",
@@ -184,6 +206,9 @@ public class AttributeMapTest {
     assertTrue("Updating value does not clear meta data", holder.isInheritable());
   }
   
+  /**
+   * @see AttributeMap#set(String, Object)
+   */
   @Test
   public void testAddBadAttribute() {
     try {
@@ -195,26 +220,9 @@ public class AttributeMapTest {
     }
   }
   
-  @Test
-  public void testNestedAttributes() {
-    String nestedPropName = "foo.bar";
-    
-    Map nestedBean = new HashMap();
-    
-    // some condition to see if we should use propertyutilsbean
-    if (nestedPropName.indexOf('.') != -1) {
-      PropertyUtilsBean utilBean = new PropertyUtilsBean();
-      try {
-        utilBean.setProperty(nestedBean, "fo", "ba");
-        utilBean.setNestedProperty(nestedBean, "1", 0);
-        
-      }
-      catch (Exception e) {
-        e.printStackTrace();
-      }
-    }
-  }
-  
+  /**
+   * @see AttributeHolder#serializable()
+   */
   @Test
   public void testNotSerializable() {
     NotSerializable value = new NotSerializable();
@@ -222,42 +230,24 @@ public class AttributeMapTest {
     
     assertFalse("Object is not serializable", holder.isSerializable());
     
-    Object nullValue = null;
-    holder = new AttributeHolder(nullValue).serializable();
+    holder = new AttributeHolder(null).serializable();
     
     assertFalse("Object is not serializable", holder.isSerializable());
   }
   
   /**
-   * we assume the following will be serializable by default. this test ensures that setting these
-   * values as serializable will actually mark them as serializable
+   * @see AttributeHolder#serializable()
    */
   @Test
   public void testSerializable() {
-    
     AttributeHolder holder = new AttributeHolder(1).serializable();
-    assertTrue("Primitive is serializable by default", holder.isSerializable());
-    
-    holder = new AttributeHolder(1.0).serializable();
-    assertTrue("Primitive is serializable by default", holder.isSerializable());
-    
-    holder = new AttributeHolder(1l).serializable();
-    assertTrue("Primitive is serializable by default", holder.isSerializable());
-    
-    holder = new AttributeHolder('x').serializable();
-    assertTrue("Primitive is serializable by default", holder.isSerializable());
-    
-    holder = new AttributeHolder(false).serializable();
-    assertTrue("Primitive is serializable by default", holder.isSerializable());
-    
-    holder = new AttributeHolder("foo").serializable();
-    assertTrue("String is serializable by default", holder.isSerializable());
-    
-    holder = new AttributeHolder(new Date()).serializable();
-    
-    assertTrue("Date is serializable by default", holder.isSerializable());
+    assertTrue(holder.isSerializable());
   }
   
+  /**
+   * @see AttributeMap#setAllAttributeHolders(Map)
+   * @see AttributeMap#getAll()
+   */
   @Test
   public void testNullAttributes() {
     attributes.setAllAttributeHolders(null);
@@ -265,6 +255,12 @@ public class AttributeMapTest {
     assertEquals(0, attributes.getAll().size());
   }
   
+  /**
+   * @see AttributeMap#set(String, Object)
+   * @see AttributeMap#getAsShort(String)
+   * @see AttributeMap#getAsFloat(String)
+   * @see AttributeMap#getAsString(String)
+   */
   @Test
   public void testGets() {
     attributes.set("dne", null);
@@ -289,9 +285,15 @@ public class AttributeMapTest {
     assertNull(attributes.getAsString("dne"));
   }
   
+  /**
+   * @see AttributeMap#setAllAttributeHolders(Map)
+   * @see AttributeMap#get(String)
+   * @see CompositeAttributeMap#setAllAttributeHolders(Map)
+   * @see CompositeAttributeMap#get(String)
+   */
   @Test
   public void testSetAllAH() {
-    Map map = new HashMap();
+    Map<String, AttributeHolder> map = new HashMap<String, AttributeHolder>();
     AttributeHolder holder = new AttributeHolder("bar");
     map.put("foobar", holder);
     attributes.setAllAttributeHolders(map);
@@ -303,9 +305,15 @@ public class AttributeMapTest {
     
   }
   
+  /**
+   * @see AttributeMap#setAllAttributeHolders(Map)
+   * @see AttributeMap#get(String)
+   * @see CompositeAttributeMap#setAllAttributeHolders(Map)
+   * @see CompositeAttributeMap#get(String)
+   */
   @Test
   public void testSetAllCAH() {
-    Map map = new HashMap();
+    Map<String, CompositeAttributeHolder> map = new HashMap<String, CompositeAttributeHolder>();
     
     CompositeAttributeHolder cah = new CompositeAttributeHolder("baz");
     map.clear();
@@ -318,9 +326,14 @@ public class AttributeMapTest {
     assertEquals("Setting all attributes", compositeAttributes.get("foobar"), "baz");
   }
   
+  /**
+   * @see AttributeMap#setAll(Map)
+   * @see AttributeMap#get(String)
+   * @see AttributeMap#getAll()
+   */
   @Test
   public void testSetAll() {
-    Map map = new HashMap();
+    Map<String, String> map = new HashMap<String, String>();
     map.put("key", "value");
     map.put("foo", "bar");
     
@@ -329,9 +342,6 @@ public class AttributeMapTest {
     assertEquals("Setting all attributes", attributes.getAll().size(), 2);
   }
   
-  private class NotSerializable {
-    public NotSerializable() {
-      // no-op
-    }
+  private static class NotSerializable {
   }
 }

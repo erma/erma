@@ -627,7 +627,7 @@ public class AttributeMap implements Serializable {
    *         {@link AttributeHolder} of value that already existed for the specified key.
    */
   protected AttributeHolder internalSetAttribute(final String key, final Object value) {
-    verifyValidKey(key);
+    verifyValidKeyName(key);
     AttributeHolder attributeHolder = attributes.get(key);
     if (attributeHolder == null) {
       attributeHolder = createHolderForValue(value);
@@ -660,28 +660,82 @@ public class AttributeMap implements Serializable {
     return internalSetAttribute(key, Boolean.valueOf(value));
   }
   
+  /**
+   * Sets a value. See {@link #internalSetAttribute(String, Object)} for information about whether
+   * the value will be set and how it will be set.
+   * @param key the key that identifies the value
+   * @param value the value to set
+   * @return if the new value was put into the map, the {@link AttributeHolder} created to hold it.
+   *         If the new value was not put, the {@link AttributeHolder} for the value that already
+   *         existed in the map.
+   */
   public AttributeHolder set(final String key, final byte value) {
-    return internalSetAttribute(key, new Byte(value));
+    return internalSetAttribute(key, Byte.valueOf(value));
   }
   
+  /**
+   * Sets a value. See {@link #internalSetAttribute(String, Object)} for information about whether
+   * the value will be set and how it will be set.
+   * @param key the key that identifies the value
+   * @param value the value to set
+   * @return if the new value was put into the map, the {@link AttributeHolder} created to hold it.
+   *         If the new value was not put, the {@link AttributeHolder} for the value that already
+   *         existed in the map.
+   */
   public AttributeHolder set(final String key, final char value) {
-    return internalSetAttribute(key, new Character(value));
+    return internalSetAttribute(key, Character.valueOf(value));
   }
   
+  /**
+   * Sets a value. See {@link #internalSetAttribute(String, Object)} for information about whether
+   * the value will be set and how it will be set.
+   * @param key the key that identifies the value
+   * @param value the value to set
+   * @return if the new value was put into the map, the {@link AttributeHolder} created to hold it.
+   *         If the new value was not put, the {@link AttributeHolder} for the value that already
+   *         existed in the map.
+   */
   public AttributeHolder set(final String key, final double value) {
     return internalSetAttribute(key, new Double(value));
   }
   
+  /**
+   * Sets a value. See {@link #internalSetAttribute(String, Object)} for information about whether
+   * the value will be set and how it will be set.
+   * @param key the key that identifies the value
+   * @param value the value to set
+   * @return if the new value was put into the map, the {@link AttributeHolder} created to hold it.
+   *         If the new value was not put, the {@link AttributeHolder} for the value that already
+   *         existed in the map.
+   */
   public AttributeHolder set(final String key, final float value) {
     return internalSetAttribute(key, new Float(value));
   }
   
+  /**
+   * Sets a value. See {@link #internalSetAttribute(String, Object)} for information about whether
+   * the value will be set and how it will be set.
+   * @param key the key that identifies the value
+   * @param value the value to set
+   * @return if the new value was put into the map, the {@link AttributeHolder} created to hold it.
+   *         If the new value was not put, the {@link AttributeHolder} for the value that already
+   *         existed in the map.
+   */
   public AttributeHolder set(final String key, final int value) {
-    return internalSetAttribute(key, new Integer(value));
+    return internalSetAttribute(key, Integer.valueOf(value));
   }
   
+  /**
+   * Sets a value. See {@link #internalSetAttribute(String, Object)} for information about whether
+   * the value will be set and how it will be set.
+   * @param key the key that identifies the value
+   * @param value the value to set
+   * @return if the new value was put into the map, the {@link AttributeHolder} created to hold it.
+   *         If the new value was not put, the {@link AttributeHolder} for the value that already
+   *         existed in the map.
+   */
   public AttributeHolder set(final String key, final long value) {
-    return internalSetAttribute(key, new Long(value));
+    return internalSetAttribute(key, Long.valueOf(value));
   }
   
   /**
@@ -694,11 +748,26 @@ public class AttributeMap implements Serializable {
     return internalSetAttribute(key, value);
   }
   
+  /**
+   * Sets a value. See {@link #internalSetAttribute(String, Object)} for information about whether
+   * the value will be set and how it will be set.
+   * @param key the key that identifies the value
+   * @param value the value to set
+   * @return if the new value was put into the map, the {@link AttributeHolder} created to hold it.
+   *         If the new value was not put, the {@link AttributeHolder} for the value that already
+   *         existed in the map.
+   */
   public AttributeHolder set(final String key, final short value) {
-    return internalSetAttribute(key, new Short(value));
+    return internalSetAttribute(key, Short.valueOf(value));
   }
   
-  public void setAll(final Map attributes) {
+  /**
+   * Sets zero or more attribute holders from a collection. If an entry value is an
+   * {@link AttributeHolder}, it is cloned and its clone is put in this map. If it is not an
+   * {@link AttributeHolder}, it is placed in a new attribute holder and put in this map.
+   * @param attributes a map of string keys to their holders or not holders. Really, anything.
+   */
+  public void setAll(final Map<String, ?> attributes) {
     setAllAttributeHolders(attributes);
   }
   
@@ -708,11 +777,13 @@ public class AttributeMap implements Serializable {
    * {@link AttributeHolder}, it is placed in a new attribute holder and put in this map.
    * @param attributeHolders a map of string keys to their holders or not holders. Really, anything.
    */
-  public void setAllAttributeHolders(final Map<String, Object> attributeHolders) {
+  public void setAllAttributeHolders(final Map<String, ?> attributeHolders) {
+    // TODO: This method should do what its name implies, not infer what to put in the map based on
+    // type
     if (attributeHolders == null) {
       return;
     }
-    for (Entry<String, Object> entry : attributeHolders.entrySet()) {
+    for (Entry<String, ?> entry : attributeHolders.entrySet()) {
       final String key = entry.getKey();
       final Object value = entry.getValue();
       if (value != null) {
@@ -733,11 +804,15 @@ public class AttributeMap implements Serializable {
     return getAll().toString();
   }
   
+  /**
+   * Removes a key and value pair from the map
+   * @param key the key to remove
+   */
   public void unset(final String key) {
     attributes.remove(key);
   }
   
-  private void verifyValidKey(final String key) {
+  private void verifyValidKeyName(final String key) {
     final Matcher matcher = ATTRIBUTE_NAME_PATTERN.matcher(key);
     if (!matcher.matches()) {
       throw new IllegalArgumentException("Attribute [" + key
