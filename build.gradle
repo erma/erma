@@ -14,6 +14,11 @@ dependsOnChildren()
 
 allprojects {
   apply plugin: 'java'
+  apply plugin: 'eclipse'
+  
+  task eclipse(dependsOn: [eclipseClasspath], overwrite: true) << {
+    // Don't overwrite the project file
+  }
 }
 
 task projectDist() << {
