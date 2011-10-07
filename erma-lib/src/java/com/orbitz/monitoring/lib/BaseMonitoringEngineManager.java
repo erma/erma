@@ -14,8 +14,8 @@ import com.orbitz.monitoring.lib.factory.SimpleMonitorProcessorFactory;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.TimerTask;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -134,33 +134,34 @@ public class BaseMonitoringEngineManager {
   }
   
   /**
-   * Get current enabled state of the MonitoringEngine.
-   * 
-   * @return enabled state of MonitoringEngine
+   * Gets the value that is used to determine whether monitoring will be enabled for the
+   * {@link MonitoringEngine} when {@link #startup()} is called.
+   * @return true if monitoring should be enabled for the {@link MonitoringEngine}, false otherwise
    */
   public boolean getMonitoringEnabled() {
     return monitoringEnabled;
   }
   
   /**
-   * Get listing of override monitor levels map.
-   * 
+   * Gets the override monitor levels by calling
+   * {@link MonitoringEngine#getOverrideMonitorLevelsListing()}
    * @return description of override monitor levels map
-   * 
+   * @see MonitoringEngine#getOverrideMonitorLevelsListing()
    * @@org.springframework.jmx.export.metadata.ManagedAttribute 
    *                                                            (description="Gets a view into monitor level overrides"
    *                                                            )
    */
   @ManagedAttribute(description = "Gets a view into monitor level overrides")
+  // TODO: Remove the Javadoc annotation
   public String getOverrideMonitorLevelsListing() {
     return MonitoringEngine.getInstance().getOverrideMonitorLevelsListing();
   }
   
   /**
-   * Get listing of MonitorProcessor override levels map.
-   * 
+   * Gets the override processor levels by calling
+   * {@link MonitoringEngine#getOverrideProcessorLevelsListing()}
    * @return description of override processor levels map
-   * 
+   * @see MonitoringEngine#getOverrideProcessorLevelsListing()
    * @@org.springframework.jmx.export.metadata.ManagedAttribute 
    *                                                            (description="Gets a view into processor level overrides"
    *                                                            )
@@ -171,6 +172,13 @@ public class BaseMonitoringEngineManager {
     return returnString;
   }
   
+  /**
+   * Gets the timer tasks that will be scheduled to run every minute when {@link #startup()} is
+   * called.<br>
+   * <i>Note that any timer tasks scheduled to run at any frequency other than one minute will not
+   * be returned.</i>
+   * @return the minutely timer tasks
+   */
   public Collection<TimerTask> getTimerTasks() {
     if (timerTasks != null && timerTasks.containsKey(new Integer(60000))) {
       return timerTasks.get(new Integer(60000));
@@ -178,107 +186,144 @@ public class BaseMonitoringEngineManager {
     return Collections.emptyList();
   }
   
-  public Map getTimerTasksMap() {
+  /**
+   * Gets all timer tasks<br>
+   * <ul>
+   * <li>
+   * <b>60000</b>
+   * <ul>
+   * <li>Task run every minute</li>
+   * <li>Task run every minute</li>
+   * <li>Task run every minute</li>
+   * </ul>
+   * </li>
+   * <li>
+   * <b>1000</b>
+   * <ul>
+   * <li>Task run every second</li>
+   * </ul>
+   * </li>
+   * <li>
+   * <b>3600000</b>
+   * <ul>
+   * <li>Task run every hour</li>
+   * </ul>
+   * </li>
+   * </ul>
+   * @return a map of timer tasks in which the keys are the frequencies, in milliseconds, at which
+   *         each task is run and values are collections of tasks to run at those frequencies.
+   */
+  public Map<Integer, Collection<TimerTask>> getTimerTasksMap() {
     return timerTasks;
   }
   
+  /**
+   * Restarts the {@link MonitoringEngine}
+   * @see MonitoringEngine#restart()
+   */
   public void reload() {
     EventMonitor monitor = new EventMonitor("MonitoringEngineManager.lifecycle",
         MonitoringLevel.ESSENTIAL);
     monitor.set("eventType", "reload");
     monitor.fire();
-    
     MonitoringEngine.getInstance().restart();
   }
   
+  /**
+   * Sets the strategy that determines whether {@link Monitor} attributes are inherited by their
+   * children
+   * @param inheritableStrategy the strategy
+   */
   public void setInheritableStrategy(final InheritableStrategy inheritableStrategy) {
     this.inheritableStrategy = inheritableStrategy;
   }
   
   /**
-   * Enable/disable all functions of the MonitoringEngine. When disabled the MonitoringEngine will
-   * ignore all Monitor events.
-   * 
-   * @param monitoringEnabled set to false to disable all Monitor events.
+   * Sets the value that determines whether the {@link MonitoringEngine} will be enabled when
+   * {@link #startup()} is called.
+   * @param monitoringEnabled true to enable monitoring, false to cause the {@link MonitoringEngine}
+   *        to ignore all monitors
+   * @see MonitoringEngine#setMonitoringEnabled(boolean)
    */
   public void setMonitoringEnabled(final boolean monitoringEnabled) {
     this.monitoringEnabled = monitoringEnabled;
   }
   
+  /**
+   * Sets the runnable that will be set using {@link MonitoringEngine#setStartupRunnable(Runnable)}
+   * when {@link #startup()} is called.
+   * @param startupRunnable the startup runnable
+   */
   public void setStartupRunnable(final Runnable startupRunnable) {
     this.startupRunnable = startupRunnable;
   }
   
   /**
-   * Takes a collection of timer tasks.
-   * 
-   * @param timerTasks the map of timer tasks
+   * Sets timer tasks that will be executed every minute<br>
+   * <i>Note that this will overwrite existing timer tasks.</i>
+   * @param timerTasks timer tasks to set
    */
   public void setTimerTasks(final Collection<TimerTask> timerTasks) {
     setTimerTasksMap(Collections.singletonMap(new Integer(60000), timerTasks));
   }
   
   /**
-   * Takes a map in the form of: milliseconds -> collection of timer tasks
-   * 
-   * @param timerTasks the map of timer tasks
+   * Sets the timer tasks
+   * @param timerTasks the map of timer tasks, in which keys are the frequencies at which tasks are
+   *        executed and keys are collections of the tasks to execute at those frequencies
+   * @see #getTimerTasksMap()
    */
   public void setTimerTasksMap(final Map<Integer, Collection<TimerTask>> timerTasks) {
     this.timerTasks = timerTasks;
   }
   
+  /**
+   * Stops all {@link #getTimerTasks() timer tasks} and {@link MonitoringEngine#shutdown() shuts the
+   * monitoring engine down}.
+   */
   public void shutdown() {
     scheduledExecutor.shutdown();
-    
     EventMonitor monitor = new EventMonitor("MonitoringEngineManager.lifecycle",
         MonitoringLevel.ESSENTIAL);
     monitor.set("eventType", "shutdown");
     monitor.fire();
-    
     MonitoringEngine.getInstance().shutdown();
   }
   
+  /**
+   * Sets all properties of the {@link MonitoringEngine} that have been configured, such as
+   * {@link #getMonitoringEnabled()} and {@link #getInheritableStrategy()}, then starts it. After
+   * the {@link MonitoringEngine} is started, schedules all {@link #getTimerTasks() timer tasks}.
+   */
   public void startup() {
     MonitoringEngine.getInstance().setMonitoringEnabled(monitoringEnabled);
-    
     MonitoringEngine.getInstance().setProcessorFactory(factory);
     MonitoringEngine.getInstance().setDecomposer(decomposer);
     MonitoringEngine.getInstance().setInheritableStrategy(inheritableStrategy);
     MonitoringEngine.getInstance().setStartupRunnable(startupRunnable);
-    
     if (timerTasks == null) {
-      timerTasks = Collections.EMPTY_MAP;
+      timerTasks = Collections.emptyMap();
     }
-    
     MonitoringEngine.getInstance().startup();
-    
     EventMonitor monitor = new EventMonitor("MonitoringEngineManager.lifecycle",
         MonitoringLevel.ESSENTIAL);
     monitor.set("eventType", "startup");
     monitor.fire();
-    
     scheduledExecutor = Executors.newSingleThreadScheduledExecutor();
-    
-    Iterator iter = timerTasks.entrySet().iterator();
-    while (iter.hasNext()) {
-      Map.Entry entry = (Map.Entry)iter.next();
-      long millis = ((Number)entry.getKey()).longValue();
-      Collection tasks = (Collection)entry.getValue();
-      Iterator it = tasks.iterator();
-      while (it.hasNext()) {
-        Runnable task = (Runnable)it.next();
+    for (Entry<Integer, Collection<TimerTask>> entry : timerTasks.entrySet()) {
+      long millis = entry.getKey();
+      for (Runnable task : entry.getValue()) {
         scheduledExecutor.scheduleAtFixedRate(task, millis, millis, TimeUnit.MILLISECONDS);
       }
     }
   }
   
   /**
-   * Update MonitoringLevels for a set of monitors
-   * 
+   * Sets a monitoring level in the {@link MonitoringEngine}
    * @param nameStartsWith either the full name of the monitor or a partial string that will be used
    *        to match on the beginning of the monitor name
    * @param levelStr string representation of the monitoring level to set
-   * 
+   * @see MonitoringEngine#addMonitorLevel(String, MonitoringLevel)
    * @@org.springframework.jmx.export.metadata.ManagedOperation 
    *                                                            (description="Sets the monitoring level for the monitor(s)"
    *                                                            )
@@ -296,6 +341,7 @@ public class BaseMonitoringEngineManager {
   @ManagedOperationParameters({
       @ManagedOperationParameter(name = "nameStartsWith", description = "Apply to all monitor names that start with the given string"),
       @ManagedOperationParameter(name = "levelStr", description = "Monitoring level to apply to monitor(s)")})
+  // TODO: Remove the Javadoc annotation
   public void updateLevelForMonitor(final String nameStartsWith, final String levelStr) {
     if (nameStartsWith == null) {
       throw new IllegalArgumentException("nameStartsWith cannot be null");
@@ -303,10 +349,8 @@ public class BaseMonitoringEngineManager {
     else if (!MonitoringLevel.isValidLevelStr(levelStr)) {
       throw new IllegalArgumentException("levelStr must match an existing MonitoringLevel");
     }
-    
     MonitoringLevel level = MonitoringLevel.toLevel(levelStr);
     MonitoringEngine.getInstance().addMonitorLevel(nameStartsWith, level);
-    
     if (log.isInfoEnabled()) {
       log.info("Added: " + nameStartsWith + " -> " + levelStr
           + " to map of monitor level overrides.");
