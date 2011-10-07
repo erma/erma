@@ -1,14 +1,21 @@
 package com.orbitz.monitoring.api;
 
 /**
- * An exception used to indicate that the attribute is of the wrong type than
- * should be returned.
- *
+ * Indicates that an attribute is of a different type than was expected and can't be converted into
+ * the correct type
  * @author Doug Barth
  */
 public class CantCoerceException extends RuntimeException {
-    public CantCoerceException(String key, Object value, String coercingTo) {
-        super(key + " can't be made into a " + coercingTo + "; is "
-                + value.getClass() + ": " + value);
-    }
+  private static final long serialVersionUID = 1L;
+  
+  /**
+   * Creates a {@link CantCoerceException}
+   * @param key the {@link Monitor} attribute's key
+   * @param value the attribute's value
+   * @param coercingTo describes the type to which the value was expected to be, probably the
+   *        canonical class name
+   */
+  public CantCoerceException(final String key, final Object value, final String coercingTo) {
+    super(key + " can't be made into a " + coercingTo + "; is " + value.getClass() + ": " + value);
+  }
 }

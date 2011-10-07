@@ -104,8 +104,8 @@ public class AttributeMap implements Serializable {
   }
   
   /**
-   * Finds all {@link CompositeAttributeHolder composite attributes}
-   * @return a new map containing the composite attributes
+   * Gets an immutable view of the attributes that are instances of {@link CompositeAttributeHolder}
+   * @return a map containing the composite attributes
    */
   @SuppressWarnings({"unchecked", "rawtypes"})
   public Map<String, CompositeAttributeHolder> findCompositeAttributes() {

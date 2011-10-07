@@ -15,67 +15,59 @@ import junit.framework.TestCase;
  * @author Matt O'Keefe
  */
 public class BaseMonitoringEngineManagerTest extends TestCase {
+  /**
+   * @see BaseMonitoringEngineManager#startup()
+   * @see BaseMonitoringEngineManager#reload()
+   * @see BaseMonitoringEngineManager#shutdown()
+   */
   public void testBaseMonitoringEngineManager() {
-    
     BaseMonitoringEngineManager manager = new BaseMonitoringEngineManager();
-    
     manager.startup();
-    
     manager.reload();
-    
     manager.shutdown();
   }
   
+  /**
+   * @see BaseMonitoringEngineManager#startup()
+   */
   public void testEPMLevels() {
-    
-    List attributeList = new ArrayList();
+    List<String> attributeList = new ArrayList<String>();
     attributeList.add("name");
     XmlMonitorRenderer renderer = new XmlMonitorRenderer(attributeList);
     renderer.setPrettyPrint(true);
-    
     BaseMonitoringEngineManager manager = new BaseMonitoringEngineManager();
     manager.startup();
-    
     {
       TransactionMonitor txn = new TransactionMonitor("foo");
-      
       EventMonitor m1 = new EventMonitor("bar");
       m1.fire();
-      
       EventMonitor m2 = new EventMonitor("baz");
       m2.fire();
-      
       txn.done();
-      
       assertEquals("<TransactionMonitor name=\"foo\">\n" + "  <EventMonitor name=\"bar\"/>\n"
           + "  <EventMonitor name=\"baz\"/>\n" + "</TransactionMonitor>",
           renderer.renderMonitor(txn));
     }
-    
     StackBasedInheritableStrategy.class.cast(
         MonitoringEngine.getInstance().getInheritableStrategy()).setEventPatternLevel(
         MonitoringLevel.ESSENTIAL);
-    
     {
       TransactionMonitor txn = new TransactionMonitor("foo", MonitoringLevel.ESSENTIAL);
-      
       EventMonitor m1 = new EventMonitor("bar");
       m1.fire();
-      
       EventMonitor m2 = new EventMonitor("baz");
       m2.fire();
-      
       txn.done();
-      
       assertEquals("<TransactionMonitor name=\"foo\"/>", renderer.renderMonitor(txn));
     }
-    
   }
   
+  /**
+   * @see BaseMonitoringEngineManager#startup()
+   */
   public void testMaliciousRuntimeControls() {
     BaseMonitoringEngineManager manager = new BaseMonitoringEngineManager();
     manager.startup();
-    
     int i = 0;
     try {
       while (true) {
