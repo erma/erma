@@ -334,7 +334,7 @@ public class MonitoringEngine {
 
         LinkedList stack = getStack();
 
-        if (stack != null) {
+        if (stack != null && !stack.isEmpty()) {
             StackFrame target = new StackFrame(monitor);
             if (!stack.getLast().equals(target) && !stack.contains(target)) {
                 // This monitor is being double processed on accident.

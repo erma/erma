@@ -229,6 +229,15 @@ public class MonitoringEngineTest extends TestCase {
         }
     }
 
+    public void testProcessingDebugMonitorsDontThrowException() {
+        _engine.startup();
+        TransactionMonitor infoMonitor = new TransactionMonitor("infoTest", MonitoringLevel.INFO);
+        _engine.compositeMonitorCompleted(infoMonitor);
+
+        TransactionMonitor debugMonitor = new TransactionMonitor("debugTest", MonitoringLevel.DEBUG);
+        _engine.compositeMonitorCompleted(debugMonitor);
+    }
+
     public void testChildMonitorAttributeInheritance() {
         _engine.startup();
 

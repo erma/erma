@@ -1,3 +1,6 @@
+Version 3.2.3
+ * ERMA-32: Resolved issue with completing composite monitors that were never started.
+
 Version 3.2
  * Added commons-attributes jars
  * ERMA-13: Inheritable attributes passed into TransactionMonitor are not marked as inheritable
