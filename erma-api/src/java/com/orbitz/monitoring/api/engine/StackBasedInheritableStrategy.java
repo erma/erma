@@ -1,17 +1,13 @@
 package com.orbitz.monitoring.api.engine;
 
+import com.orbitz.monitoring.api.Attribute;
 import com.orbitz.monitoring.api.CompositeMonitor;
-import com.orbitz.monitoring.api.Monitor;
 import com.orbitz.monitoring.api.InheritableStrategy;
+import com.orbitz.monitoring.api.Monitor;
 import com.orbitz.monitoring.api.MonitoringEngine;
 import com.orbitz.monitoring.api.MonitoringLevel;
-import com.orbitz.monitoring.api.Attribute;
-import com.orbitz.monitoring.api.monitor.CompositeAttributeHolder;
 import com.orbitz.monitoring.api.monitor.AttributeHolder;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
+import com.orbitz.monitoring.api.monitor.CompositeAttributeHolder;
 import org.apache.log4j.Logger;
 
 import java.util.HashMap;
@@ -19,6 +15,10 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  *
@@ -64,7 +64,7 @@ public class StackBasedInheritableStrategy implements InheritableStrategy {
     public void compositeMonitorCompleted(CompositeMonitor monitor) {
         LinkedList stack = getStack();
 
-        if (stack != null) {
+        if (stack != null && !stack.isEmpty()) {
             StackFrame target = new StackFrame(monitor);
             if (!stack.getLast().equals(target) && !stack.contains(target)) {
                 // This monitor is being double processed on accident.

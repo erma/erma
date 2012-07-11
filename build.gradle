@@ -15,6 +15,7 @@ dependsOnChildren()
 allprojects {
   apply plugin: 'java'
   apply plugin: 'eclipse'
+  apply plugin: 'idea'
   
   task eclipse(dependsOn: [eclipseClasspath], overwrite: true) << {
     // Don't overwrite the project file
