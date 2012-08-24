@@ -3,5 +3,10 @@
 /erma-api/build
 /erma-lib/build
 /erma-ext/erma-mongo-processor/build
+/erma-api/bin
+/erma-lib/bin
+/erma-ext/erma-mongo-processor/bin
 /erma.iml
 /idebuild
+.classpath
+.project
