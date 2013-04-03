@@ -6,3 +6,12 @@ erma-lib/build
 erma-ext/erma-mongo-processor/build
 erma.iml
 /idebuild
+erma-api/gradle
+erma-api/gradlew
+erma-api/gradlew.bat
+erma-lib/gradlew.bat
+erma-lib/gradlew
+erma-lib/gradle
+erma-ext/erma-mongo-processor/gradle
+erma-ext/erma-mongo-processor/gradlew
+erma-ext/erma-mongo-processor/gradlew.bat

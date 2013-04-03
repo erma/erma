@@ -7,52 +7,30 @@
  * If executing via a pre-installed version of gradle or your IDE, make sure to export GRADLE_OPTS
  * as defined in this project's gradlew script.
  */
- 
-import org.gradle.plugins.signing.Sign
 
-dependsOnChildren()
+import org.gradle.plugins.signing.Sign
 
 allprojects {
   apply plugin: 'java'
 }
 
-task projectDist() << {
-}
-
-task dist(dependsOn: [projectDist]) << {
-  File distFolder = new File(buildDir.getCanonicalPath() + File.separator + 'dist')
-  distFolder.mkdirs()
-  for (project in subprojects) {
-    for (archiveTask in project.tasks.withType(Jar)) {
-      copy {
-        from archiveTask.archivePath
-        into distFolder
-      }
-    }
-    for (signTask in project.tasks.withType(Sign)) {
-      copy {
-        from signTask.signatureFiles
-        into distFolder
-      }
-    }
-  }
-}
 
 subprojects { subproject ->
   apply plugin: 'signing'
   apply plugin: 'maven'
   apply plugin: 'project-reports'
+  apply plugin: 'sonar-runner'
   
   signing {
     sign configurations.archives
+    required false
   }
   
   defaultTasks 'assemble'
   
   buildscript {
-    // using a variable to make wiki look cleaner
-    def githubBase = 'https://github.com/valkolovos/gradle_cobertura/raw/master/ivy'
-    apply from: "${githubBase}/gradle_cobertura/gradle_cobertura/1.0-rc4/coberturainit.gradle"
+    def coberturaPluginVersion = '1.2.1'
+    apply from: "https://github.com/valkolovos/gradle_cobertura/raw/master/repo/gradle_cobertura/gradle_cobertura/${coberturaPluginVersion}/coberturainit.gradle"
   }
   
   sourceSets {
@@ -68,7 +46,7 @@ subprojects { subproject ->
   repositories {
     mavenCentral()
   }
-  
+ 
   def pomConfig = {
     name project.projectName
     description project.description
@@ -108,8 +86,6 @@ subprojects { subproject ->
     }
   }
   
-  subproject.basePomConfig = pomConfig
-  
   configure(install.repositories.mavenInstaller) {
     pom.project pomConfig
   }
@@ -134,7 +110,6 @@ subprojects { subproject ->
         snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
           authentication(userName: sonatypeUserName, password: sonatypePassword)
         }
-//        repository(url: "file://localhost/tmp/myRepo/")
         pom.project pomConfig
       }
     }
@@ -153,17 +128,37 @@ subprojects { subproject ->
   task javadocJar(type: Jar, dependsOn:javadoc) {
     classifier = 'javadoc'
     from javadoc.destinationDir
-    basename = shortProjectName
+    baseName = shortProjectName
   }
   
-  task projectDist(dependsOn: [build, signArchives]) << {
+  task dist(dependsOn: [build]) << {
+    File distFolder = new File(rootProject.buildDir.getCanonicalPath() + File.separator + 'dist')
+    distFolder.mkdirs()
+    for (archiveTask in project.tasks.withType(Jar)) {
+      copy {
+        from archiveTask.archivePath
+        into distFolder
+      }
+    }
+    for (signTask in project.tasks.withType(Sign)) {
+      copy {
+        from signTask.signatureFiles
+        into distFolder
+      }
+    }
   }
   
   artifacts {
     archives jar, sourceJar, javadocJar
   }
-  
-  task wrapper(type: Wrapper) {
-    gradleVersion = '1.0-milestone-4'
+
+  sonarRunner {
+      sonarProperties {
+         property "sonar.host.url", "http://sonar.orbitz.net/"
+         property "sonar.jdbc.url", "jdbc:mysql://sonar.orbitz.net:3306/sonar?useUnicode=true&characterEncoding=utf8"
+         property "sonar.jdbc.driverClassName", "com.mysql.jdbc.Driver"
+         property "sonar.username", "sonar"
+         property "sonar.password", "sonar"
+      }
   }
 }

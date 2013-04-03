@@ -21,7 +21,7 @@ dependencies {
         [group: 'com.google.guava', name: 'guava', version: 'r08']
     )
     /* dependencies for unit tests */
-    testCompile files(this.project(':erma-api').sourceSets.test.classesDir)
+    testCompile files(this.project(':erma-api').sourceSets.test.output.classesDir)
     testCompile(
         [group: 'net.sourceforge.cobertura', name: 'cobertura', version: '1.9.3'],
         [group: 'junit', name: 'junit', version: '4.8.1'],
