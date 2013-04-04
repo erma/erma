@@ -1,3 +1,7 @@
+Version 4.6.1:
+ * ERMA-32: Resolved issue with completing composite monitors that were never started.
+
+Version 4.6:
  * ERMA-31: Changed build to be able to produce signed Javadoc and source jars and Maven .pom files
             and publish to MavenCentral
  * Moved test-related classes dependent upon junit from erma-api/src to erma-api/test

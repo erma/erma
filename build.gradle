@@ -12,8 +12,61 @@ import org.gradle.plugins.signing.Sign
 
 allprojects {
   apply plugin: 'java'
+  apply plugin: 'eclipse'
+  apply plugin: 'idea'
+  
+  task eclipse(dependsOn: [eclipseClasspath], overwrite: true) << {
+    // Don't overwrite the project file
+  }
 }
 
+
+task publishJavadoc(dependsOn: [javadoc]) << {
+  def sep = File.separator
+  String docFolder = project.buildDir.getCanonicalPath() + sep + 'docs' + sep
+  assert new File(docFolder).deleteDir()
+  for (project in subprojects) {
+    def shortProjectName = project.name.split('/')[-1]
+    File projectDocFolder = new File(docFolder + shortProjectName)
+    projectDocFolder.mkdirs()
+    copy {
+      from project.javadoc.destinationDir
+      into projectDocFolder
+    }
+  }
+  File checkoutFolder = new File(project.buildDir.getCanonicalPath() + sep + 'docspublish')
+  File checkoutProjectFolder = new File(checkoutFolder.getCanonicalPath() + sep + 'erma')
+  File checkoutDocsFolder = new File(checkoutProjectFolder.getCanonicalPath() + sep + 'docs')
+  assert checkoutFolder.deleteDir()
+  checkoutFolder.mkdirs()
+  def command = 'git clone git@github.com:erma/erma.git -b gh-pages'
+  logger.info(command)
+  def process = command.execute([], checkoutFolder)
+  process.waitFor()
+  assert process.exitValue() == 0
+  assert checkoutDocsFolder.deleteDir()
+  checkoutDocsFolder.mkdirs()
+  copy {
+    from new File(docFolder)
+    into checkoutDocsFolder
+  }
+  command = 'git add .'
+  logger.info(command)
+  process = command.execute([], checkoutProjectFolder)
+  process.waitFor()
+  assert process.exitValue() == 0
+  def commandList = ['git', 'commit', '-m', 'Updated documentation']
+  logger.info('***** NOTE: The Git commit will fail if there aren\'t any changes *****')
+  logger.info(commandList.join(' '))
+  process = commandList.execute([], checkoutProjectFolder)
+  process.waitFor()
+  assert process.exitValue() == 0
+  command = 'git push'
+  logger.info(command)
+  process = command.execute([], checkoutProjectFolder)
+  process.waitFor()
+  assert process.exitValue() == 0
+}
 
 subprojects { subproject ->
   apply plugin: 'signing'
