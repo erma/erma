@@ -9,8 +9,9 @@ Resources
 ---------
 
 * [Javadoc API documentation](http://erma.github.com/erma/)
-* [Wiki](http://erma.wikidot.com/)
+* [Wiki](http://github.com/erma/erma/wiki)
 * [Code](http://github.com/erma/erma)
+* [Issue Tracking](http://orbitz-oss.atlassian.net/browse/ERMA)
 * [Mailing list](http://groups.google.com/group/erma-core)
 
 Build Instructions
