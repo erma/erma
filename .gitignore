@@ -2,7 +2,7 @@
 .project
 .gradle
 build
-erma.iml
+erma*.i*
 erma-api/bin
 erma-api/build
 erma-api/gradle

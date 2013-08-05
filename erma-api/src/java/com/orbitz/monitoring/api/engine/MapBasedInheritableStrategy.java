@@ -53,7 +53,17 @@ public class MapBasedInheritableStrategy implements InheritableStrategy {
         Map map = (Map) threadBasedMap.get(Thread.currentThread());
         if(map != null) {
             for(Iterator it = map.values().iterator(); it.hasNext(); ) {
-                inheritableAttributes.putAll((Map) it.next());
+                Map attributes = (Map) it.next();
+                for(Iterator ij = attributes.entrySet().iterator(); ij.hasNext(); ) {
+                    Map.Entry entry = (Map.Entry) ij.next();
+                    AttributeHolder original = (AttributeHolder) entry.getValue();
+                    AttributeHolder copy = new AttributeHolder(original.getValue());
+                    if(original.isSerializable()) {
+                        copy.serializable();
+                    }
+
+                    inheritableAttributes.put(entry.getKey(), copy);
+                }
             }
         }
         return inheritableAttributes;
@@ -70,12 +80,9 @@ public class MapBasedInheritableStrategy implements InheritableStrategy {
             if(!map.containsKey(monitor)) {
                 map.put(monitor, new HashMap());
             }
-            AttributeHolder copy = new AttributeHolder(original.getValue());
-            if(original.isSerializable()) {
-                copy.serializable();
-            }
+
             Map monitorMap = (Map) map.get(monitor);
-            monitorMap.put(key, copy);
+            monitorMap.put(key, original);
         } else {
             if(log.isDebugEnabled()) {
                 AttributeHolder holder = (AttributeHolder) inheritableAttributes.get(key);
