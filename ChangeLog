@@ -1,3 +1,6 @@
+Version 4.7:
+ * Fixed an issue with daizy-chaining monitor inheritable attribute setting and marking it serializable, when using MapBasedInheritableStrategy
+
 Version 4.6.1:
  * ERMA-32: Resolved issue with completing composite monitors that were never started.
 
