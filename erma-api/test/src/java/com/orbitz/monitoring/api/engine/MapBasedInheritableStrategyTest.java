@@ -1,11 +1,17 @@
 package com.orbitz.monitoring.api.engine;
 
+import com.orbitz.monitoring.api.MonitorProcessor;
+import com.orbitz.monitoring.api.MonitoringEngine;
+import com.orbitz.monitoring.test.MockDecomposer;
+import com.orbitz.monitoring.test.MockMonitorProcessor;
+import com.orbitz.monitoring.test.MockMonitorProcessorFactory;
 import junit.framework.TestCase;
 import com.orbitz.monitoring.api.InheritableStrategy;
 import com.orbitz.monitoring.api.monitor.TransactionMonitor;
 import com.orbitz.monitoring.api.monitor.AttributeHolder;
 
 import java.util.Collections;
+import java.util.Map;
 
 public class MapBasedInheritableStrategyTest extends TestCase {
 
@@ -14,6 +20,19 @@ public class MapBasedInheritableStrategyTest extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         strategy = new MapBasedInheritableStrategy();
+
+        MockMonitorProcessor _processor = new MockMonitorProcessor();
+        MockMonitorProcessorFactory processorFactory =
+                new MockMonitorProcessorFactory(
+                        new MonitorProcessor[]{_processor});
+
+        MockDecomposer _decomposer = new MockDecomposer();
+
+        MonitoringEngine.getInstance().setProcessorFactory(processorFactory);
+        MonitoringEngine.getInstance().setInheritableStrategy(strategy);
+        MonitoringEngine.getInstance().setDecomposer(_decomposer);
+        MonitoringEngine.getInstance().restart();
+        MonitoringEngine.getInstance().setMonitoringEnabled(true);
     }
 
     public void testClearCurrentThread() {
@@ -59,8 +78,19 @@ public class MapBasedInheritableStrategyTest extends TestCase {
         assertEquals(Collections.emptyMap(), strategy.getInheritableAttributes());
     }
 
+    public void testChainedInheritableSerializedAttributes() {
+        new TransactionMonitor("foo").setInheritable("foo", "bar").serializable();
+        Map attributes = strategy.getInheritableAttributes();
+
+        assertEquals(1, attributes.size());
+        AttributeHolder attributeHolder = (AttributeHolder)attributes.values().toArray()[0];
+        assertTrue(attributeHolder.isSerializable());
+    }
+
     protected void tearDown() throws Exception {
         strategy = null;
+        MonitoringEngine.getInstance().clearCurrentThread();
+        MonitoringEngine.getInstance().shutdown();
         super.tearDown();
     }
 }
