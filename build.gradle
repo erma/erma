@@ -78,7 +78,10 @@ subprojects { subproject ->
     sign configurations.archives
     required false
   }
-  
+
+  sourceCompatibility = 1.5
+  targetCompatibility = 1.5
+
   defaultTasks 'assemble'
   
   buildscript {

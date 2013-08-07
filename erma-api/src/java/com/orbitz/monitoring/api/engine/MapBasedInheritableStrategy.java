@@ -76,6 +76,7 @@ public class MapBasedInheritableStrategy implements InheritableStrategy {
     public void setInheritable(CompositeMonitor monitor, String key, AttributeHolder original) {
         Map inheritableAttributes = getInheritableAttributes();
         if(!inheritableAttributes.containsKey(key) && original != null) {
+            compositeMonitorStarted(monitor);
             Map map = (Map) threadBasedMap.get(Thread.currentThread());
             if(!map.containsKey(monitor)) {
                 map.put(monitor, new HashMap());
