@@ -2,6 +2,7 @@ package com.orbitz.monitoring.api.engine;
 
 import com.orbitz.monitoring.api.MonitorProcessor;
 import com.orbitz.monitoring.api.MonitoringEngine;
+import com.orbitz.monitoring.api.MonitoringLevel;
 import com.orbitz.monitoring.test.MockDecomposer;
 import com.orbitz.monitoring.test.MockMonitorProcessor;
 import com.orbitz.monitoring.test.MockMonitorProcessorFactory;
@@ -11,6 +12,7 @@ import com.orbitz.monitoring.api.monitor.TransactionMonitor;
 import com.orbitz.monitoring.api.monitor.AttributeHolder;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 public class MapBasedInheritableStrategyTest extends TestCase {
@@ -85,6 +87,13 @@ public class MapBasedInheritableStrategyTest extends TestCase {
         assertEquals(1, attributes.size());
         AttributeHolder attributeHolder = (AttributeHolder)attributes.values().toArray()[0];
         assertTrue(attributeHolder.isSerializable());
+    }
+
+    public void testInlineProvidedAttributes() {
+        Map ermaAttributes = new HashMap();
+        ermaAttributes.put("foo", "bar");
+
+        new TransactionMonitor("blah", MonitoringLevel.ESSENTIAL, ermaAttributes);
     }
 
     protected void tearDown() throws Exception {

@@ -1,3 +1,6 @@
+Version 4.8:
+ * Fixed the NPE issue with instantiating TransactionMonitor with inheritable attributes passed into constructor.  Also fixed the build script to set the targetCompatibility in the proper place
+
 Version 4.7:
  * Fixed an issue with daizy-chaining monitor inheritable attribute setting and marking it serializable, when using MapBasedInheritableStrategy
 
