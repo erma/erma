@@ -17,6 +17,7 @@ dependencies {
     )
     /* dependencies for unit tests */
     testCompile(
+        project(':erma-test'),
         [group: 'net.sourceforge.cobertura', name: 'cobertura', version: '1.9.3'],
         [group: 'junit', name: 'junit', version: '4.8.1'],
         [group: 'commons-beanutils', name: 'commons-beanutils', version: '1.7.0'],
