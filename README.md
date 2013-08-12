@@ -29,13 +29,15 @@ case substitute `gradle` for `./gradlew` to execute the tasks).
 Code
 ----
 
-The codebase is divided into multiple subprojects: **erma-api**, **erma-lib** and extensions located
+The codebase is divided into multiple subprojects: **erma-api**, **erma-lib**, **erma-test**, and extensions located
 in the **erma-ext** folder, such as **erma-mongo-processor**.
 
 * **erma-api**
-    * The basic constructs used to instrument code
+    * The basic constructs used to instrument code.
 * **erma-lib**
-    * Ojects one would typically wire into an application to configure the MonitoringEngine
+    * Objects one would typically wire into an application to configure the MonitoringEngine.
+* **erma-lib**
+    * Objects one would typically wire into an application to configure the MonitoringEngine to test intrumentation.
 * **erma-ext**
     * Extend ERMA to integrate with other third-party projects.
 

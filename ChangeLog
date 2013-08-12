@@ -1,3 +1,6 @@
+Version 4.8.1 
+ * Added erma-test as a proper seperate artifact to be used by users of ERMA.
+
 Version 4.8:
  * Fixed the NPE issue with instantiating TransactionMonitor with inheritable attributes passed into constructor.  Also fixed the build script to set the targetCompatibility in the proper place
 
