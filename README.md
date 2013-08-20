@@ -36,7 +36,7 @@ in the **erma-ext** folder, such as **erma-mongo-processor**.
     * The basic constructs used to instrument code.
 * **erma-lib**
     * Objects one would typically wire into an application to configure the MonitoringEngine.
-* **erma-lib**
+* **erma-test**
     * Objects one would typically wire into an application to configure the MonitoringEngine to test intrumentation.
 * **erma-ext**
     * Extend ERMA to integrate with other third-party projects.
