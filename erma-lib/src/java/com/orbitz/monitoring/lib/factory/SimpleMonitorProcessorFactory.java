@@ -19,7 +19,7 @@ public class SimpleMonitorProcessorFactory implements MonitorProcessorFactory {
   private final ProcessGroup[] _processGroups;
   
   // ** CONSTRUCTORS ********************************************************
-  public SimpleMonitorProcessorFactory(ProcessGroup[] processGroups) {
+  public SimpleMonitorProcessorFactory(ProcessGroup... processGroups) {
     if (processGroups == null) {
       processGroups = new ProcessGroup[0];
     }
