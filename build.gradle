@@ -7,6 +7,12 @@
  * If executing via a pre-installed version of gradle or your IDE, make sure to export GRADLE_OPTS
  * as defined in this project's gradlew script.
  */
+buildscript {
+  repositories {  maven { url 'http://repos.ssdt.nwoca.org/artifactory/repo' }  }
+  dependencies { classpath 'me.davesmith:jaranalyzerplugin:0.1.0-SNAPSHOT' }
+}
+
+apply plugin: 'jaranalyzer'  // in a build script
 
 import org.gradle.plugins.signing.Sign
 
@@ -19,7 +25,6 @@ allprojects {
     // Don't overwrite the project file
   }
 }
-
 
 task publishJavadoc(dependsOn: [javadoc]) << {
   def sep = File.separator
@@ -87,7 +92,7 @@ subprojects { subproject ->
   buildscript {
     def coberturaPluginVersion = '1.2.1'
     apply from: "https://github.com/valkolovos/gradle_cobertura/raw/master/repo/gradle_cobertura/gradle_cobertura/${coberturaPluginVersion}/coberturainit.gradle"
-  }
+  }  
   
   sourceSets {
     main {
