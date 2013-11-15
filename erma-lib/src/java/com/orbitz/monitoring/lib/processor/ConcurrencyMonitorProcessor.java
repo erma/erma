@@ -50,6 +50,10 @@ public class ConcurrencyMonitorProcessor extends MonitorProcessorAdapter {
           int count = cnt.intValue();
           map.put(name, Integer.valueOf(count - 1));
           monitor.set("concurrencyCount", count);
+          
+          if (count == 1) {
+              map.remove(name);
+          }
         }
       }
     }
@@ -71,5 +75,11 @@ public class ConcurrencyMonitorProcessor extends MonitorProcessorAdapter {
   
   public void setEnabled(final boolean enabled) {
     isEnabled = enabled;
+  }
+  
+  public static void clear() {
+      synchronized (map) {
+          map.clear();
+      }
   }
 }

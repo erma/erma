@@ -1,3 +1,8 @@
+Version NEXT
+ * Fixed possible memory leak in ConcurrencyMonitorProcessor. This results in
+ slight behaviour change and increase in logging.
+ * Introduced ability to clear ConcurrencyMonitorProcessor.
+
 Version 4.8.1 
  * Added erma-test as a proper seperate artifact to be used by users of ERMA.
 
