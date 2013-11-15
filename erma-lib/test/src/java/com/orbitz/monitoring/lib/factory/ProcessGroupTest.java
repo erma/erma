@@ -1,8 +1,18 @@
 package com.orbitz.monitoring.lib.factory;
 
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
+
+import java.util.Collections;
+
+import junit.framework.AssertionFailedError;
+
+import org.junit.Before;
+import org.junit.Test;
 
 import com.google.common.collect.Iterables;
 import com.orbitz.monitoring.api.Monitor;
@@ -11,17 +21,11 @@ import com.orbitz.monitoring.api.MonitoringEngine;
 import com.orbitz.monitoring.api.MonitoringLevel;
 import com.orbitz.monitoring.api.monitor.EventMonitor;
 import com.orbitz.monitoring.test.MockMonitorProcessor;
-import java.util.Collections;
-import junit.framework.AssertionFailedError;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 
 /**
  * Tests {@link ProcessGroup}.
  * @author Doug Barth
  */
-
 public class ProcessGroupTest {
   private static final String MONITOR_PROCESSOR_NAME = "monitorProcessorName";
   private ProcessGroup processGroup;
@@ -29,11 +33,6 @@ public class ProcessGroupTest {
   @Before
   public void setUp() throws Exception {
     processGroup = new ProcessGroup(new MockMonitorProcessor());
-  }
-  
-  @After
-  public void tearDown() {
-    MonitoringEngine.getInstance().getOverrideProcessorLevelsListing();
   }
   
   private void assertElementsEqual(final Iterable<? extends Object> expected,

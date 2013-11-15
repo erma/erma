@@ -1,14 +1,13 @@
 package com.orbitz.monitoring.lib.factory;
 
-import com.orbitz.monitoring.api.MonitorProcessor;
-import com.orbitz.monitoring.api.MonitoringLevel;
-import com.orbitz.monitoring.api.MonitoringEngine;
-import com.orbitz.monitoring.api.monitor.EventMonitor;
-import com.orbitz.monitoring.test.MockMonitorProcessor;
-import junit.framework.TestCase;
-
 import java.util.Arrays;
 import java.util.List;
+
+import junit.framework.TestCase;
+
+import com.orbitz.monitoring.api.MonitorProcessor;
+import com.orbitz.monitoring.api.monitor.EventMonitor;
+import com.orbitz.monitoring.test.MockMonitorProcessor;
 
 /**
  * Unit test for SimpleMonitorProcessorFactory.
