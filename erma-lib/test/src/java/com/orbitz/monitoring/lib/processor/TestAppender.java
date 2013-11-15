@@ -12,13 +12,13 @@ import java.util.ArrayList;
  * <p>(c) 2000-07 Orbitz, LLC. All Rights Reserved.</p>
  */
 public class TestAppender extends AppenderSkeleton {
-    private List logEvents = new ArrayList();
+    private List<LoggingEvent> logEvents = new ArrayList<LoggingEvent>();
 
     public void append(LoggingEvent event) {
         logEvents.add(event);
     }
 
-    public List getEvents() {
+    public List<LoggingEvent> getEvents() {
         return logEvents;
     }
 

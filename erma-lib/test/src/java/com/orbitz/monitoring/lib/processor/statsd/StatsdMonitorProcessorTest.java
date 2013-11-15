@@ -6,7 +6,6 @@ import static org.mockito.Mockito.verify;
 import junit.framework.TestCase;
 
 import com.orbitz.monitoring.api.Attribute;
-import com.orbitz.monitoring.api.MonitoringEngine;
 import com.orbitz.monitoring.api.monitor.EventMonitor;
 import com.orbitz.monitoring.api.monitor.TransactionMonitor;
 import com.orbitz.monitoring.api.monitor.ValueMonitor;
@@ -22,8 +21,6 @@ public class StatsdMonitorProcessorTest extends TestCase {
     private StatsdMonitorProcessor statsdMonitorProcessor;
     
     public void setUp() throws Exception {
-        MonitoringEngine.getInstance().shutdown();
-        
         statsdClient = spy(new StatsdClient("localhost", 8125));
         statsdMonitorProcessor = new StatsdMonitorProcessor(statsdClient);
         ProcessGroup[] processGroups = new ProcessGroup[] { new ProcessGroup(statsdMonitorProcessor)};

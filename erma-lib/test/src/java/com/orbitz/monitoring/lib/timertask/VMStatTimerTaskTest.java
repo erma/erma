@@ -1,18 +1,15 @@
 package com.orbitz.monitoring.lib.timertask;
 
+import junit.framework.TestCase;
+
 import com.orbitz.monitoring.api.Monitor;
-import com.orbitz.monitoring.api.MonitoringEngine;
 import com.orbitz.monitoring.lib.BaseMonitoringEngineManager;
 import com.orbitz.monitoring.test.MockDecomposer;
 import com.orbitz.monitoring.test.MockMonitorProcessor;
 import com.orbitz.monitoring.test.MockMonitorProcessorFactory;
-import junit.framework.TestCase;
 
 /**
  * Unit tests for the VMStatTimerTask.
- *
- * <p>(c) 2000-06 Orbitz, LLC. All Rights Reserved.
- *
  * @author Matt O'Keefe
  */
 public class VMStatTimerTaskTest extends TestCase {
@@ -86,12 +83,5 @@ public class VMStatTimerTaskTest extends TestCase {
         assertTrue("Didn't find a Memory.objectPendingFinalization Monitor", finalMemoryStats);
         assertTrue("Didn't find a Memory.Heap.Pool Monitor", heapMemoryPoolStats);
         assertTrue("Didn't find a Memory.NonHeap.Pool Monitor", nonHeapMemoryPoolStats);
-    }
-
-    protected void tearDown() throws Exception {
-        MonitoringEngine.getInstance().shutdown();
-        processor = null;
-        task = null;
-        super.tearDown();
     }
 }

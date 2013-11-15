@@ -1,17 +1,14 @@
 package com.orbitz.monitoring.lib.processor;
 
 import junit.framework.TestCase;
-import com.orbitz.monitoring.test.MockMonitorProcessorFactory;
-import com.orbitz.monitoring.test.MockDecomposer;
-import com.orbitz.monitoring.lib.BaseMonitoringEngineManager;
-import com.orbitz.monitoring.api.MonitoringEngine;
+
 import com.orbitz.monitoring.api.monitor.TransactionMonitor;
+import com.orbitz.monitoring.lib.BaseMonitoringEngineManager;
+import com.orbitz.monitoring.test.MockDecomposer;
+import com.orbitz.monitoring.test.MockMonitorProcessorFactory;
 
 /**
  * Unit tests for the ThreadContentionMonitorProcessor.
- *
- * <p>(c) 2000-04 Orbitz, LLC. All Rights Reserved.
- *
  * @author Matt O'Keefe
  */
 public class ThreadContentionMonitorProcessorTest extends TestCase {
@@ -32,14 +29,6 @@ public class ThreadContentionMonitorProcessorTest extends TestCase {
         monitoringEngineManager.startup();
     }
 
-    protected void tearDown()
-            throws Exception {
-        super.tearDown();
-
-        MonitoringEngine.getInstance().shutdown();
-    }
-
-    // ** TEST METHODS ********************************************************
     public void testStuff() {
 
         TransactionMonitor monitor = new TransactionMonitor("foo");
@@ -71,7 +60,7 @@ public class ThreadContentionMonitorProcessorTest extends TestCase {
 
         //make sure other thread has time to acquire lock
         try {
-            Thread.currentThread().sleep(10);
+            Thread.sleep(10);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
