@@ -21,7 +21,7 @@ import com.orbitz.monitoring.api.monitor.CompositeAttributeMap;
  * along to be handled by delegate {@link MonitorProcessor}. Renamed {@link Monitor}s 
  * can be prefixed by a dot (.) separated {@link String}-ification of various 
  * attributes of the {@link Monitor}.
- * <p/>For instance, this class can be confirgured to prefix each {@link Monitor} 
+ * <p/>For instance, this class can be configured to prefix each {@link Monitor} 
  * name with the value of its hostname and threadId attributes:
  * <pre>
  * {@code 

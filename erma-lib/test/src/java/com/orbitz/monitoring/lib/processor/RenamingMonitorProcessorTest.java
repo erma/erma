@@ -2,7 +2,6 @@ package com.orbitz.monitoring.lib.processor;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.util.Arrays;
@@ -13,110 +12,154 @@ import java.util.Set;
 import junit.framework.TestCase;
 
 import org.mockito.ArgumentCaptor;
-import org.mockito.InOrder;
 
 import com.orbitz.monitoring.api.Attribute;
 import com.orbitz.monitoring.api.CompositeMonitor;
 import com.orbitz.monitoring.api.Monitor;
 import com.orbitz.monitoring.api.MonitorProcessor;
-import com.orbitz.monitoring.api.MonitoringEngine;
-import com.orbitz.monitoring.api.monitor.EventMonitor;
-import com.orbitz.monitoring.api.monitor.TransactionMonitor;
-import com.orbitz.monitoring.api.monitor.ValueMonitor;
-import com.orbitz.monitoring.lib.BaseMonitoringEngineManager;
-import com.orbitz.monitoring.lib.factory.ProcessGroup;
-import com.orbitz.monitoring.lib.factory.SimpleMonitorProcessorFactory;
+import com.orbitz.monitoring.api.monitor.AbstractCompositeMonitor;
+import com.orbitz.monitoring.api.monitor.AbstractMonitor;
 
 public class RenamingMonitorProcessorTest extends TestCase {
 
     private MonitorProcessor _renamingMonitorProcessor;
-    private BaseMonitoringEngineManager _manager;
     private MonitorProcessor _delegate;
     private ArgumentCaptor<Monitor> _monitorCaptor;
 
     @Override
-    protected void setUp() throws Exception {
-        MonitoringEngine.getInstance().shutdown();
-        
+    protected void setUp() throws Exception {        
         _monitorCaptor = ArgumentCaptor.forClass(Monitor.class);
         _delegate = mock(MonitorProcessor.class);
         
-        String[] attributes = new String[] {"environment", Attribute.VMID, Attribute.HOSTNAME, "instance"};
+        String[] attributes = new String[] {"foo", "bar", "notThere"};
         _renamingMonitorProcessor = new RenamingMonitorProcessor(_delegate, (List<String>) Arrays.asList(attributes));
-        
-        ProcessGroup[] processGroups = new ProcessGroup[] { new ProcessGroup(_renamingMonitorProcessor)};
-        SimpleMonitorProcessorFactory processorFactory = new SimpleMonitorProcessorFactory(processGroups);
-        _manager = new BaseMonitoringEngineManager(processorFactory);
-        
-        MonitoringEngine.getInstance().setGlobalAttribute("environment", "test");
-        MonitoringEngine.getInstance().setGlobalAttribute(Attribute.VMID, "lib-monitoring-tests");
-        MonitoringEngine.getInstance().setGlobalAttribute(Attribute.HOSTNAME, "example_org");
-        MonitoringEngine.getInstance().setGlobalAttribute("instance", 0);
-        
-        _manager.startup();
-        
-        // MonitoringEngine startup created some monitors that got processed.
+
         // Clean up before going into test case.
         reset(_delegate);
     }
     
-    @Override
-    protected void tearDown() throws Exception {
-        _manager.shutdown();
+    public void testSimpleMonitorCreated() {
+        Monitor m = new AbstractMonitor("something.happened") {};
+        m.set("foo", "string1");
+        m.set("bar", "string2");
+        
+        _renamingMonitorProcessor.monitorCreated(m);
+
+        verify(_delegate).monitorCreated(_monitorCaptor.capture());
+        assertEquals("string1.string2..something.happened", _monitorCaptor.getValue().getAsString(Attribute.NAME));
+        assertNonNameAttributesAndChildrenEqual(m, _monitorCaptor.getValue());
     }
 
-    public void testProcessEventMonitor() throws Exception {
-        EventMonitor monitor = new EventMonitor("something.happened");
-        monitor.fire();
-        
-        verify(_delegate).monitorCreated(_monitorCaptor.capture());
-        assertEquals("test.lib-monitoring-tests.example_org.0.something.happened", _monitorCaptor.getValue().getAsString(Attribute.NAME));
-        assertNonNameAttributesAndChildrenEqual(monitor, _monitorCaptor.getValue());
-        
-        verify(_delegate).process(_monitorCaptor.capture());
-        assertEquals("test.lib-monitoring-tests.example_org.0.something.happened", _monitorCaptor.getValue().getAsString(Attribute.NAME));
-        assertNonNameAttributesAndChildrenEqual(monitor, _monitorCaptor.getValue());
-    }
+    public void testSimpleMonitorStarted() {
+        Monitor m = new AbstractMonitor("something.happened") {};
+        m.set("foo", "string1");
+        m.set("bar", "string2");
 
-    public void testProcessTransactionMonitor() throws Exception {
-        TransactionMonitor monitor = new TransactionMonitor("do.some.work");
-        
-        verify(_delegate).monitorCreated(_monitorCaptor.capture());
-        assertEquals("test.lib-monitoring-tests.example_org.0.do.some.work", _monitorCaptor.getValue().getAsString(Attribute.NAME));
-        
+        _renamingMonitorProcessor.monitorStarted(m);
+
         verify(_delegate).monitorStarted(_monitorCaptor.capture());
-        assertEquals("test.lib-monitoring-tests.example_org.0.do.some.work", _monitorCaptor.getValue().getAsString(Attribute.NAME));
-        assertNonNameAttributesAndChildrenEqual(monitor, _monitorCaptor.getValue());
-        
-        monitor.succeeded();
-        monitor.done();
-        
+        assertEquals("string1.string2..something.happened", _monitorCaptor.getValue().getAsString(Attribute.NAME));
+        assertNonNameAttributesAndChildrenEqual(m, _monitorCaptor.getValue());
+    }
+
+    public void testSimpleMonitorProcessed() {
+        Monitor m = new AbstractMonitor("something.happened") {};
+        m.set("foo", "string1");
+        m.set("bar", "string2");
+
+        _renamingMonitorProcessor.process(m);
+
         verify(_delegate).process(_monitorCaptor.capture());
-        assertEquals("test.lib-monitoring-tests.example_org.0.do.some.work", _monitorCaptor.getValue().getAsString(Attribute.NAME));
-        assertNonNameAttributesAndChildrenEqual(monitor, _monitorCaptor.getValue());
+        assertEquals("string1.string2..something.happened", _monitorCaptor.getValue().getAsString(Attribute.NAME));
+        assertNonNameAttributesAndChildrenEqual(m, _monitorCaptor.getValue());
     }
     
-    public void testProcessTransactionMonitorWithChildMonitors() throws Exception {
-        TransactionMonitor monitor = new TransactionMonitor("do.some.work");
+    public void testCompositeMonitorWithoutChildrenCreated() {
+        Monitor m = new AbstractCompositeMonitor("something.happened") {};
+        m.set("foo", "string1");
+        m.set("bar", "string2");
         
-        EventMonitor event = new EventMonitor("event");
-        event.fire();
+        _renamingMonitorProcessor.monitorCreated(m);
+
+        verify(_delegate).monitorCreated(_monitorCaptor.capture());
+        assertEquals("string1.string2..something.happened", _monitorCaptor.getValue().getAsString(Attribute.NAME));
+        assertNonNameAttributesAndChildrenEqual(m, _monitorCaptor.getValue());
+    }
+
+    public void testCompositeMonitorWithoutChildrenStarted() {
+        Monitor m = new AbstractCompositeMonitor("something.happened") {};
+        m.set("foo", "string1");
+        m.set("bar", "string2");
+
+        _renamingMonitorProcessor.monitorStarted(m);
+
+        verify(_delegate).monitorStarted(_monitorCaptor.capture());
+        assertEquals("string1.string2..something.happened", _monitorCaptor.getValue().getAsString(Attribute.NAME));
+        assertNonNameAttributesAndChildrenEqual(m, _monitorCaptor.getValue());
+    }
+
+    public void testCompositeMonitorWithoutChildrenProcessed() {
+        Monitor m = new AbstractCompositeMonitor("something.happened") {};
+        m.set("foo", "string1");
+        m.set("bar", "string2");
+
+        _renamingMonitorProcessor.process(m);
+
+        verify(_delegate).process(_monitorCaptor.capture());
+        assertEquals("string1.string2..something.happened", _monitorCaptor.getValue().getAsString(Attribute.NAME));
+        assertNonNameAttributesAndChildrenEqual(m, _monitorCaptor.getValue());
+    }
+    
+    public void testCompositeMonitorWithChildrenCreated() {
+        CompositeMonitor m = new AbstractCompositeMonitor("something.happened") {};
+        m.set("foo", "string1");
+        m.set("bar", "string2");
         
-        ValueMonitor value = new ValueMonitor("value", 20);
-        value.fire();
+        Monitor c1 = new AbstractMonitor("childOne") {};
+        m.addChildMonitor(c1);
+        Monitor c2 = new AbstractMonitor("childTwo") {};
+        m.addChildMonitor(c2);
         
-        monitor.succeeded();
-        monitor.done();
+        _renamingMonitorProcessor.monitorCreated(m);
+
+        verify(_delegate).monitorCreated(_monitorCaptor.capture());
+        assertEquals("string1.string2..something.happened", _monitorCaptor.getValue().getAsString(Attribute.NAME));
+        assertNonNameAttributesAndChildrenEqual(m, _monitorCaptor.getValue());
+    }
+
+    public void testCompositeMonitorWithChildrenStarted() {
+        CompositeMonitor m = new AbstractCompositeMonitor("something.happened") {};
+        m.set("foo", "string1");
+        m.set("bar", "string2");
         
-        verify(_delegate, times(3)).process(_monitorCaptor.capture());
-        List<Monitor> captured = _monitorCaptor.getAllValues();
+        Monitor c1 = new AbstractMonitor("childOne") {};
+        m.addChildMonitor(c1);
+        Monitor c2 = new AbstractMonitor("childTwo") {};
+        m.addChildMonitor(c2);
+
+        _renamingMonitorProcessor.monitorStarted(m);
+
+        verify(_delegate).monitorStarted(_monitorCaptor.capture());
+        assertEquals("string1.string2..something.happened", _monitorCaptor.getValue().getAsString(Attribute.NAME));
+        assertNonNameAttributesAndChildrenEqual(m, _monitorCaptor.getValue());
+    }
+
+    public void testCompositeMonitorWithChildrenProcessed() {
+        CompositeMonitor m = new AbstractCompositeMonitor("something.happened") {};
+        m.set("foo", "string1");
+        m.set("bar", "string2");
         
-        assertEquals("test.lib-monitoring-tests.example_org.0.event", captured.get(0).getAsString(Attribute.NAME));
-        assertNonNameAttributesAndChildrenEqual(event, captured.get(0));
-        assertEquals("test.lib-monitoring-tests.example_org.0.value", captured.get(1).getAsString(Attribute.NAME));
-        assertNonNameAttributesAndChildrenEqual(value, captured.get(1));
-        assertEquals("test.lib-monitoring-tests.example_org.0.do.some.work", captured.get(2).getAsString(Attribute.NAME));
-        assertNonNameAttributesAndChildrenEqual(monitor, captured.get(2));
+        Monitor c1 = new AbstractMonitor("childOne") {};
+        m.addChildMonitor(c1);
+        Monitor c2 = new AbstractMonitor("childTwo") {};
+        m.addChildMonitor(c2);
+
+        _renamingMonitorProcessor.process(m);
+
+        verify(_delegate).process(_monitorCaptor.capture());
+        
+        assertEquals("string1.string2..something.happened", _monitorCaptor.getValue().getAsString(Attribute.NAME));
+        assertNonNameAttributesAndChildrenEqual(c1, _monitorCaptor.getValue());
     }
     
     private void assertNonNameAttributesAndChildrenEqual(Monitor originalMonitor, Monitor handledMonitor) {
