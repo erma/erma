@@ -1,108 +1,120 @@
 package com.orbitz.monitoring.lib.processor;
 
-import com.orbitz.monitoring.api.MonitoringEngine;
-import com.orbitz.monitoring.api.Monitor;
-import com.orbitz.monitoring.api.monitor.TransactionMonitor;
-import com.orbitz.monitoring.lib.BaseMonitoringEngineManager;
-import com.orbitz.monitoring.test.MockDecomposer;
-import com.orbitz.monitoring.test.MockMonitorProcessorFactory;
 import junit.framework.TestCase;
+
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.spi.LoggingEvent;
 
+import com.orbitz.monitoring.api.Monitor;
+import com.orbitz.monitoring.api.monitor.AbstractMonitor;
+import com.orbitz.monitoring.lib.renderer.MonitorRenderer;
+
 /**
  * Unit tests for the LoggingMonitorProcessor.
- *
- * <p>(c) 2000-04 Orbitz, LLC. All Rights Reserved.
- *
  * @author Operations Architecture
  */
 public class LoggingMonitorProcessorTest extends TestCase {
-    // ** PRIVATE DATA ********************************************************
-    private LoggingMonitorProcessor _processor = new LoggingMonitorProcessor();
-    private TestAppender _testAppender = new TestAppender();
-    private String _testVmid = "JVM_ID_NOT_SET";
+    private final class SingleMonitorRenderer implements MonitorRenderer {
+        
+        Monitor singleMonitor;
+        
+        SingleMonitorRenderer(Monitor m) {
+            singleMonitor = m;
+        }
+        
+        @Override
+        public String renderMonitor(Monitor monitor) {
+            fail("Other render method should be called.");
+            return null;
+        }
 
-    // ** TEST SUITE METHODS **************************************************
-    protected void setUp()
-            throws Exception {
+        @Override
+        public String renderMonitor(Monitor monitor, boolean includeStackTraces) {
+            assertSame(singleMonitor, monitor);
+            return Boolean.toString(includeStackTraces);
+        }
+    }
+
+    private LoggingMonitorProcessor processor;
+    private TestAppender appender;
+
+    protected void setUp() throws Exception {
         super.setUp();
-        MonitoringEngine.getInstance().shutdown();
-        BaseMonitoringEngineManager monitoringEngineManager =
-                new BaseMonitoringEngineManager(new MockMonitorProcessorFactory(_processor),
-                        new MockDecomposer());
-
-        monitoringEngineManager.startup();
-
-        _processor.startup();
+        processor = new LoggingMonitorProcessor();
+        appender = new TestAppender();
+        processor.startup();
 
         // log4j will not allow the same appender to be added multiple times
         //LogManager.resetConfiguration();
         Logger logger = Logger.getLogger(LoggingMonitorProcessor.class.getName());
-        logger.addAppender(_testAppender);
+        logger.addAppender(appender);
         logger.setLevel(Level.ALL);
-
-        MonitoringEngine.getInstance().clearCurrentThread();
     }
+    
+    public void testCreateOff() {
+        Monitor m = new AbstractMonitor(){};
+        processor.setLogMonitorCreated(false);
 
-    protected void tearDown()
-            throws Exception {
-        super.tearDown();
-
-        MonitoringEngine.getInstance().shutdown();
-
-        _testAppender.reset();
-    }
-
-    // ** TEST METHODS ********************************************************
-
-    public void testRenderMonitor() {
-        _processor.setLogMonitorCreated(true);
-        _processor.setLogMonitorStarted(true);
-
-        TransactionMonitor monitor = new TransactionMonitor("testEvent");
-        monitor.set(Monitor.VMID, _testVmid);
-        monitor.set(Monitor.HOSTNAME, "localhost");
-        monitor.done();
-
-        String createdExpected = "com.orbitz.monitoring.api.monitor.TransactionMonitor" +
-                "\n\t-> createdAt = " + monitor.get("createdAt") +
-                "\n\t-> name = testEvent" +
-                "\n\t-> sequenceId = m" +
-                "\n\t-> threadId = " + Integer.toHexString(Thread.currentThread().hashCode());
-
-        String startedExpected = "com.orbitz.monitoring.api.monitor.TransactionMonitor" +
-                "\n\t-> createdAt = " + monitor.get("createdAt") +
-                "\n\t-> failed = true" +
-                "\n\t-> name = testEvent" +
-                "\n\t-> sequenceId = m" +
-                "\n\t-> startTime = " + monitor.get("startTime") +
-                "\n\t-> threadId = " + Integer.toHexString(Thread.currentThread().hashCode());
-
-        String processExpected = "com.orbitz.monitoring.api.monitor.TransactionMonitor" +
-                "\n\t-> createdAt = " + monitor.get("createdAt") +
-                "\n\t-> endTime = " + monitor.get("endTime") +
-                "\n\t-> failed = true" +
-                "\n\t-> hostname = " + monitor.get("hostname") +
-                "\n\t-> latency = " + monitor.get("latency") +
-                "\n\t-> name = testEvent" +
-                "\n\t-> sequenceId = m" +
-                "\n\t-> startTime = " + monitor.get("startTime") +
-                "\n\t-> threadId = " + Integer.toHexString(Thread.currentThread().hashCode()) +
-                "\n\t-> vmid = " + _testVmid;
-
-        LoggingEvent logEvent = (LoggingEvent) _testAppender.getEvents().get(0);
-        String logMsg = (String) logEvent.getMessage();
+        processor.monitorCreated(m);
         
-        assertEquals("monitorCreated: " + createdExpected, logMsg);
+        assertTrue(appender.getEvents().isEmpty());
+    }
+    
+    public void testCreateOn() {
+        Monitor m = new AbstractMonitor(){};
+        processor.setLogMonitorCreated(true);
+        processor.setMonitorRenderer(new SingleMonitorRenderer(m));
+        
+        processor.monitorCreated(m);
+        
+        assertEquals(1, appender.getEvents().size());
+        LoggingEvent loggingEvent = appender.getEvents().get(0);
+        assertEquals(Level.INFO, loggingEvent.getLevel());
+        assertEquals("monitorCreated: false", loggingEvent.getMessage());
+    }
+    
+    public void testStartOff() {
+        Monitor m = new AbstractMonitor(){};
+        processor.setLogMonitorStarted(false);
 
-        logEvent = (LoggingEvent) _testAppender.getEvents().get(1);
-        logMsg = (String) logEvent.getMessage();
-        assertEquals("monitorStarted: " + startedExpected, logMsg);
+        processor.monitorStarted(m);
+        
+        assertTrue(appender.getEvents().isEmpty());
+    }
+    
+    public void testStartOn() {
+        Monitor m = new AbstractMonitor(){};
+        processor.setLogMonitorStarted(true);
+        processor.setMonitorRenderer(new SingleMonitorRenderer(m));
+        
+        processor.monitorStarted(m);
+        
+        assertEquals(1, appender.getEvents().size());
+        LoggingEvent loggingEvent = appender.getEvents().get(0);
+        assertEquals(Level.INFO, loggingEvent.getLevel());
+        assertEquals("monitorStarted: false", loggingEvent.getMessage());
+    }
+    
+    public void testProcessOff() {
+        Monitor m = new AbstractMonitor(){};
+        processor.setLogProcess(false);
 
-        logEvent = (LoggingEvent) _testAppender.getEvents().get(2);
-        logMsg = (String) logEvent.getMessage();
-        assertEquals("process: " + processExpected, logMsg);
+        processor.process(m);
+        
+        assertTrue(appender.getEvents().isEmpty());
+    }
+    
+    public void testProcessOn() {
+        Monitor m = new AbstractMonitor(){};
+        processor.setLogProcess(true);
+        processor.setMonitorRenderer(new SingleMonitorRenderer(m));
+        
+        processor.process(m);
+        
+        assertEquals(1, appender.getEvents().size());
+        LoggingEvent loggingEvent = appender.getEvents().get(0);
+        assertEquals(Level.INFO, loggingEvent.getLevel());
+        assertEquals("process: false", loggingEvent.getMessage());
     }
 }
