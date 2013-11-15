@@ -1,5 +1,6 @@
 package com.orbitz.monitoring.lib.processor;
 
+import com.orbitz.monitoring.api.Attribute;
 import com.orbitz.monitoring.api.Monitor;
 import com.orbitz.monitoring.api.MonitorProcessor;
 import com.orbitz.monitoring.api.monitor.TransactionMonitor;
@@ -38,17 +39,17 @@ public class CPUProfilingMonitorProcessor extends MonitorProcessorAdapter {
   
   @Override
   public void process(final Monitor monitor) {
-    
     if (enabled && TransactionMonitor.class.isAssignableFrom(monitor.getClass())) {
-      ThreadMXBean tmxbean = ManagementFactory.getThreadMXBean();
-      long endTime = tmxbean.getCurrentThreadCpuTime();
-      monitor.set("endCPUTime", endTime);
-      long diff = endTime - monitor.getAsLong("startCPUTime");
-      double cpuTimeMillis = diff / 1000000.0;
-      if (log.isDebugEnabled()) {
-        log.debug("cpuTimeMillis=" + cpuTimeMillis);
-      }
-      monitor.set("cpuTimeMillis", cpuTimeMillis);
+        if (monitor.hasAttribute("startCPUTime")) {
+            ThreadMXBean tmxbean = ManagementFactory.getThreadMXBean();
+            long endTime = tmxbean.getCurrentThreadCpuTime();
+            monitor.set("endCPUTime", endTime);
+            long diff = endTime - monitor.getAsLong("startCPUTime");
+            double cpuTimeMillis = diff / 1000000.0;
+            monitor.set("cpuTimeMillis", cpuTimeMillis);
+        } else {
+            log.warn("No startCPUTime for Monitor named " + monitor.getAsString(Attribute.NAME));
+        }
     }
   }
   
