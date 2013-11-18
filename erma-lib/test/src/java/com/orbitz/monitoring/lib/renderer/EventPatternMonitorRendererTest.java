@@ -33,13 +33,6 @@ public class EventPatternMonitorRendererTest {
         renderer = new EventPatternMonitorRenderer(DEFAULT_ATTRIBUTES);
     }
     
-    @After
-    public void printSkips() {
-        for (Object skip : renderer.getMonitorsToSkip()) {
-            System.out.println("skipped..." + skip);
-        }
-    }
-    
     @Test
     public void renderMonitor() {
         String name = "testEvent";
