@@ -4,6 +4,7 @@ Version NEXT
  * Introduced ability to clear ConcurrencyMonitorProcessor.
  * Fixed bug where exception is thrown in CPUProfilingMonitorProcessor when a
  monitor is processed that had not been started by the processor.
+ * Fixed bug that would render bugs intended to be skipped.
 
 Version 4.8.1 
  * Added erma-test as a proper seperate artifact to be used by users of ERMA.

@@ -1,16 +1,18 @@
 package com.orbitz.monitoring.lib.renderer;
 
-import com.orbitz.monitoring.api.CompositeMonitor;
-import com.orbitz.monitoring.api.Monitor;
-import com.orbitz.monitoring.api.Attribute;
-import org.apache.commons.beanutils.LazyDynaBean;
-import org.apache.log4j.Logger;
-
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Set;
 import java.util.List;
+import java.util.Set;
+
+import org.apache.commons.beanutils.LazyDynaBean;
+import org.apache.log4j.Logger;
+
+import com.orbitz.monitoring.api.Attribute;
+import com.orbitz.monitoring.api.CompositeMonitor;
+import com.orbitz.monitoring.api.Monitor;
 
 /**
  * EventPatternMonitorRenderer renders a Monitor recursively based on name, vmid and failed
@@ -29,6 +31,7 @@ public class EventPatternMonitorRenderer {
 
     public EventPatternMonitorRenderer() {
         monitorsToSkip = new HashSet();
+        allowedAttributes = new ArrayList();
     }
 
     public EventPatternMonitorRenderer(final List allowedAttributes) {
@@ -106,7 +109,9 @@ public class EventPatternMonitorRenderer {
                         }
                     }
                 }
-                addChildToBuffer(buffer, lastBuffer, monitorCount);
+                if (lastBuffer != null) {
+                    addChildToBuffer(buffer, lastBuffer, monitorCount);
+                }
             }
         }
     }
@@ -190,15 +195,13 @@ public class EventPatternMonitorRenderer {
     // returns true if a monitor should be rendered, otherwise false
     protected boolean shouldRender(Monitor monitor) {
         boolean render = true;
-        if(!logger.isDebugEnabled()) {
-            if (monitor.hasAttribute(Attribute.NAME)) {
-                String name = monitor.getAsString(Attribute.NAME);
-                Iterator it = monitorsToSkip.iterator();
-                while(render && it.hasNext()) {
-                    String sName = (String) it.next();
-                    if (name.indexOf(sName) > -1) {
-                        render = false;
-                    }
+        if (monitor.hasAttribute(Attribute.NAME)) {
+            String name = monitor.getAsString(Attribute.NAME);
+            Iterator it = monitorsToSkip.iterator();
+            while(render && it.hasNext()) {
+                String sName = (String) it.next();
+                if (name.indexOf(sName) > -1) {
+                    render = false;
                 }
             }
         }
