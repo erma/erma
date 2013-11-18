@@ -45,8 +45,6 @@ public class LoggingMonitorProcessorTest extends TestCase {
         appender = new TestAppender();
         processor.startup();
 
-        // log4j will not allow the same appender to be added multiple times
-        //LogManager.resetConfiguration();
         Logger logger = Logger.getLogger(LoggingMonitorProcessor.class.getName());
         logger.addAppender(appender);
         logger.setLevel(Level.ALL);
