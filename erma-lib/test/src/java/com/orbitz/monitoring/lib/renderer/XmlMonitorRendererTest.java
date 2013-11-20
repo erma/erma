@@ -1,20 +1,15 @@
 package com.orbitz.monitoring.lib.renderer;
 
-import com.orbitz.monitoring.api.MonitorProcessor;
-import com.orbitz.monitoring.api.MonitoringEngine;
-import com.orbitz.monitoring.api.engine.NoOpInheritableStrategy;
-import com.orbitz.monitoring.api.monitor.EventMonitor;
-import com.orbitz.monitoring.api.monitor.TransactionMonitor;
-import com.orbitz.monitoring.api.monitor.serializable.SerializableCompositeMonitor;
-import com.orbitz.monitoring.lib.decomposer.AttributeDecomposer;
-import com.orbitz.monitoring.test.MockDecomposer;
-import com.orbitz.monitoring.test.MockMonitorProcessor;
-import com.orbitz.monitoring.test.MockMonitorProcessorFactory;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import junit.framework.TestCase;
+
+import com.orbitz.monitoring.api.monitor.EventMonitor;
+import com.orbitz.monitoring.api.monitor.TransactionMonitor;
 
 /**
  * Unit test for XmlMonitorRenderer.
@@ -29,16 +24,7 @@ public class XmlMonitorRendererTest extends TestCase {
     
     @Override
     public void setUp() {
-        final List attributeList = new ArrayList();
-        attributeList.add("name");
-        defaultRenderer = new XmlMonitorRenderer(attributeList);
-        final MonitoringEngine engine = MonitoringEngine.getInstance();
-        final MockMonitorProcessor processor = new MockMonitorProcessor();
-        engine.setProcessorFactory(new MockMonitorProcessorFactory(
-                new MonitorProcessor[] {processor}));
-        engine.setDecomposer(new MockDecomposer());
-        engine.setInheritableStrategy(new NoOpInheritableStrategy());
-        engine.restart();
+        defaultRenderer = new XmlMonitorRenderer(Collections.singletonList("name"));
     }
     
     public void testSimpleRender() {
@@ -189,11 +175,6 @@ public class XmlMonitorRendererTest extends TestCase {
     }
     
     public void testRenderWithDynaBeanException() {
-        MonitoringEngine.getInstance().setDecomposer(new AttributeDecomposer());
-        MonitoringEngine.getInstance().setProcessorFactory(
-                new MockMonitorProcessorFactory(new MockMonitorProcessor()));
-        MonitoringEngine.getInstance().startup();
-        
         final List allowedAttributes = new ArrayList();
         allowedAttributes.add("name");
         allowedAttributes.add("failureThrowable");
@@ -215,17 +196,6 @@ public class XmlMonitorRendererTest extends TestCase {
         assertEquals(
                 "<TransactionMonitor name=\"name\" failureThrowable=\"com.orbitz.monitoring.lib.renderer.XmlMonitorRendererTest$1: foo\"/>",
                 xml);
-        
-        final SerializableCompositeMonitor sMonitor = (SerializableCompositeMonitor)monitor
-                .getSerializableMomento();
-        
-        xml = renderer.renderMonitor(sMonitor);
-        assertEquals(
-                "<SerializableCompositeMonitor name=\"name\" failureThrowable=\"com.orbitz.monitoring.lib.renderer.XmlMonitorRendererTest$1\"/>",
-                xml);
-        
-        MonitoringEngine.getInstance().shutdown();
-        MonitoringEngine.getInstance().setDecomposer(new MockDecomposer());
     }
     
     public void testRenderWithInvalidXmlCharacters() {
