@@ -22,7 +22,8 @@ import org.apache.log4j.Logger;
  * 
  * @author Doug Barth
  */
-public class MonitoringEngine {
+public
+class MonitoringEngine {
   
   private static final Logger log = Logger.getLogger(MonitoringEngine.class);
   
@@ -39,14 +40,11 @@ public class MonitoringEngine {
   
   private final AttributeMap globalAttributes;
   
-  private final Map monitorProcessorLevels;
   private final Map monitorLevels;
   
   private Runnable startupRunnable;
   
   protected MonitoringEngine() {
-    monitorProcessorLevels = new HashMap();
-    
     monitorLevels = new TreeMap(Collections.reverseOrder());
     
     globalAttributes = new AttributeMap();
@@ -109,7 +107,6 @@ public class MonitoringEngine {
     if (running) {
       log.info("MonitoringEngine shutting down");
       globalAttributes.clear();
-      monitorProcessorLevels.clear();
       monitorLevels.clear();
       running = false;
       processorFactory.shutdown();
@@ -578,16 +575,32 @@ public class MonitoringEngine {
     this.monitoringEnabled = monitoringEnabled;
   }
   
+  /**
+   * @deprecated Set the level directly on the processor
+   * @param name
+   * @param level
+   */
+  @Deprecated
   public void addProcessorLevel(final String name, final MonitoringLevel level) {
     if (name == null) {
       throw new NullPointerException("null processor name");
     }
     
-    monitorProcessorLevels.put(name, level);
+    for (MonitorProcessor processor : this.processorFactory.getProcessorsByName(name)) {
+        processor.setLevel(level);
+    }
   }
   
+  /**
+   * @deprecated Get values from processor factory directly.
+   * @return
+   */
   public String getOverrideProcessorLevelsListing() {
-    return monitorProcessorLevels.toString();
+      Map<String, MonitoringLevel> levels = new HashMap<String, MonitoringLevel>();
+      for (MonitorProcessor processor : this.processorFactory.getAllProcessors()) {
+          levels.put(processor.getName(), processor.getLevel());
+      }
+      return levels.toString();
   }
   
   public void addMonitorLevel(final String nameStartsWith, final MonitoringLevel level) {
@@ -608,11 +621,17 @@ public class MonitoringEngine {
   /**
    * Given the name of a MonitorProcessor, return the MonitoringLevel that should be used for that
    * MonitorProcessor. If no level has been specified then return null.
+   * @deprecated Access the processor directly.
    * @param name the name of the MonitorProcessor to retrieve the level for.
    * @return a MonitoringLevel appropriate for the MonitorProcessor, or null if one does not apply.
    */
   public MonitoringLevel getProcessorLevel(final String name) {
-    return (MonitoringLevel)monitorProcessorLevels.get(name);
+    Set<MonitorProcessor> processors = processorFactory.getProcessorsByName(name);
+    if (!processors.isEmpty()) {
+        return processors.iterator().next().getLevel();
+    } else {
+        return null;
+    }
   }
   
   /**

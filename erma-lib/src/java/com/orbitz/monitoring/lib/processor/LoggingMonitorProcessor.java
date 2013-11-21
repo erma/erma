@@ -14,8 +14,7 @@ import com.orbitz.monitoring.lib.renderer.SimpleMonitorRenderer;
  * @author Doug Barth
  */
 
-public class LoggingMonitorProcessor
-implements MonitorProcessor {
+public class LoggingMonitorProcessor extends MonitorProcessorAdapter {
     // ** PRIVATE DATA ********************************************************
     private Logger log;
 

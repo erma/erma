@@ -7,7 +7,7 @@ import com.orbitz.monitoring.api.Aggregator;
 /**
  * MonitorProcessor that delegates to an Aggregator.
  */
-public class AggregationMonitorProcessor implements MonitorProcessor {
+public class AggregationMonitorProcessor extends MonitorProcessorAdapter {
 
     private final Aggregator aggregator;
 

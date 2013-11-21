@@ -1,5 +1,7 @@
 package com.orbitz.monitoring.test;
 
+import java.util.Set;
+
 import junit.framework.Assert;
 import com.orbitz.monitoring.api.MonitorProcessor;
 import com.orbitz.monitoring.api.MonitorProcessorFactory;
@@ -92,5 +94,11 @@ public class MockMonitorProcessorFactory
     public void setThrowThrowableOnGetProcessors(
             boolean throwThrowableOnGetProcessors) {
         _throwThrowableOnGetProcessors = throwThrowableOnGetProcessors;
+    }
+
+    @Override
+    public Set<MonitorProcessor> getProcessorsByName(String name) {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

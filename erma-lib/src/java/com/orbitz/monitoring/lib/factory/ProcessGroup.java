@@ -1,15 +1,8 @@
 package com.orbitz.monitoring.lib.factory;
 
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
-import com.orbitz.monitoring.api.Monitor;
-import com.orbitz.monitoring.api.MonitorProcessor;
-import com.orbitz.monitoring.api.MonitoringEngine;
-import com.orbitz.monitoring.api.MonitoringLevel;
 import java.util.Collections;
 import java.util.List;
+
 import org.apache.commons.jexl.Expression;
 import org.apache.commons.jexl.ExpressionFactory;
 import org.apache.commons.jexl.JexlContext;
@@ -20,6 +13,14 @@ import org.springframework.jmx.export.annotation.ManagedOperation;
 import org.springframework.jmx.export.annotation.ManagedOperationParameter;
 import org.springframework.jmx.export.annotation.ManagedOperationParameters;
 import org.springframework.jmx.export.annotation.ManagedResource;
+
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
+import com.orbitz.monitoring.api.Monitor;
+import com.orbitz.monitoring.api.MonitorProcessor;
+import com.orbitz.monitoring.api.MonitoringLevel;
 
 /**
  * An object that contains the configuration for what processors should be called for which
@@ -66,8 +67,7 @@ public class ProcessGroup {
     Iterable<MonitorProcessor> processorsForMonitor = Iterables.filter(_processors,
         new Predicate<MonitorProcessor>() {
           public boolean apply(final MonitorProcessor processor) {
-            MonitoringLevel processorLevel = findMonitoringEngine().getProcessorLevel(
-                processor.getName());
+            MonitoringLevel processorLevel = processor.getLevel();
             if (processorLevel != null) {
               return monitorLevel.hasHigherOrEqualPriorityThan(processorLevel);
             }
@@ -82,11 +82,6 @@ public class ProcessGroup {
       }
     }
     return processorsForMonitor;
-  }
-  
-  @VisibleForTesting
-  MonitoringEngine findMonitoringEngine() {
-    return MonitoringEngine.getInstance();
   }
   
   /**

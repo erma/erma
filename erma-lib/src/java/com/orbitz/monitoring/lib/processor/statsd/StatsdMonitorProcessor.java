@@ -3,6 +3,7 @@ package com.orbitz.monitoring.lib.processor.statsd;
 import com.orbitz.monitoring.api.Attribute;
 import com.orbitz.monitoring.api.Monitor;
 import com.orbitz.monitoring.api.MonitorProcessor;
+import com.orbitz.monitoring.lib.processor.MonitorProcessorAdapter;
 import com.orbitz.statsd.StatsdClient;
 
 /**
@@ -11,29 +12,13 @@ import com.orbitz.statsd.StatsdClient;
  * @author orawlings
  *
  */
-public class StatsdMonitorProcessor implements MonitorProcessor {
+public class StatsdMonitorProcessor extends MonitorProcessorAdapter {
     
     private StatsdClient _statsdClient;
     private String _name;
     
     public StatsdMonitorProcessor(StatsdClient statsdClient) {
         this._statsdClient = statsdClient;
-    }
-
-    public void startup() {
-        // no-op
-    }
-
-    public void shutdown() {
-        // no-op
-    }
-
-    public void monitorCreated(Monitor monitor) {
-        // no-op
-    }
-
-    public void monitorStarted(Monitor monitor) {
-        // no-op
     }
 
     public void process(Monitor monitor) {

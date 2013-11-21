@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit;
  * processing of monitors from the gathering of the data is allowed.
  * @author Doug Barth
  */
-public final class AsyncMonitorProcessor implements MonitorProcessor, MonitorProcessorAttachable {
+public final class AsyncMonitorProcessor extends MonitorProcessorAdapter implements MonitorProcessorAttachable {
   private String _name;
   private List<MonitorProcessor> _processors;
   private ExecutorService _monitorProcessingExecutor;

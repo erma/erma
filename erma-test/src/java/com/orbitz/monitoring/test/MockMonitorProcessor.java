@@ -2,6 +2,8 @@ package com.orbitz.monitoring.test;
 
 import com.orbitz.monitoring.api.Monitor;
 import com.orbitz.monitoring.api.MonitorProcessor;
+import com.orbitz.monitoring.api.MonitoringLevel;
+
 import junit.framework.Assert;
 
 import java.util.HashSet;
@@ -35,6 +37,8 @@ public class MockMonitorProcessor implements MonitorProcessor {
     private float _floatConfig;
     private double _doubleConfig;
     private char _charConfig;
+
+    private MonitoringLevel level;
 
     // ** CONSTRUCTORS ********************************************************
     public MockMonitorProcessor() {
@@ -228,5 +232,15 @@ public class MockMonitorProcessor implements MonitorProcessor {
 
     public void setCharConfig(char charConfig) {
         _charConfig = charConfig;
+    }
+
+    @Override
+    public void setLevel(MonitoringLevel level) {
+        this.level = level;
+    }
+
+    @Override
+    public MonitoringLevel getLevel() {
+        return level;
     }
 }

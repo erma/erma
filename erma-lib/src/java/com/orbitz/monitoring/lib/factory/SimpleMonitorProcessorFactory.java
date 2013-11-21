@@ -1,13 +1,21 @@
 package com.orbitz.monitoring.lib.factory;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.Set;
+
+import javax.annotation.processing.Processor;
+
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.orbitz.monitoring.api.Monitor;
 import com.orbitz.monitoring.api.MonitorProcessor;
 import com.orbitz.monitoring.api.MonitorProcessorFactory;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import com.orbitz.monitoring.api.MonitoringLevel;
 
 /**
  * An implementation of MonitorProcessorFactory that needs to be conifgured programmatically.
@@ -79,4 +87,16 @@ public class SimpleMonitorProcessorFactory implements MonitorProcessorFactory {
     
     return allMps;
   }
+
+    @Override
+    public Set<MonitorProcessor> getProcessorsByName(String name) {
+        Set<MonitorProcessor> processors = new HashSet<MonitorProcessor>();
+        for (MonitorProcessor processor : (Set<MonitorProcessor>)getAllMonitorProcessors()) {
+            if (processor.getName().equals(name)) {
+                processors.add(processor);
+            }
+        }
+        
+        return processors;
+    }
 }
