@@ -1,14 +1,15 @@
 package com.orbitz.monitoring.lib;
 
-import com.orbitz.monitoring.api.MonitoringEngine;
+import java.util.ArrayList;
+import java.util.List;
+
+import junit.framework.TestCase;
+
 import com.orbitz.monitoring.api.MonitoringLevel;
 import com.orbitz.monitoring.api.engine.StackBasedInheritableStrategy;
 import com.orbitz.monitoring.api.monitor.EventMonitor;
 import com.orbitz.monitoring.api.monitor.TransactionMonitor;
 import com.orbitz.monitoring.lib.renderer.XmlMonitorRenderer;
-import java.util.ArrayList;
-import java.util.List;
-import junit.framework.TestCase;
 
 /**
  * Tests {@link BaseMonitoringEngineManager}
@@ -49,7 +50,7 @@ public class BaseMonitoringEngineManagerTest extends TestCase {
           renderer.renderMonitor(txn));
     }
     StackBasedInheritableStrategy.class.cast(
-        MonitoringEngine.getInstance().getInheritableStrategy()).setEventPatternLevel(
+        manager.getInheritableStrategy()).setEventPatternLevel(
         MonitoringLevel.ESSENTIAL);
     {
       TransactionMonitor txn = new TransactionMonitor("foo", MonitoringLevel.ESSENTIAL);
