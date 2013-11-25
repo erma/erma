@@ -14,6 +14,7 @@ import com.orbitz.monitoring.lib.factory.SimpleMonitorProcessorFactory;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TimerTask;
@@ -56,7 +57,7 @@ public class BaseMonitoringEngineManager {
    * {@link SimpleMonitorProcessorFactory}
    */
   public BaseMonitoringEngineManager() {
-    this(new SimpleMonitorProcessorFactory(null), null);
+    this(new SimpleMonitorProcessorFactory(), null);
   }
   
   /**
@@ -114,14 +115,10 @@ public class BaseMonitoringEngineManager {
       throw new IllegalArgumentException("levelStr must match an existing MonitoringLevel");
     }
     
-    MonitorProcessor[] processors = factory.getAllProcessors();
-    for (int i = 0; i < processors.length; i++) {
-      MonitorProcessor processor = processors[i];
-      if (name.equalsIgnoreCase(processor.getName())) {
-        MonitoringEngine.getInstance().addProcessorLevel(name, MonitoringLevel.toLevel(levelStr));
+    for (MonitorProcessor processor : factory.getProcessorsByName(name)) {
+        processor.setLevel(MonitoringLevel.toLevel(levelStr));
         log.info("Changed Processor level: " + name + " -> " + levelStr);
         return;// two processors should not have same name
-      }
     }
   }
   
@@ -168,8 +165,11 @@ public class BaseMonitoringEngineManager {
    */
   @ManagedAttribute(description = "Gets a view into processor level overrides")
   public String getOverrideProcessorLevelsListing() {
-    String returnString = MonitoringEngine.getInstance().getOverrideProcessorLevelsListing();
-    return returnString;
+      Map<String, MonitoringLevel> levels = new HashMap<String, MonitoringLevel>();
+      for (MonitorProcessor processor : this.factory.getAllProcessors()) {
+          levels.put(processor.getName(), processor.getLevel());
+      }
+      return levels.toString();
   }
   
   /**
