@@ -1,21 +1,13 @@
 package com.orbitz.monitoring.lib.factory;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import javax.annotation.processing.Processor;
-
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.orbitz.monitoring.api.Monitor;
 import com.orbitz.monitoring.api.MonitorProcessor;
 import com.orbitz.monitoring.api.MonitorProcessorFactory;
-import com.orbitz.monitoring.api.MonitoringLevel;
 
 /**
  * An implementation of MonitorProcessorFactory that needs to be conifgured programmatically.
@@ -36,31 +28,26 @@ public class SimpleMonitorProcessorFactory implements MonitorProcessorFactory {
   
   // ** PUBLIC METHODS ******************************************************
   public void startup() {
-    Set allMps = getAllMonitorProcessors();
-    for (Iterator i = allMps.iterator(); i.hasNext();) {
-      MonitorProcessor processor = (MonitorProcessor)i.next();
+    for (MonitorProcessor processor : getAllMonitorProcessors()) {
       processor.startup();
     }
   }
   
   public void shutdown() {
-    Set allMps = getAllMonitorProcessors();
-    for (Iterator i = allMps.iterator(); i.hasNext();) {
-      MonitorProcessor processor = (MonitorProcessor)i.next();
-      processor.shutdown();
-    }
-  }
+      for (MonitorProcessor processor : getAllMonitorProcessors()) {
+          processor.shutdown();
+        }
+      }
   
   public MonitorProcessor[] getProcessorsForMonitor(final Monitor monitor) {
-    Set applicableProcessors = new LinkedHashSet();
-    for (int i = 0; i < _processGroups.length; i++) {
-      ProcessGroup processGroup = _processGroups[i];
-      for (MonitorProcessor processor : processGroup.getProcessorsFor(monitor)) {
-        applicableProcessors.add(processor);
+      Set<MonitorProcessor> applicableProcessors = new LinkedHashSet<MonitorProcessor>();
+      for (ProcessGroup processGroup : _processGroups) {
+          for (MonitorProcessor processor : processGroup.getProcessorsFor(monitor)) {
+            applicableProcessors.add(processor);
+          }
       }
-    }
-    return (MonitorProcessor[])applicableProcessors
-        .toArray(new MonitorProcessor[applicableProcessors.size()]);
+   
+      return applicableProcessors.toArray(new MonitorProcessor[applicableProcessors.size()]);
   }
   
   /**
@@ -73,16 +60,16 @@ public class SimpleMonitorProcessorFactory implements MonitorProcessorFactory {
   }
   
   public MonitorProcessor[] getAllProcessors() {
-    Set allMps = getAllMonitorProcessors();
+    Set<MonitorProcessor> allMps = getAllMonitorProcessors();
     
-    return (MonitorProcessor[])allMps.toArray(new MonitorProcessor[allMps.size()]);
+    return allMps.toArray(new MonitorProcessor[allMps.size()]);
   }
   
-  public Set getAllMonitorProcessors() {
-    Set allMps = new LinkedHashSet();
+  public Set<MonitorProcessor> getAllMonitorProcessors() {
+    Set<MonitorProcessor> allMps = new LinkedHashSet<MonitorProcessor>();
     for (int i = 0; i < _processGroups.length; i++) {
       ProcessGroup processGroup = _processGroups[i];
-      allMps.addAll(Arrays.asList(processGroup.getProcessors()));
+      allMps.addAll(processGroup.getAllProcessors());
     }
     
     return allMps;
