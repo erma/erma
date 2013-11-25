@@ -82,11 +82,17 @@ public abstract class AbstractCompositeMonitor extends AbstractMonitor implement
   public AbstractCompositeMonitor(final String name, final MonitoringLevel monitoringLevel,
       final Map<String, Object> inheritedAttributes) {
     super(name, monitoringLevel, inheritedAttributes);
-    
-    MonitoringEngine.getInstance().compositeMonitorStarted(this);
   }
   
-  /**
+  
+  
+  @Override
+  protected void init(String name, Map<String, Object> inheritedAttributes) {
+    super.init(name, inheritedAttributes);
+    MonitoringEngine.getInstance().compositeMonitorStarted(this);
+  }
+
+/**
    * Add a monitor as a child.
    * 
    * @param monitor the child monitor
