@@ -2,7 +2,6 @@ package com.orbitz.monitoring.lib.processor;
 
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -10,11 +9,7 @@ import com.orbitz.monitoring.api.Attribute;
 import com.orbitz.monitoring.api.CompositeMonitor;
 import com.orbitz.monitoring.api.Monitor;
 import com.orbitz.monitoring.api.MonitorProcessor;
-import com.orbitz.monitoring.api.MonitoringEngine;
 import com.orbitz.monitoring.api.monitor.AbstractCompositeMonitor;
-import com.orbitz.monitoring.api.monitor.AbstractMonitor;
-import com.orbitz.monitoring.api.monitor.CompositeAttributeHolder;
-import com.orbitz.monitoring.api.monitor.CompositeAttributeMap;
 
 /**
  * This {@link MonitorProcessor} will create a renamed monitor before passing it 
@@ -89,6 +84,7 @@ public class RenamingMonitorProcessor extends MonitorProcessorAdapter {
         } else {
             renamedMonitor = new NonLifecycleMonitor(newName, monitor.getAll());
         }
+
         return renamedMonitor;
     }
 
@@ -97,11 +93,9 @@ public class RenamingMonitorProcessor extends MonitorProcessorAdapter {
      * for basic lifecycle progression.
      * 
      */
-    private static class NonLifecycleMonitor extends AbstractMonitor implements CompositeMonitor {
+    private static class NonLifecycleMonitor extends AbstractCompositeMonitor {
         
-        private List<Monitor> _childMonitors = new LinkedList<Monitor>();
-        
-        public NonLifecycleMonitor(String name, Map inheritedAttributes, Collection<Monitor> childMonitors) {
+        public NonLifecycleMonitor(String name, Map<String, Object> inheritedAttributes, Collection<Monitor> childMonitors) {
             super(name, inheritedAttributes);
             if (childMonitors != null) {
                 for (Iterator<Monitor> iterator = childMonitors.iterator(); iterator.hasNext();) {
@@ -111,12 +105,12 @@ public class RenamingMonitorProcessor extends MonitorProcessorAdapter {
             }
         }
 
-        public NonLifecycleMonitor(String name, Map inheritedAttributes) {
+        public NonLifecycleMonitor(String name, Map<String, Object> inheritedAttributes) {
             this(name, inheritedAttributes, null);
         }
-
+        
         @Override
-        protected void init(String name, Map inheritedAttributes) {
+        protected void init(String name, Map<String, Object> inheritedAttributes) {
             set(Attribute.NAME, name).lock();
             setInheritedAttributes(inheritedAttributes);
         }
@@ -124,91 +118,6 @@ public class RenamingMonitorProcessor extends MonitorProcessorAdapter {
         @Override
         protected void process() {
             // no-op
-        }
-
-        /**
-         * Add a monitor as a child.
-         * 
-         * @param monitor the child monitor
-         */
-        public void addChildMonitor(final Monitor monitor) {
-          _childMonitors.add(monitor);
-        }
-        
-        /**
-         * Get the child monitors.
-         * @return the child monitors
-         */
-        public Collection<Monitor> getChildMonitors() {
-          return _childMonitors;
-        }
-        
-        public CompositeAttributeHolder setInheritable(final String key, final Object value) {
-          final CompositeAttributeHolder holder = ((CompositeAttributeHolder)attributes.set(key, value))
-              .setInheritable(true);
-          MonitoringEngine.getInstance().setInheritable(this, key, holder);
-          return holder;
-        }
-        
-        public CompositeAttributeHolder setInheritable(final String key, final byte value) {
-          final CompositeAttributeHolder holder = ((CompositeAttributeHolder)attributes.set(key, value))
-              .setInheritable(true);
-          MonitoringEngine.getInstance().setInheritable(this, key, holder);
-          return holder;
-        }
-        
-        public CompositeAttributeHolder setInheritable(final String key, final int value) {
-          final CompositeAttributeHolder holder = ((CompositeAttributeHolder)attributes.set(key, value))
-              .setInheritable(true);
-          MonitoringEngine.getInstance().setInheritable(this, key, holder);
-          return holder;
-        }
-        
-        public CompositeAttributeHolder setInheritable(final String key, final long value) {
-          final CompositeAttributeHolder holder = ((CompositeAttributeHolder)attributes.set(key, value))
-              .setInheritable(true);
-          MonitoringEngine.getInstance().setInheritable(this, key, holder);
-          return holder;
-        }
-        
-        public CompositeAttributeHolder setInheritable(final String key, final float value) {
-          final CompositeAttributeHolder holder = ((CompositeAttributeHolder)attributes.set(key, value))
-              .setInheritable(true);
-          MonitoringEngine.getInstance().setInheritable(this, key, holder);
-          return holder;
-        }
-        
-        public CompositeAttributeHolder setInheritable(final String key, final double value) {
-          final CompositeAttributeHolder holder = ((CompositeAttributeHolder)attributes.set(key, value))
-              .setInheritable(true);
-          MonitoringEngine.getInstance().setInheritable(this, key, holder);
-          return holder;
-        }
-        
-        public CompositeAttributeHolder setInheritable(final String key, final char value) {
-          final CompositeAttributeHolder holder = ((CompositeAttributeHolder)attributes.set(key, value))
-              .setInheritable(true);
-          MonitoringEngine.getInstance().setInheritable(this, key, holder);
-          return holder;
-        }
-        
-        public CompositeAttributeHolder setInheritable(final String key, final boolean value) {
-          final CompositeAttributeHolder holder = ((CompositeAttributeHolder)attributes.set(key, value))
-              .setInheritable(true);
-          MonitoringEngine.getInstance().setInheritable(this, key, holder);
-          return holder;
-        }
-
-        @Override
-        public Map<String, Object> getInheritableAttributes() {
-            final CompositeAttributeMap compositeMap = (CompositeAttributeMap)attributes;
-            return compositeMap.getAllInheritable();
-        }
-
-        @Override
-        public Map<String, CompositeAttributeHolder> getInheritableAttributeHolders() {
-            final CompositeAttributeMap compositeMap = (CompositeAttributeMap)attributes;
-            return compositeMap.getAllInheritableAttributeHolders();
         }
     }
 
