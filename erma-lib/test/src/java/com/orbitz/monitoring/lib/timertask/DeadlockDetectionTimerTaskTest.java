@@ -1,76 +1,68 @@
 package com.orbitz.monitoring.lib.timertask;
 
+import java.lang.management.ManagementFactory;
+import java.util.Arrays;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import junit.framework.TestCase;
 
 import com.orbitz.monitoring.api.Monitor;
-import com.orbitz.monitoring.lib.BaseMonitoringEngineManager;
-import com.orbitz.monitoring.test.MockDecomposer;
-import com.orbitz.monitoring.test.MockMonitorProcessor;
-import com.orbitz.monitoring.test.MockMonitorProcessorFactory;
 
 public class DeadlockDetectionTimerTaskTest extends TestCase {
 
-    private DeadlockDetectionTimerTask task;
-    private MockMonitorProcessor processor;
-
-    protected void setUp() throws Exception {
-        super.setUp();
-
-        task = new DeadlockDetectionTimerTask();
-        processor = new MockMonitorProcessor();
-
-        MockMonitorProcessorFactory mockMonitorProcessorFactory =
-                new MockMonitorProcessorFactory(processor);
-        MockDecomposer mockDecomposer = new MockDecomposer();
-        BaseMonitoringEngineManager monitoringEngineManager =
-                new BaseMonitoringEngineManager(mockMonitorProcessorFactory, mockDecomposer);
-        monitoringEngineManager.startup();
-    }
-
-    public void testNoDeadlock() {
-        task.run();
-        Monitor[] monitors = processor.extractProcessObjects();
-        for (Monitor monitor: monitors) {
-            if("JvmStats".equals(monitor.get(Monitor.NAME))) {
-                if("Thread.Deadlock".equals(monitor.get("type"))) {
-                    fail();
-                }
-            }
+    /**
+     * This test will create deadlocks. Deadlocks would be much less of a
+     * problem if they could be resolved programmatically. As they cannot the
+     * order of these tests is very important. This means there is one master
+     * test method with three sub methods.
+     * 
+     * @throws Exception
+     */
+    public void testItAll() throws Exception {
+        while (ManagementFactory.getThreadMXBean().findMonitorDeadlockedThreads() != null) {
+            fail("Started with thread already in deadlock: " + Arrays.toString(ManagementFactory.getThreadMXBean().findMonitorDeadlockedThreads()));
         }
+        
+        noDeadlock();
+        createDeadlock();
+        deadlock();
+        deadlockMonitoringOff();
     }
 
-    public void testDeadlock() throws Exception {
+    public void noDeadlock() throws InterruptedException {
+        DeadlockDetectionTimerTask task = new DeadlockDetectionTimerTask();
+
+        Monitor monitor = task.emitMonitors().iterator().next();
+        assertNull(monitor);
+    }
+    
+    public void createDeadlock() throws Exception {
         ExecutorService executor = Executors.newFixedThreadPool(2);
         Object obj1 = new Object();
         Object obj2 = new Object();
-        executor.execute(new Deadlocker(obj1, obj2));
-        executor.execute(new Deadlocker(obj2, obj1));
+        Deadlocker deadlock1 = new Deadlocker(obj1, obj2);
+        Deadlocker deadlock2 = new Deadlocker(obj2, obj1);
+        executor.execute(deadlock1);
+        executor.execute(deadlock2);
         Thread.sleep(12);
-        task.run();
-        Monitor[] monitors = processor.extractProcessObjects();
-        boolean deadlockFound = false;
-        for (Monitor monitor: monitors) {
-            if("JvmStats".equals(monitor.get(Monitor.NAME))) {
-                if("Thread.Deadlock".equals(monitor.get("type"))) {
-                    assertEquals("Didn't find a count attribute", 1, monitor.getAsInt("count"));
-                    deadlockFound = true;
-                }
-            }
-        }
-        if(!deadlockFound) {
-            System.out.println("No deadlock was detected");
-        }
-        //assertTrue("No deadlock was detected", deadlockFound);
     }
 
-    protected void tearDown() throws Exception {
-//        MonitoringEngine.getInstance().shutdown();
-//        processor = null;
-//        task = null;
-//        super.tearDown();
+    public void deadlock() throws Exception {
+        DeadlockDetectionTimerTask task = new DeadlockDetectionTimerTask();
+        Monitor monitor = task.emitMonitors().iterator().next();
+        assertNotNull(monitor);
+        assertEquals("JvmStats", monitor.get(Monitor.NAME));
+        assertEquals("Thread.Deadlock", monitor.get("type"));
+        assertEquals(1, monitor.getAsInt("count"));
+    }
+
+    public void deadlockMonitoringOff() throws Exception {
+        DeadlockDetectionTimerTask task = new DeadlockDetectionTimerTask();
+        ManagementFactory.getThreadMXBean().setThreadContentionMonitoringEnabled(false);
+
+        Monitor monitor = task.emitMonitors().iterator().next();
+        assertNull(monitor);
     }
 
     class Deadlocker implements Runnable {
@@ -83,16 +75,16 @@ public class DeadlockDetectionTimerTaskTest extends TestCase {
             this.a = a;
             this.b = b;
         }
-
+        
         public void run() {
             synchronized (a) {
                 try {
-                    Thread.sleep(10);
-                } catch (Exception doNothing) { }
+                    Thread.sleep(1);
+                } catch (Exception doNothing) {}
                 synchronized (b) {
                     try {
-                        Thread.sleep(10);
-                    } catch (Exception doNothing) { }
+                        Thread.sleep(1);
+                    } catch (Exception doNothing) {}
                 }
             }
         }

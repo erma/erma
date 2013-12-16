@@ -32,8 +32,7 @@ public class ThreadContentionMonitorProcessor
 
     // ** PUBLIC METHODS ******************************************************
     public void monitorStarted(Monitor monitor) {
-
-        if (enabled && TransactionMonitor.class.isAssignableFrom(monitor.getClass())) {
+        if (enabled && monitor instanceof  TransactionMonitor) {
             ThreadMXBean tmxbean = ManagementFactory.getThreadMXBean();
             long id = Thread.currentThread().getId();
             ThreadInfo threadInfo = tmxbean.getThreadInfo(id);
@@ -45,16 +44,20 @@ public class ThreadContentionMonitorProcessor
     }
 
     public void process(Monitor monitor) {
-
-        if (enabled && TransactionMonitor.class.isAssignableFrom(monitor.getClass())) {
-            TransactionMonitor transactionMonitor = (TransactionMonitor) monitor;
-            ThreadMXBean tmxbean = ManagementFactory.getThreadMXBean();            
-            long id = Thread.currentThread().getId();
-            ThreadInfo threadInfo = tmxbean.getThreadInfo(id);
-            transactionMonitor.set("blockedCount", threadInfo.getBlockedCount()-transactionMonitor.getAsLong("startBlockedCount"));
-            transactionMonitor.set("blockedTime", threadInfo.getBlockedTime()-transactionMonitor.getAsLong("startBlockedTime"));
-            transactionMonitor.set("waitedCount", threadInfo.getWaitedCount()-transactionMonitor.getAsLong("startWaitedCount"));
-            transactionMonitor.set("waitedTime", threadInfo.getWaitedTime()-transactionMonitor.getAsLong("startWaitedTime"));
+        if (enabled && monitor instanceof  TransactionMonitor) {
+            if (monitor.hasAttribute("startBlockedCount") 
+                    && monitor.hasAttribute("startBlockedCount") 
+                    && monitor.hasAttribute("startBlockedCount") 
+                    && monitor.hasAttribute("startBlockedCount")) {
+                TransactionMonitor tMon = (TransactionMonitor) monitor;
+                ThreadMXBean tmxbean = ManagementFactory.getThreadMXBean();            
+                long id = Thread.currentThread().getId();
+                ThreadInfo thInfo = tmxbean.getThreadInfo(id);
+                tMon.set("blockedCount", thInfo.getBlockedCount() - tMon.getAsLong("startBlockedCount"));
+                tMon.set("blockedTime",  thInfo.getBlockedTime()  - tMon.getAsLong("startBlockedTime"));
+                tMon.set("waitedCount",  thInfo.getWaitedCount()  - tMon.getAsLong("startWaitedCount"));
+                tMon.set("waitedTime",   thInfo.getWaitedTime()   - tMon.getAsLong("startWaitedTime"));
+            }
         }
     }
 

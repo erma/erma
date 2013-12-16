@@ -1,15 +1,8 @@
 package com.orbitz.monitoring.lib.timertask;
 
-import java.util.LinkedList;
-import java.util.TimerTask;
-
 import junit.framework.TestCase;
 
 import com.orbitz.monitoring.api.Monitor;
-import com.orbitz.monitoring.lib.BaseMonitoringEngineManager;
-import com.orbitz.monitoring.test.MockDecomposer;
-import com.orbitz.monitoring.test.MockMonitorProcessor;
-import com.orbitz.monitoring.test.MockMonitorProcessorFactory;
 
 /**
  * Unit tests for the HeartbeatTimerTask.
@@ -17,32 +10,13 @@ import com.orbitz.monitoring.test.MockMonitorProcessorFactory;
  */
 public class HeartbeatTimerTaskTest extends TestCase {
 
-    private MockMonitorProcessor _mockMonitorProcessor =
-            new MockMonitorProcessor();
-    private HeartbeatTimerTask _heartbeatTimerTask =
-            new HeartbeatTimerTask();
-
-    protected void setUp() throws Exception {
-        super.setUp();
-
-        MockMonitorProcessorFactory mockMonitorProcessorFactory =
-                new MockMonitorProcessorFactory(_mockMonitorProcessor);
-        MockDecomposer mockDecomposer = new MockDecomposer();
-        LinkedList<TimerTask> timerTasks = new LinkedList<TimerTask>();
-        timerTasks.add(_heartbeatTimerTask);
-        BaseMonitoringEngineManager monitoringEngineManager =
-                new BaseMonitoringEngineManager(mockMonitorProcessorFactory, mockDecomposer);
-        monitoringEngineManager.setTimerTasks(timerTasks);
-        monitoringEngineManager.startup();
-    }
+    private HeartbeatTimerTask task = new HeartbeatTimerTask();
 
     public void testHeartbeat() {
-        _mockMonitorProcessor.clear();
-        _heartbeatTimerTask.run();
-        Monitor[] monitors = _mockMonitorProcessor.extractProcessObjects();
+        Monitor monitor = task.emitMonitors().iterator().next();
         assertEquals("Didn't fire a lifecycle event",
-                monitors[0].get(Monitor.NAME), "MonitoringEngineManager.lifecycle");
+                monitor.get(Monitor.NAME), "MonitoringEngineManager.lifecycle");
         assertEquals("Didn't find eventType=heartbeat attribute",
-                monitors[0].get("eventType"), "heartbeat");
+                monitor.get("eventType"), "heartbeat");
     }
 }

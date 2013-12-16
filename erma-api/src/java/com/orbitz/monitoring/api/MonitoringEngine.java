@@ -40,7 +40,7 @@ class MonitoringEngine {
   
   private final AttributeMap globalAttributes;
   
-  private final Map monitorLevels;
+  private final Map<String, Object> monitorLevels;
   
   private Runnable startupRunnable;
   
@@ -568,6 +568,7 @@ class MonitoringEngine {
   }
   
   public void setInheritableStrategy(final InheritableStrategy inheritableStrategy) {
+      System.out.println("Changed to..." + inheritableStrategy + " from..." + this.inheritableStrategy);
     this.inheritableStrategy = inheritableStrategy;
   }
   
@@ -586,8 +587,12 @@ class MonitoringEngine {
       throw new NullPointerException("null processor name");
     }
     
-    for (MonitorProcessor processor : this.processorFactory.getProcessorsByName(name)) {
-        processor.setLevel(level);
+    Set<MonitorProcessor> processorsByName = this.processorFactory.getProcessorsByName(name);
+    
+    if (processorsByName != null) {
+        for (MonitorProcessor processor : processorsByName) {
+            processor.setLevel(level);
+        }
     }
   }
   
@@ -640,23 +645,20 @@ class MonitoringEngine {
    * "com.orbitz.foo"
    * 
    * @param monitor the monitor to check for an updated level
-   * @return the appropiate level for this monitor, if a new level has been set at runtime that will
+   * @return the appropriate level for this monitor, if a new level has been set at runtime that will
    *         be returned, if not the monitor's level set at construction time will be returned.
    */
   public MonitoringLevel getOverrideLevelForMonitor(final Monitor monitor) {
-    final String name = monitor.getAsString(Attribute.NAME);
-    
-    final Set keys = monitorLevels.keySet();
-    final Iterator itr = keys.iterator();
-    
     String keyToUse = null;
-    while (itr.hasNext()) {
-      final String key = (String)itr.next();
-      
-      if (name.startsWith(key)) {
-        keyToUse = key;
-        break;
-      }
+    final String name = monitor.getAsString(Attribute.NAME);
+
+    if (name != null) {
+        for (String key : monitorLevels.keySet()) {
+          if (name.startsWith(key)) {
+            keyToUse = key;
+            break;
+          }
+        }
     }
     
     return (keyToUse != null ? (MonitoringLevel)monitorLevels.get(keyToUse) : null);

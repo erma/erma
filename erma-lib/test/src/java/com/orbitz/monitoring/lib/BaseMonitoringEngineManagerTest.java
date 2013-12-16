@@ -5,6 +5,7 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
+import com.orbitz.monitoring.api.MonitoringEngine;
 import com.orbitz.monitoring.api.MonitoringLevel;
 import com.orbitz.monitoring.api.engine.StackBasedInheritableStrategy;
 import com.orbitz.monitoring.api.monitor.EventMonitor;
@@ -28,7 +29,14 @@ public class BaseMonitoringEngineManagerTest extends TestCase {
     manager.shutdown();
   }
   
-  /**
+  @Override
+protected void tearDown() throws Exception {
+    // TODO Auto-generated method stub
+    super.tearDown();
+    MonitoringEngine.getInstance().shutdown();
+}
+
+/**
    * @see BaseMonitoringEngineManager#startup()
    */
   public void testEPMLevels() {

@@ -1,8 +1,5 @@
 package com.orbitz.monitoring.lib.timertask;
 
-import com.orbitz.monitoring.api.MonitoringLevel;
-import com.orbitz.monitoring.api.monitor.EventMonitor;
-
 import java.lang.management.GarbageCollectorMXBean;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
@@ -10,10 +7,16 @@ import java.lang.management.MemoryPoolMXBean;
 import java.lang.management.MemoryType;
 import java.lang.management.MemoryUsage;
 import java.lang.management.ThreadMXBean;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
-import java.util.TimerTask;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
+
+import com.orbitz.monitoring.api.Monitor;
+import com.orbitz.monitoring.api.MonitoringLevel;
+import com.orbitz.monitoring.api.monitor.EventMonitor;
 
 /**
  * VMStatTimerTask uses jdk5 MXBeans access garbage collection and thread stats.  EventMonitors named
@@ -23,9 +26,10 @@ import java.util.concurrent.atomic.AtomicLong;
  *
  * @author Matt O'Keefe
  */
-public class VMStatTimerTask extends TimerTask {
+public class VMStatTimerTask extends MonitorEmittingTimerTask {
 
-    private static final int BASE_2_EXP_MEGABYTE = 20; // 2 ^ 20 = 1024 * 1024 = 1048576
+    // 2 ^ 20 = 1024 * 1024 = 1048576
+    private static final int BASE_2_EXP_MEGABYTE = 20; 
 
     private final Map<String,AtomicLong> gc;
 
@@ -42,35 +46,38 @@ public class VMStatTimerTask extends TimerTask {
     /**
      * The action to be performed by this timer task.
      */
-    public void run() {
+    public Collection<Monitor> emitMonitors() {
+        Set<Monitor> monitors = new HashSet<Monitor>();
         for (GarbageCollectorMXBean garbageCollectorMXBean : ManagementFactory.getGarbageCollectorMXBeans()) {
-            final String name = garbageCollectorMXBean.getName();
-            final long count = setGCAndGetDelta(name + ".count", garbageCollectorMXBean.getCollectionCount());
-            final long time = setGCAndGetDelta(name + ".time", garbageCollectorMXBean.getCollectionTime());
-            fireJvmStat("GarbageCollector." + name, count, time);
+            String name = garbageCollectorMXBean.getName();
+            long count = setGCAndGetDelta(name + ".count", garbageCollectorMXBean.getCollectionCount());
+            long time = setGCAndGetDelta(name + ".time", garbageCollectorMXBean.getCollectionTime());
+            monitors.add(fireJvmStat("GarbageCollector." + name, count, time));
         }
 
-        final ThreadMXBean threadBean = ManagementFactory.getThreadMXBean();
-        fireJvmStat("Thread", (long) threadBean.getThreadCount());
+        ThreadMXBean threadBean = ManagementFactory.getThreadMXBean();
+        monitors.add(fireJvmStat("Thread", (long) threadBean.getThreadCount()));
 
-        final MemoryMXBean memoryMXBean = ManagementFactory.getMemoryMXBean();
+        MemoryMXBean memoryMXBean = ManagementFactory.getMemoryMXBean();
         MemoryUsage usage = memoryMXBean.getHeapMemoryUsage();
-        fireJvmStat("Memory.Heap.memoryUsage", toMegaBytes(usage.getUsed()), null, getUsedPercentage(usage));
+        monitors.add(fireJvmStat("Memory.Heap.memoryUsage", toMegaBytes(usage.getUsed()), null, getUsedPercentage(usage)));
+        
         usage = memoryMXBean.getNonHeapMemoryUsage();
-        fireJvmStat("Memory.NonHeap.memoryUsage", toMegaBytes(usage.getUsed()), null, getUsedPercentage(usage));
-        fireJvmStat("Memory.objectPendingFinalization", (long) memoryMXBean.getObjectPendingFinalizationCount());
+        monitors.add(fireJvmStat("Memory.NonHeap.memoryUsage", toMegaBytes(usage.getUsed()), null, getUsedPercentage(usage)));
+        monitors.add(fireJvmStat("Memory.objectPendingFinalization", (long) memoryMXBean.getObjectPendingFinalizationCount()));
 
         for(MemoryPoolMXBean memoryPoolMXBean: ManagementFactory.getMemoryPoolMXBeans()) {
-            final String type = (MemoryType.HEAP == memoryPoolMXBean.getType()) ? "Heap" : "NonHeap";
-            final String name = "Memory." + type + ".Pool." + memoryPoolMXBean.getName();
+            String type = (MemoryType.HEAP == memoryPoolMXBean.getType()) ? "Heap" : "NonHeap";
+            String name = "Memory." + type + ".Pool." + memoryPoolMXBean.getName();
             usage = memoryPoolMXBean.getUsage();
-            fireJvmStat(name + ".memoryUsage", toMegaBytes(usage.getUsed()), null, getUsedPercentage(usage));
+            monitors.add(fireJvmStat(name + ".memoryUsage", toMegaBytes(usage.getUsed()), null, getUsedPercentage(usage)));
 
             usage = memoryPoolMXBean.getCollectionUsage();
             if (usage != null) {
-                fireJvmStat(name + ".memoryCollectionUsage", toMegaBytes(usage.getUsed()));
+                monitors.add(fireJvmStat(name + ".memoryCollectionUsage", toMegaBytes(usage.getUsed())));
             }
         }
+        return monitors;
     }
 
     // calculates a gc delta value
@@ -90,15 +97,15 @@ public class VMStatTimerTask extends TimerTask {
     }
 
     // fire JvmStats monitor; sets the name, type, count, time and percent
-    private void fireJvmStat(final String type, final Long count) {
-        fireJvmStat(type, count, null, null);
+    private EventMonitor fireJvmStat(String type, Long count) {
+        return fireJvmStat(type, count, null, null);
     }
     
-    private void fireJvmStat(final String type, final Long count, final Long time) {
-        fireJvmStat(type, count, time, null);
+    private EventMonitor fireJvmStat(String type, Long count, Long time) {
+        return fireJvmStat(type, count, time, null);
     }
 
-    private void fireJvmStat(final String type, final Long count, final Long time, final Double percent) {
+    private EventMonitor fireJvmStat(String type, Long count, Long time, Double percent) {
         final EventMonitor monitor = new EventMonitor("JvmStats", MonitoringLevel.ESSENTIAL);
         monitor.set("type", type);
         if(count != null) {
@@ -111,5 +118,6 @@ public class VMStatTimerTask extends TimerTask {
             monitor.set("percent", percent);
         }
         monitor.fire();
+        return monitor;
     }
 }

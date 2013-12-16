@@ -1,9 +1,10 @@
 package com.orbitz.monitoring.lib.timertask;
 
-import com.orbitz.monitoring.api.monitor.EventMonitor;
-import com.orbitz.monitoring.api.MonitoringLevel;
+import java.util.Collection;
+import java.util.Collections;
 
-import java.util.TimerTask;
+import com.orbitz.monitoring.api.MonitoringLevel;
+import com.orbitz.monitoring.api.monitor.EventMonitor;
 
 /**
  * HeartbeatTimerTask fires an EventMonitor named MonitoringEngineManager.lifecycle every time
@@ -14,16 +15,15 @@ import java.util.TimerTask;
  * 
  * @author Matt O'Keefe
  */
-public class HeartbeatTimerTask extends TimerTask {
-
+public class HeartbeatTimerTask extends MonitorEmittingTimerTask {
 
     /**
      * Sends a heartbeat event.
      */
-    public void run() {
-
+    public Collection<EventMonitor> emitMonitors() {
         EventMonitor monitor = new EventMonitor("MonitoringEngineManager.lifecycle", MonitoringLevel.ESSENTIAL);
         monitor.set("eventType", "heartbeat");
         monitor.fire();
+        return Collections.singleton(monitor);
     }
 }

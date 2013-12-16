@@ -1,18 +1,19 @@
 package com.orbitz.monitoring.lib.processor;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
-import com.orbitz.monitoring.api.Monitor;
-import com.orbitz.monitoring.api.MonitorProcessor;
-import com.orbitz.monitoring.api.monitor.EventMonitor;
-import com.orbitz.monitoring.lib.BaseMonitoringEngineManager;
-import com.orbitz.monitoring.lib.factory.ProcessGroup;
-import com.orbitz.monitoring.lib.factory.SimpleMonitorProcessorFactory;
-import com.orbitz.monitoring.test.MockMonitorProcessor;
-import java.util.Arrays;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import com.orbitz.monitoring.api.Monitor;
+import com.orbitz.monitoring.api.MonitorProcessor;
+import com.orbitz.monitoring.api.monitor.AbstractMonitor;
+import com.orbitz.monitoring.api.monitor.serializable.SerializableMonitor;
+import com.orbitz.monitoring.test.MockMonitorProcessor;
 
 /**
  * Tests {@link AsyncMonitorProcessor}
@@ -21,7 +22,6 @@ import org.junit.Test;
 public class AsyncMonitorProcessorTest {
   private AsyncMonitorProcessor _processor;
   private MockMonitorProcessor _attachedProcessor;
-  private BaseMonitoringEngineManager _monitoringEngineManager;
   
   /**
    * Prepares for each test
@@ -30,11 +30,6 @@ public class AsyncMonitorProcessorTest {
   public void setUp() {
     _attachedProcessor = new MockMonitorProcessor();
     _processor = new AsyncMonitorProcessor(new MonitorProcessor[] {_attachedProcessor});
-    ProcessGroup processGroup = new ProcessGroup(_processor);
-    SimpleMonitorProcessorFactory simpleMonitorProcessorFactory = new SimpleMonitorProcessorFactory(
-        new ProcessGroup[] {processGroup});
-    _monitoringEngineManager = new BaseMonitoringEngineManager(simpleMonitorProcessorFactory);
-    _monitoringEngineManager.startup();
     _processor.startup();
   }
   
@@ -44,49 +39,107 @@ public class AsyncMonitorProcessorTest {
   @After
   public void tearDown() {
     _processor.shutdown();
-    _monitoringEngineManager.shutdown();
   }
   
-  /**
-   * @see AsyncMonitorProcessor#monitorCreated(Monitor)
-   * @see AsyncMonitorProcessor#flushEvents()
-   */
   @Test
   public void testMonitorCreated() {
-    EventMonitor event = new EventMonitor("test");
-    _processor.monitorCreated(event);
-    _processor.flushEvents();
-    Monitor[] monitors = _attachedProcessor.extractMonitorCreatedObjects();
-    boolean checkMonitorCreated = false;
-    for (Monitor monitor : monitors) {
-      if (monitor.get(Monitor.NAME).equals(event.get(Monitor.NAME))) {
-        assertEquals(event.get(Monitor.CREATED_AT), monitor.get(Monitor.CREATED_AT));
-        assertEquals(event.get(Monitor.THREAD_ID), monitor.get(Monitor.THREAD_ID));
-        checkMonitorCreated = true;
-      }
-    }
-    assertTrue(checkMonitorCreated);
+      final Monitor event = new AbstractMonitor() {
+        SerializableMonitor innerMon = new SerializableMonitor(null);
+        @Override
+        public SerializableMonitor getSerializableMomento() {
+            return innerMon;
+        }
+      };
+      AsyncMonitorProcessor processor = new AsyncMonitorProcessor(new MonitorProcessorAdapter() {
+        @Override
+        public void monitorCreated(Monitor monitor) {
+            assertSame(event.getSerializableMomento(), monitor);
+            monitor.set("processed", true);
+        }
+      });
+      processor.startup();
+      processor.monitorCreated(event);
+      processor.flushEvents();
+      assertTrue(event.getSerializableMomento().getAsBoolean("processed"));
   }
   
-  /**
-   * @see AsyncMonitorProcessor#process(Monitor)
-   * @see AsyncMonitorProcessor#flushEvents()
-   */
+  @Test
+  public void testMonitorStarted() {
+      final Monitor event = new AbstractMonitor() {
+        SerializableMonitor innerMon = new SerializableMonitor(null);
+        @Override
+        public SerializableMonitor getSerializableMomento() {
+            return innerMon;
+        }
+      };
+      AsyncMonitorProcessor processor = new AsyncMonitorProcessor(new MonitorProcessorAdapter() {
+        @Override
+        public void monitorStarted(Monitor monitor) {
+            assertSame(event.getSerializableMomento(), monitor);
+            monitor.set("processed", true);
+        }
+      });
+      processor.startup();
+      processor.monitorStarted(event);
+      processor.flushEvents();
+      assertTrue(event.getSerializableMomento().getAsBoolean("processed"));
+  }
+  
   @Test
   public void testProcess() {
-    EventMonitor event = new EventMonitor("test");
-    _processor.process(event);
-    _processor.flushEvents();
-    Monitor[] monitors = _attachedProcessor.extractProcessObjects();
-    Arrays.asList(monitors);
-    boolean checkMonitorCreated = false;
-    for (Monitor monitor : monitors) {
-      if (monitor.get(Monitor.NAME).equals(event.get(Monitor.NAME))) {
-        assertEquals(event.get(Monitor.CREATED_AT), monitor.get(Monitor.CREATED_AT));
-        assertEquals(event.get(Monitor.THREAD_ID), monitor.get(Monitor.THREAD_ID));
-        checkMonitorCreated = true;
-      }
-    }
-    assertTrue(checkMonitorCreated);
+      final Monitor event = new AbstractMonitor() {
+          SerializableMonitor innerMon = new SerializableMonitor(null);
+          @Override
+          public SerializableMonitor getSerializableMomento() {
+              return innerMon;
+          }
+        };
+        AsyncMonitorProcessor processor = new AsyncMonitorProcessor(new MonitorProcessorAdapter() {
+          @Override
+          public void process(Monitor monitor) {
+              assertSame(event.getSerializableMomento(), monitor);
+              monitor.set("processed", true);
+          }
+        });
+        processor.startup();
+        processor.process(event);
+        processor.flushEvents();
+        assertTrue(event.getSerializableMomento().getAsBoolean("processed"));
+  }
+  
+  @Test
+  public void testSlowShutDown() {
+      final long wait = 1;
+      final Monitor event = new AbstractMonitor() {
+          SerializableMonitor innerMon = new SerializableMonitor(null);
+          @Override
+          public SerializableMonitor getSerializableMomento() {
+              return innerMon;
+          }
+        };
+        AsyncMonitorProcessor processor = new AsyncMonitorProcessor(new MonitorProcessorAdapter() {
+          @Override
+          public void process(Monitor monitor) {
+              assertSame(event.getSerializableMomento(), monitor);
+              try {
+                Thread.yield();
+                Thread.sleep(wait);
+            } catch (InterruptedException e) {
+                fail("Should not have been interupted");
+            }
+              monitor.set("processed", true);
+          }
+        });
+        processor.startup();
+        long start = System.currentTimeMillis();
+        processor.process(event);
+        if ((System.currentTimeMillis() - start) <= wait) {
+            assertFalse(event.getSerializableMomento().hasAttribute("processed"));
+        } else {
+            System.out.println("I never got control before the processor");
+        }
+        processor.flushEvents();
+        assertTrue((System.currentTimeMillis() - start) >= wait);
+        assertTrue(event.getSerializableMomento().getAsBoolean("processed"));
   }
 }

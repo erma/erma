@@ -1,12 +1,10 @@
 package com.orbitz.monitoring.lib.timertask;
 
+import java.util.Collection;
+
 import junit.framework.TestCase;
 
 import com.orbitz.monitoring.api.Monitor;
-import com.orbitz.monitoring.lib.BaseMonitoringEngineManager;
-import com.orbitz.monitoring.test.MockDecomposer;
-import com.orbitz.monitoring.test.MockMonitorProcessor;
-import com.orbitz.monitoring.test.MockMonitorProcessorFactory;
 
 /**
  * Unit tests for the VMStatTimerTask.
@@ -15,25 +13,14 @@ import com.orbitz.monitoring.test.MockMonitorProcessorFactory;
 public class VMStatTimerTaskTest extends TestCase {
 
     private VMStatTimerTask task;
-    private MockMonitorProcessor processor;
 
     protected void setUp() throws Exception {
-        super.setUp();
-
         task = new VMStatTimerTask();
-        processor = new MockMonitorProcessor();
-
-        MockMonitorProcessorFactory mockMonitorProcessorFactory =
-                new MockMonitorProcessorFactory(processor);
-        MockDecomposer mockDecomposer = new MockDecomposer();
-        BaseMonitoringEngineManager monitoringEngineManager =
-                new BaseMonitoringEngineManager(mockMonitorProcessorFactory, mockDecomposer);
-        monitoringEngineManager.startup();
     }
 
     public void testVMStats() {
         task.run();
-        Monitor[] monitors = processor.extractProcessObjects();
+        Collection<Monitor> monitors = task.emitMonitors();
         boolean garbageCollectorStats = false;
         boolean threadStats = false;
         boolean heapMemoryStats = false;

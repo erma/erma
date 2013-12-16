@@ -8,6 +8,7 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
+import com.orbitz.monitoring.api.MonitoringEngine;
 import com.orbitz.monitoring.api.monitor.EventMonitor;
 import com.orbitz.monitoring.api.monitor.TransactionMonitor;
 
@@ -102,6 +103,7 @@ public class XmlMonitorRendererTest extends TestCase {
     }
     
     public void testPrettyPrint() {
+        System.out.println(MonitoringEngine.getInstance().getInheritableStrategy());
         final List allowedAttributes = new ArrayList();
         allowedAttributes.add("name");
         allowedAttributes.add("foo");
