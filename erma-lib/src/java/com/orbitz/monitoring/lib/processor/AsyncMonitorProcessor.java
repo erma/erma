@@ -33,7 +33,7 @@ public final class AsyncMonitorProcessor extends MonitorProcessorAdapter impleme
    * @since 3.5
    * @param processors
    */
-  public AsyncMonitorProcessor(final MonitorProcessor[] processors) {
+  public AsyncMonitorProcessor(MonitorProcessor... processors) {
     this();
     if (processors != null) {
       _processors = Lists.newArrayList(processors);
