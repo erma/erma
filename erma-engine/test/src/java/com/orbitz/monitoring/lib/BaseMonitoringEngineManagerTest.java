@@ -5,7 +5,6 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
-import com.orbitz.monitoring.api.MonitoringEngine;
 import com.orbitz.monitoring.api.MonitoringLevel;
 import com.orbitz.monitoring.api.engine.StackBasedInheritableStrategy;
 import com.orbitz.monitoring.api.monitor.EventMonitor;
@@ -17,24 +16,20 @@ import com.orbitz.monitoring.lib.renderer.XmlMonitorRenderer;
  * @author Matt O'Keefe
  */
 public class BaseMonitoringEngineManagerTest extends TestCase {
-  /**
-   * @see BaseMonitoringEngineManager#startup()
-   * @see BaseMonitoringEngineManager#reload()
-   * @see BaseMonitoringEngineManager#shutdown()
-   */
-  public void testBaseMonitoringEngineManager() {
-    BaseMonitoringEngineManager manager = new BaseMonitoringEngineManager();
-    manager.startup();
-    manager.reload();
-    manager.shutdown();
-  }
-  
+
+  BaseMonitoringEngineManager manager;
+
   @Override
-protected void tearDown() throws Exception {
-    // TODO Auto-generated method stub
-    super.tearDown();
-    MonitoringEngine.getInstance().shutdown();
-}
+  protected void setUp() throws Exception {
+      manager = new BaseMonitoringEngineManager();
+      manager.startup();
+      manager.reload();
+  }
+
+  @Override
+  protected void tearDown() throws Exception {
+      manager.shutdown();
+  }
 
 /**
    * @see BaseMonitoringEngineManager#startup()
@@ -44,8 +39,7 @@ protected void tearDown() throws Exception {
     attributeList.add("name");
     XmlMonitorRenderer renderer = new XmlMonitorRenderer(attributeList);
     renderer.setPrettyPrint(true);
-    BaseMonitoringEngineManager manager = new BaseMonitoringEngineManager();
-    manager.startup();
+
     {
       TransactionMonitor txn = new TransactionMonitor("foo");
       EventMonitor m1 = new EventMonitor("bar");
@@ -75,8 +69,6 @@ protected void tearDown() throws Exception {
    * @see BaseMonitoringEngineManager#startup()
    */
   public void testMaliciousRuntimeControls() {
-    BaseMonitoringEngineManager manager = new BaseMonitoringEngineManager();
-    manager.startup();
     int i = 0;
     try {
       while (true) {

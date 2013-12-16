@@ -1,1 +1,1 @@
-include 'erma-api', 'erma-lib', 'erma-test', 'erma-ext/erma-mongo-processor'
+include 'erma-api', 'erma-lib', 'erma-test', 'erma-engine', 'erma-ext/erma-mongo-processor'

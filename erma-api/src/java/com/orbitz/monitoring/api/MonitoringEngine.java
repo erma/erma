@@ -22,7 +22,7 @@ import org.apache.log4j.Logger;
  * 
  * @author Doug Barth
  */
-public
+public 
 class MonitoringEngine {
   
   private static final Logger log = Logger.getLogger(MonitoringEngine.class);
