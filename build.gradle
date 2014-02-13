@@ -20,6 +20,11 @@ allprojects {
   apply plugin: 'java'
   apply plugin: 'eclipse'
   apply plugin: 'idea'
+  apply plugin: 'checkstyle'
+
+  checkstyle {
+    configFile = new File(rootDir, "/config/checkstyle/checkstyle.xml")
+  }
   
   task eclipse(dependsOn: [eclipseClasspath], overwrite: true) << {
     // Don't overwrite the project file
