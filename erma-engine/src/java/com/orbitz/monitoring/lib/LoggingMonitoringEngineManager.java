@@ -5,8 +5,7 @@ import com.orbitz.monitoring.lib.factory.SimpleMonitorProcessorFactory;
 import com.orbitz.monitoring.lib.processor.LoggingMonitorProcessor;
 
 public class LoggingMonitoringEngineManager extends BaseMonitoringEngineManager {
-
-	public LoggingMonitoringEngineManager() {
-		super(new SimpleMonitorProcessorFactory(new ProcessGroup(new LoggingMonitorProcessor())));
-	}
+  public LoggingMonitoringEngineManager() {
+    super(new SimpleMonitorProcessorFactory(new ProcessGroup(new LoggingMonitorProcessor())));
+  }
 }

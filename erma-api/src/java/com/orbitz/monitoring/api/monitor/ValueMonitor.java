@@ -90,5 +90,5 @@ public class ValueMonitor extends AbstractMonitor {
      */
     public void fire() {
         process();
-	}
+    }
 }
