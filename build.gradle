@@ -89,11 +89,6 @@ subprojects { subproject ->
 
   defaultTasks 'assemble'
   
-  buildscript {
-    def coberturaPluginVersion = '1.2.1'
-    apply from: "https://github.com/valkolovos/gradle_cobertura/raw/master/repo/gradle_cobertura/gradle_cobertura/${coberturaPluginVersion}/coberturainit.gradle"
-  }  
-  
   sourceSets {
     main {
       java { srcDir 'src/java' }
