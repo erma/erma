@@ -5,4 +5,9 @@
 <module name="Checker">
   <property name="charset" value="UTF-8"/>
   <module name="FileTabCharacter"/>
+
+  <module name="TreeWalker">
+    <!-- 3.3.1 -->
+    <module name="AvoidStarImport"/>
+  </module>
 </module>

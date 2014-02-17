@@ -1,6 +1,11 @@
 package com.orbitz.monitoring.test;
 
-import com.orbitz.monitoring.api.*;
+import com.orbitz.monitoring.api.Attribute;
+import com.orbitz.monitoring.api.AttributeUndefinedException;
+import com.orbitz.monitoring.api.CantCoerceException;
+import com.orbitz.monitoring.api.Monitor;
+import com.orbitz.monitoring.api.MonitoringEngine;
+import com.orbitz.monitoring.api.MonitorProcessor;
 import com.orbitz.monitoring.api.monitor.serializable.SerializableMonitor;
 import com.orbitz.monitoring.api.monitor.TransactionMonitor;
 import junit.framework.TestCase;
