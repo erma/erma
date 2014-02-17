@@ -2,7 +2,6 @@ package com.orbitz.monitoring.lib.processor.statsd;
 
 import com.orbitz.monitoring.api.Attribute;
 import com.orbitz.monitoring.api.Monitor;
-import com.orbitz.monitoring.api.MonitorProcessor;
 import com.orbitz.monitoring.lib.processor.MonitorProcessorAdapter;
 import com.orbitz.statsd.StatsdClient;
 

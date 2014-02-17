@@ -6,7 +6,6 @@ import com.orbitz.monitoring.api.MonitorProcessor;
 import com.orbitz.monitoring.api.MonitorProcessorAttachable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -83,7 +82,7 @@ public final class AsyncMonitorProcessor extends MonitorProcessorAdapter impleme
   }
   
   /**
-   * Replaces the {@link Executor executor} that is processing {@link Monitor monitors}, then shuts
+   * Replaces the {@link java.util.concurrent.Executor executor} that is processing {@link Monitor monitors}, then shuts
    * down the old monitor and waits up to 100ms for it to finish shutting down.
    */
   public void flushEvents() {

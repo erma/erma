@@ -3,12 +3,11 @@ package com.orbitz.monitoring.lib.processor;
 import org.apache.log4j.Logger;
 
 import com.orbitz.monitoring.api.Monitor;
-import com.orbitz.monitoring.api.MonitorProcessor;
 import com.orbitz.monitoring.lib.renderer.MonitorRenderer;
 import com.orbitz.monitoring.lib.renderer.SimpleMonitorRenderer;
 
 /**
- * This is an implementation of the {@link MonitorProcessor} interface that
+ * This is an implementation of the {@link com.orbitz.monitoring.api.MonitorProcessor} interface that
  * logs Monitor callback events to Log4j.
  *
  * @author Doug Barth

@@ -1,6 +1,5 @@
 package com.orbitz.monitoring.api.annotation;
 
-import com.orbitz.monitoring.api.MonitoringLevel;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
@@ -31,8 +30,8 @@ public @interface Monitored {
     String value() default "";
     
     /**
-     * A string representation of the {@link MonitoringLevel}. The default is "info".<br/>
-     * FIXME: Version 5: Change this to "INFO" to match {@link MonitoringLevel#INFO}
+     * A string representation of the {@link com.orbitz.monitoring.api.MonitoringLevel}. The default is "info".<br/>
+     * FIXME: Version 5: Change this to "INFO" to match {@link com.orbitz.monitoring.api.MonitoringLevel#INFO}
      * @return the level name
      */
     String levelStr() default "info";

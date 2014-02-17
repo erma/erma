@@ -1,9 +1,5 @@
 package com.orbitz.monitoring.api;
 
-import com.orbitz.monitoring.api.monitor.EventMonitor;
-import com.orbitz.monitoring.api.monitor.TransactionMonitor;
-import com.orbitz.monitoring.api.monitor.ValueMonitor;
-
 /**
  * Standard monitor attribute names<br />
  * Created May 20, 2010
@@ -62,19 +58,19 @@ public abstract class Attribute {
     public static final String RESULT_CODE = "resultCode";
     
     /**
-     * {@link EventMonitor}: The time at which the event occurred {@link TransactionMonitor}: The
+     * {@link com.orbitz.monitoring.api.monitor.EventMonitor}: The time at which the event occurred {@link com.orbitz.monitoring.api.monitor.TransactionMonitor}: The
      * time at which the transaction started
      */
     public static final String START_TIME = "startTime";
     
     /**
-     * For a {@link TransactionMonitor}, the time at which the transaction completed, whether
+     * For a {@link com.orbitz.monitoring.api.monitor.TransactionMonitor}, the time at which the transaction completed, whether
      * successfully or not
      */
     public static final String END_TIME = "endTime";
     
     /**
-     * For a {@link TransactionMonitor}, the duration of the transaction
+     * For a {@link com.orbitz.monitoring.api.monitor.TransactionMonitor}, the duration of the transaction
      */
     public static final String LATENCY = "latency";
     
@@ -95,7 +91,7 @@ public abstract class Attribute {
     public static final String BUSINESS_FAILURE = "businessFailure";
     
     /**
-     * For a {@link ValueMonitor}, the value
+     * For a {@link com.orbitz.monitoring.api.monitor.ValueMonitor}, the value
      */
     public static final String VALUE = "value";
     

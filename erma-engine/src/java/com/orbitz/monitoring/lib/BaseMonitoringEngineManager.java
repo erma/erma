@@ -2,7 +2,6 @@ package com.orbitz.monitoring.lib;
 
 import com.orbitz.monitoring.api.Decomposer;
 import com.orbitz.monitoring.api.InheritableStrategy;
-import com.orbitz.monitoring.api.Monitor;
 import com.orbitz.monitoring.api.MonitorProcessor;
 import com.orbitz.monitoring.api.MonitorProcessorFactory;
 import com.orbitz.monitoring.api.MonitoringEngine;
@@ -11,7 +10,6 @@ import com.orbitz.monitoring.api.engine.StackBasedInheritableStrategy;
 import com.orbitz.monitoring.api.monitor.EventMonitor;
 import com.orbitz.monitoring.lib.decomposer.AttributeDecomposer;
 import com.orbitz.monitoring.lib.factory.SimpleMonitorProcessorFactory;
-import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -71,7 +69,7 @@ public class BaseMonitoringEngineManager {
   /**
    * Creates a {@link BaseMonitoringEngineManager}
    * @param factory used to create {@link MonitorProcessor MonitorProcessors}
-   * @param decomposer used to make properties of monitors {@link Serializable}
+   * @param decomposer used to make properties of monitors {@link java.io.Serializable}
    */
   public BaseMonitoringEngineManager(final MonitorProcessorFactory factory, Decomposer decomposer) {
     if (decomposer == null) {
@@ -123,7 +121,7 @@ public class BaseMonitoringEngineManager {
   }
   
   /**
-   * Determines what a {@link Monitor} inherits from its parent(s)
+   * Determines what a {@link com.orbitz.monitoring.api.Monitor} inherits from its parent(s)
    * @return the strategy
    */
   public InheritableStrategy getInheritableStrategy() {
@@ -230,7 +228,7 @@ public class BaseMonitoringEngineManager {
   }
   
   /**
-   * Sets the strategy that determines whether {@link Monitor} attributes are inherited by their
+   * Sets the strategy that determines whether {@link com.orbitz.monitoring.api.Monitor} attributes are inherited by their
    * children
    * @param inheritableStrategy the strategy
    */

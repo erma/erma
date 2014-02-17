@@ -2,7 +2,6 @@ package com.orbitz.monitoring.lib.interceptor;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.orbitz.monitoring.api.MonitoringLevel;
-import com.orbitz.monitoring.api.annotation.Monitored;
 import com.orbitz.monitoring.api.monitor.TransactionMonitor;
 import java.lang.reflect.Method;
 import org.aopalliance.intercept.MethodInterceptor;
@@ -12,19 +11,19 @@ import org.apache.commons.lang.Validate;
 import org.apache.log4j.Logger;
 
 /**
- * Designed to intercept methods annotated with {@link Monitored}, applying
+ * Designed to intercept methods annotated with {@link com.orbitz.monitoring.api.annotation.Monitored}, applying
  * {@link TransactionMonitor transaction monitors} to them
  * @author Ray Krueger
  */
 public class TransactionMonitorInterceptor implements MethodInterceptor {
     private static final Logger log = Logger.getLogger(TransactionMonitorInterceptor.class);
     /**
-     * If {@link Monitored#includeArguments()} is true, the name of the monitor property that will
+     * If {@link com.orbitz.monitoring.api.annotation.Monitored#includeArguments()} is true, the name of the monitor property that will
      * contain the arguments of the intercepted method
      */
     public static final String MONITOR_ARGUMENTS_NAME = "arguments";
     /**
-     * If {@link Monitored#includeResult()} is true, the name of the monitor property that will
+     * If {@link com.orbitz.monitoring.api.annotation.Monitored#includeResult()} is true, the name of the monitor property that will
      * contain the return value of the intercepted method
      */
     public static final String MONITOR_RESULT_NAME = "result";

@@ -1,6 +1,5 @@
 package com.orbitz.monitoring.lib.interceptor;
 
-import com.orbitz.monitoring.api.annotation.Monitored;
 import java.lang.reflect.Method;
 import org.springframework.aop.ClassFilter;
 import org.springframework.aop.support.StaticMethodMatcherPointcutAdvisor;
@@ -30,7 +29,7 @@ public class MonitoredAttributeSourceAdvisor extends StaticMethodMatcherPointcut
      * @deprecated Use
      *             {@link MonitoredAttributeSourceAdvisor#MonitoredAttributeSourceAdvisor(MonitoredAttributeSource)}
      *             instead
-     * @param interceptor the interceptor to apply to {@link Monitored} annotated methods
+     * @param interceptor the interceptor to apply to {@link com.orbitz.monitoring.api.annotation.Monitored} annotated methods
      */
     @Deprecated
     public MonitoredAttributeSourceAdvisor(final TransactionMonitorInterceptor interceptor) {

@@ -1,7 +1,6 @@
 package com.orbitz.monitoring.lib.processor;
 
 import com.orbitz.monitoring.api.Monitor;
-import org.springframework.jmx.export.annotation.ManagedResource;
 
 /**
  * Samples from a population of monitors

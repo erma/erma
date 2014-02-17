@@ -1,6 +1,5 @@
 package com.orbitz.monitoring.api;
 
-import com.orbitz.monitoring.api.monitor.AttributeHolder;
 import com.orbitz.monitoring.api.monitor.CompositeAttributeHolder;
 import java.util.Collection;
 import java.util.Map;
@@ -116,7 +115,7 @@ public interface CompositeMonitor extends Monitor {
   public Map<String, Object> getInheritableAttributes();
   
   /**
-   * Gets all {@link AttributeHolder attribute holders} for which
+   * Gets all {@link com.orbitz.monitoring.api.monitor.AttributeHolder attribute holders} for which
    * {@link CompositeAttributeHolder#isInheritable()} is true
    * @return the inheritable holders
    */

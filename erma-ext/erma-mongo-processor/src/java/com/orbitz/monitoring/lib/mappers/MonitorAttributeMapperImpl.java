@@ -1,15 +1,11 @@
 package com.orbitz.monitoring.lib.mappers;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.apache.commons.lang.builder.ReflectionToStringBuilder;
-import org.apache.commons.lang.builder.ToStringStyle;
 import org.apache.log4j.Logger;
 
 import com.orbitz.monitoring.api.Monitor;
@@ -18,9 +14,9 @@ import com.orbitz.monitoring.api.mappers.ObjectAttributeMapper;
 
 /**
  * By default, this class maps {@link String}, {@link Number},
- * {@link Date}, {@link Boolean}, {@link Collection}, {@link Map} and {@link Array}.
+ * {@link java.util.Date}, {@link Boolean}, {@link Collection}, {@link Map} and {@link java.lang.reflect.Array}.
  * The mapper also accepts custom {@link ObjectAttributeMapper}.
- * Currently does not support nested {@link Collection}, {@link Map} and {@link Array}.
+ * Currently does not support nested {@link Collection}, {@link Map} and {@link java.lang.reflect.Array}.
  * @author hbouabdallah
  *
  */
