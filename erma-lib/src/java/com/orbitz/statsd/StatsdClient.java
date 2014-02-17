@@ -29,6 +29,8 @@
  */
 package com.orbitz.statsd;
 
+import org.apache.log4j.Logger;
+
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -37,8 +39,6 @@ import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
 import java.util.Locale;
 import java.util.Random;
-
-import org.apache.log4j.Logger;
 
 public class StatsdClient {
   private static final Random RNG = new Random();

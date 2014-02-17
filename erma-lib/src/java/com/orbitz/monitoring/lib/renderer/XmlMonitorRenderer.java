@@ -2,11 +2,13 @@ package com.orbitz.monitoring.lib.renderer;
 
 import com.orbitz.monitoring.api.CompositeMonitor;
 import com.orbitz.monitoring.api.Monitor;
+
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
-import com.thoughtworks.xstream.io.xml.PrettyPrintWriter;
 import com.thoughtworks.xstream.io.xml.CompactWriter;
-import org.apache.log4j.Logger;
+import com.thoughtworks.xstream.io.xml.PrettyPrintWriter;
+
 import org.apache.commons.beanutils.DynaBean;
+import org.apache.log4j.Logger;
 
 import java.io.StringWriter;
 import java.util.Collection;

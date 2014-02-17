@@ -1,18 +1,18 @@
 package com.orbitz.monitoring.lib.renderer;
 
+import com.orbitz.monitoring.api.Attribute;
+import com.orbitz.monitoring.api.CompositeMonitor;
+import com.orbitz.monitoring.api.Monitor;
+
+import org.apache.commons.beanutils.LazyDynaBean;
+import org.apache.log4j.Logger;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-
-import org.apache.commons.beanutils.LazyDynaBean;
-import org.apache.log4j.Logger;
-
-import com.orbitz.monitoring.api.Attribute;
-import com.orbitz.monitoring.api.CompositeMonitor;
-import com.orbitz.monitoring.api.Monitor;
 
 /**
  * EventPatternMonitorRenderer renders a Monitor recursively based on name, vmid and failed

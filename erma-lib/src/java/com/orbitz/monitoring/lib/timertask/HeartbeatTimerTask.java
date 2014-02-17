@@ -1,10 +1,10 @@
 package com.orbitz.monitoring.lib.timertask;
 
-import java.util.Collection;
-import java.util.Collections;
-
 import com.orbitz.monitoring.api.MonitoringLevel;
 import com.orbitz.monitoring.api.monitor.EventMonitor;
+
+import java.util.Collection;
+import java.util.Collections;
 
 /**
  * HeartbeatTimerTask fires an EventMonitor named MonitoringEngineManager.lifecycle every time

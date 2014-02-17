@@ -1,8 +1,8 @@
 package com.orbitz.monitoring.lib.interceptor;
 
-import org.apache.log4j.Logger;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
+import org.apache.log4j.Logger;
 import org.springframework.util.PatternMatchUtils;
 
 import java.lang.reflect.Method;

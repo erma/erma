@@ -1,16 +1,16 @@
 package com.orbitz.monitoring.api.monitor.serializable;
 
 import com.orbitz.monitoring.api.Monitor;
-import com.orbitz.monitoring.api.MonitoringLevel;
 import com.orbitz.monitoring.api.MonitoringEngine;
-import com.orbitz.monitoring.api.monitor.AttributeMap;
+import com.orbitz.monitoring.api.MonitoringLevel;
 import com.orbitz.monitoring.api.monitor.AttributeHolder;
+import com.orbitz.monitoring.api.monitor.AttributeMap;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Date;
 
 /**
  * A monitor implementation that is specifically created for serializing to

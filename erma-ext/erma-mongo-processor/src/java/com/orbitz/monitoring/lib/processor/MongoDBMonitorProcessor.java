@@ -1,5 +1,21 @@
 package com.orbitz.monitoring.lib.processor;
 
+import com.orbitz.monitoring.api.Attribute;
+import com.orbitz.monitoring.api.Monitor;
+import com.orbitz.monitoring.api.mappers.MonitorAttributeMapper;
+import com.orbitz.monitoring.lib.mappers.MonitorAttributeMapperImpl;
+
+import com.mongodb.BasicDBObject;
+import com.mongodb.DB;
+import com.mongodb.DBCollection;
+import com.mongodb.DBObject;
+import com.mongodb.Mongo;
+import com.mongodb.MongoException;
+
+import org.apache.log4j.Logger;
+import org.springframework.jmx.export.annotation.ManagedAttribute;
+import org.springframework.jmx.export.annotation.ManagedResource;
+
 import java.net.UnknownHostException;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -8,21 +24,6 @@ import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
-
-import org.apache.log4j.Logger;
-import org.springframework.jmx.export.annotation.ManagedAttribute;
-import org.springframework.jmx.export.annotation.ManagedResource;
-
-import com.mongodb.BasicDBObject;
-import com.mongodb.DB;
-import com.mongodb.DBCollection;
-import com.mongodb.DBObject;
-import com.mongodb.Mongo;
-import com.mongodb.MongoException;
-import com.orbitz.monitoring.api.Attribute;
-import com.orbitz.monitoring.api.Monitor;
-import com.orbitz.monitoring.api.mappers.MonitorAttributeMapper;
-import com.orbitz.monitoring.lib.mappers.MonitorAttributeMapperImpl;
 
 /**
  * Uses the mongo-java-driver to persist ERMA monitors to MongoDB

@@ -3,6 +3,9 @@ package com.orbitz.monitoring.api;
 import com.orbitz.monitoring.api.engine.MapBasedInheritableStrategy;
 import com.orbitz.monitoring.api.monitor.AttributeHolder;
 import com.orbitz.monitoring.api.monitor.AttributeMap;
+
+import org.apache.log4j.Logger;
+
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collections;
@@ -13,7 +16,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
-import org.apache.log4j.Logger;
 
 /**
  * The engine that controls basic correlation of monitors as they are collected and submitted to the

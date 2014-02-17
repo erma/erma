@@ -1,11 +1,15 @@
 package com.orbitz.monitoring.api.monitor;
 
+import com.orbitz.monitoring.api.AttributeUndefinedException;
+import com.orbitz.monitoring.api.CantCoerceException;
+
 import com.google.common.base.Function;
 import com.google.common.base.Predicates;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.orbitz.monitoring.api.AttributeUndefinedException;
-import com.orbitz.monitoring.api.CantCoerceException;
+
+import org.apache.log4j.Logger;
+
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -16,7 +20,6 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.apache.log4j.Logger;
 
 /**
  * A map-like class that can be used to hold attributes for a Monitor. This class requires that keys

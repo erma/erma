@@ -1,10 +1,12 @@
 package com.orbitz.monitoring.lib.factory;
 
-import com.google.common.collect.Lists;
 import com.orbitz.monitoring.api.Aggregator;
 import com.orbitz.monitoring.api.Monitor;
 import com.orbitz.monitoring.api.MonitorProcessor;
 import com.orbitz.monitoring.lib.processor.AggregationMonitorProcessor;
+
+import com.google.common.collect.Lists;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;

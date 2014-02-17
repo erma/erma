@@ -1,15 +1,15 @@
 package com.orbitz.monitoring.lib.processor;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import com.orbitz.monitoring.api.Attribute;
 import com.orbitz.monitoring.api.CompositeMonitor;
 import com.orbitz.monitoring.api.Monitor;
 import com.orbitz.monitoring.api.MonitorProcessor;
 import com.orbitz.monitoring.api.monitor.AbstractCompositeMonitor;
+
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * This {@link MonitorProcessor} will create a renamed monitor before passing it 

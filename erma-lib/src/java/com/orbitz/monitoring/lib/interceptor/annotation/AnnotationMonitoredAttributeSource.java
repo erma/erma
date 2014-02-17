@@ -3,10 +3,12 @@ package com.orbitz.monitoring.lib.interceptor.annotation;
 import com.orbitz.monitoring.api.annotation.Monitored;
 import com.orbitz.monitoring.lib.interceptor.MonitoredAttribute;
 import com.orbitz.monitoring.lib.interceptor.MonitoredAttributeSource;
-import java.lang.reflect.Method;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.core.annotation.AnnotationUtils;
+
+import java.lang.reflect.Method;
 
 /**
  * @author Ray Krueger

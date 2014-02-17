@@ -1,13 +1,14 @@
 package com.orbitz.monitoring.lib.factory;
 
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.Set;
-
-import com.google.common.collect.Lists;
 import com.orbitz.monitoring.api.Monitor;
 import com.orbitz.monitoring.api.MonitorProcessor;
 import com.orbitz.monitoring.api.MonitorProcessorFactory;
+
+import com.google.common.collect.Lists;
+
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 /**
  * An implementation of MonitorProcessorFactory that needs to be conifgured programmatically.

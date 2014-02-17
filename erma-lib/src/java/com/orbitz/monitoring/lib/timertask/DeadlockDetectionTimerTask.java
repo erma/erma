@@ -1,12 +1,12 @@
 package com.orbitz.monitoring.lib.timertask;
 
+import com.orbitz.monitoring.api.MonitoringLevel;
+import com.orbitz.monitoring.api.monitor.EventMonitor;
+
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadMXBean;
 import java.util.Collection;
 import java.util.Collections;
-
-import com.orbitz.monitoring.api.MonitoringLevel;
-import com.orbitz.monitoring.api.monitor.EventMonitor;
 
 /**
  * Timer task that will fire a monitor of deadlocked

@@ -1,15 +1,15 @@
 package com.orbitz.monitoring.lib.renderer;
 
+import com.orbitz.monitoring.api.Monitor;
+
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
+
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
-
-import org.apache.commons.lang.builder.ToStringBuilder;
-import org.apache.commons.lang.builder.ToStringStyle;
-
-import com.orbitz.monitoring.api.Monitor;
 
 /**
  * A simple renderer that renders a monitor with each attribute on a separate line.

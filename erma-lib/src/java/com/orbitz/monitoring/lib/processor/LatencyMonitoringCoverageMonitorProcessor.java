@@ -1,13 +1,13 @@
 package com.orbitz.monitoring.lib.processor;
 
-import java.util.Date;
-
-import org.apache.log4j.Logger;
-
 import com.orbitz.monitoring.api.Attribute;
 import com.orbitz.monitoring.api.Monitor;
 import com.orbitz.monitoring.api.monitor.EventMonitor;
 import com.orbitz.monitoring.api.monitor.TransactionMonitor;
+
+import org.apache.log4j.Logger;
+
+import java.util.Date;
 
 /**
  * This is an implementation of the {@link com.orbitz.monitoring.api.MonitorProcessor} interface that

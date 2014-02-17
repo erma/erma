@@ -1,8 +1,9 @@
 package com.orbitz.monitoring.lib.interceptor;
 
-import java.lang.reflect.Method;
 import org.springframework.aop.ClassFilter;
 import org.springframework.aop.support.StaticMethodMatcherPointcutAdvisor;
+
+import java.lang.reflect.Method;
 
 /**
  * Provides support for method interception in Spring

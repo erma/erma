@@ -1,12 +1,15 @@
 package com.orbitz.monitoring.lib.processor;
 
-import com.google.common.collect.Maps;
 import com.orbitz.monitoring.api.Attribute;
 import com.orbitz.monitoring.api.Monitor;
 import com.orbitz.monitoring.api.monitor.TransactionMonitor;
+
+import com.google.common.collect.Maps;
+
+import org.apache.log4j.Logger;
+
 import java.util.HashMap;
 import java.util.Map;
-import org.apache.log4j.Logger;
 
 /**
  * A {@link com.orbitz.monitoring.api.MonitorProcessor} that maintains counts of concurrently

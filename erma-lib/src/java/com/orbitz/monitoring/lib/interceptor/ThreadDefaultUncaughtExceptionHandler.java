@@ -1,9 +1,9 @@
 package com.orbitz.monitoring.lib.interceptor;
 
-import org.apache.commons.lang.exception.ExceptionUtils;
-
 import com.orbitz.monitoring.api.Monitor;
 import com.orbitz.monitoring.api.monitor.EventMonitor;
+
+import org.apache.commons.lang.exception.ExceptionUtils;
 
 /**
  * This is an implementation of the {@link java.lang.Thread.UncaughtExceptionHandler} interface that

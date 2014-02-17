@@ -1,9 +1,11 @@
 package com.orbitz.monitoring.lib.processor;
 
-import com.google.common.collect.Lists;
 import com.orbitz.monitoring.api.Monitor;
 import com.orbitz.monitoring.api.MonitorProcessor;
 import com.orbitz.monitoring.api.MonitorProcessorAttachable;
+
+import com.google.common.collect.Lists;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;

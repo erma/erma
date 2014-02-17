@@ -1,6 +1,7 @@
 package com.orbitz.monitoring.lib.decomposer;
 
 import com.orbitz.monitoring.api.monitor.AttributeHolder;
+
 import java.io.Serializable;
 import java.util.IdentityHashMap;
 

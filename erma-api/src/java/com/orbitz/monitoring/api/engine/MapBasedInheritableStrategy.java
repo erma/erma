@@ -4,14 +4,14 @@ import com.orbitz.monitoring.api.CompositeMonitor;
 import com.orbitz.monitoring.api.InheritableStrategy;
 import com.orbitz.monitoring.api.Monitor;
 import com.orbitz.monitoring.api.monitor.AttributeHolder;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Iterator;
 
 import org.apache.log4j.Logger;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  *

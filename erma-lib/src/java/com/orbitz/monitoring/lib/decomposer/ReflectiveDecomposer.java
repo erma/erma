@@ -1,13 +1,14 @@
 package com.orbitz.monitoring.lib.decomposer;
 
-import java.io.Serializable;
-import java.lang.reflect.Method;
-import java.util.IdentityHashMap;
 import org.apache.commons.beanutils.DynaProperty;
 import org.apache.commons.beanutils.LazyDynaBean;
 import org.apache.commons.beanutils.MethodUtils;
 import org.apache.commons.beanutils.WrapDynaBean;
 import org.apache.commons.beanutils.WrapDynaClass;
+
+import java.io.Serializable;
+import java.lang.reflect.Method;
+import java.util.IdentityHashMap;
 
 /**
  * Given an object, this class reflects over its JavaBean attributes and creates a Serializable

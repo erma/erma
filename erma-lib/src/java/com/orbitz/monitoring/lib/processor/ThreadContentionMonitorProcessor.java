@@ -1,14 +1,15 @@
 package com.orbitz.monitoring.lib.processor;
 
-import org.apache.log4j.Logger;
 import com.orbitz.monitoring.api.Monitor;
 import com.orbitz.monitoring.api.monitor.TransactionMonitor;
+
+import org.apache.log4j.Logger;
 import org.springframework.jmx.export.annotation.ManagedAttribute;
 import org.springframework.jmx.export.annotation.ManagedResource;
 
-import java.lang.management.ThreadMXBean;
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadInfo;
+import java.lang.management.ThreadMXBean;
 
 /**
  * This is an implementation of the {@link com.orbitz.monitoring.api.MonitorProcessor} interface that

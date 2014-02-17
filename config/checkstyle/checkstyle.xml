@@ -11,5 +11,12 @@
     <module name="UnusedImports"/>
     <!-- 3.3.1 -->
     <module name="AvoidStarImport"/>
+    <!-- 3.3.3 -->
+    <module name="ImportOrder">
+      <property name="groups" value="com.orbitz,com,junit,org,sun,java,javax"/>
+      <property name="ordered" value="true"/>
+      <property name="separated" value="true"/>
+      <property name="option" value="above"/>
+    </module>
   </module>
 </module>

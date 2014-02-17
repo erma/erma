@@ -2,6 +2,7 @@ package com.orbitz.monitoring.lib.processor;
 
 import com.orbitz.monitoring.api.Monitor;
 import com.orbitz.monitoring.lib.renderer.XmlMonitorRenderer;
+
 import org.apache.log4j.Logger;
 
 import java.util.ArrayList;

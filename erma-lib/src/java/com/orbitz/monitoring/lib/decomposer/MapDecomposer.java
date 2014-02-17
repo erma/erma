@@ -2,9 +2,9 @@ package com.orbitz.monitoring.lib.decomposer;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.IdentityHashMap;
 
 /**
  * Given an instance of <code>Map</object>, this class transforms it to an

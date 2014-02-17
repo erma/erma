@@ -1,8 +1,8 @@
 package com.orbitz.monitoring.api.mappers;
 
-import java.util.Map;
-
 import com.orbitz.monitoring.api.Monitor;
+
+import java.util.Map;
 
 /**
  * Maps {@link Monitor} into a {@link Map} object containing

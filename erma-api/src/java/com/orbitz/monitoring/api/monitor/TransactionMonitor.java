@@ -1,11 +1,11 @@
 package com.orbitz.monitoring.api.monitor;
 
+import com.orbitz.monitoring.api.Attribute;
 import com.orbitz.monitoring.api.MonitoringEngine;
 import com.orbitz.monitoring.api.MonitoringLevel;
-import com.orbitz.monitoring.api.Attribute;
 
-import java.util.Map;
 import java.util.Date;
+import java.util.Map;
 
 /**
  * A monitor for transactions. Transactions implicitly have durations. In order

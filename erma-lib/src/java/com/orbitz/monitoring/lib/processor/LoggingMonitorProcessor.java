@@ -1,10 +1,10 @@
 package com.orbitz.monitoring.lib.processor;
 
-import org.apache.log4j.Logger;
-
 import com.orbitz.monitoring.api.Monitor;
 import com.orbitz.monitoring.lib.renderer.MonitorRenderer;
 import com.orbitz.monitoring.lib.renderer.SimpleMonitorRenderer;
+
+import org.apache.log4j.Logger;
 
 /**
  * This is an implementation of the {@link com.orbitz.monitoring.api.MonitorProcessor} interface that

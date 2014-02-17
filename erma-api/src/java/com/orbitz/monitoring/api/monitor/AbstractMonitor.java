@@ -5,14 +5,16 @@ import com.orbitz.monitoring.api.Monitor;
 import com.orbitz.monitoring.api.MonitoringEngine;
 import com.orbitz.monitoring.api.MonitoringLevel;
 import com.orbitz.monitoring.api.monitor.serializable.SerializableMonitor;
+
+import org.apache.commons.lang.CharSetUtils;
+import org.apache.log4j.Logger;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.apache.commons.lang.CharSetUtils;
-import org.apache.log4j.Logger;
 
 /**
  * A base implementation of {@link Monitor} that contains all common aspects of monitors.

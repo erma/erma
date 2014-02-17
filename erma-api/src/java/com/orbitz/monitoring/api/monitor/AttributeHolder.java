@@ -1,6 +1,7 @@
 package com.orbitz.monitoring.api.monitor;
 
 import com.google.common.base.Objects;
+
 import java.io.Serializable;
 
 /**

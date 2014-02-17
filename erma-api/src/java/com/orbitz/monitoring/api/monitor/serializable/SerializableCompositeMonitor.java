@@ -3,6 +3,7 @@ package com.orbitz.monitoring.api.monitor.serializable;
 import com.orbitz.monitoring.api.CompositeMonitor;
 import com.orbitz.monitoring.api.Monitor;
 import com.orbitz.monitoring.api.monitor.CompositeAttributeHolder;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;

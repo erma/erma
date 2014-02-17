@@ -1,9 +1,9 @@
 package com.orbitz.monitoring.lib.timertask;
 
+import com.orbitz.monitoring.api.Monitor;
+
 import java.util.Collection;
 import java.util.TimerTask;
-
-import com.orbitz.monitoring.api.Monitor;
 
 public abstract class MonitorEmittingTimerTask extends TimerTask {
 

@@ -3,9 +3,9 @@ package com.orbitz.monitoring.test;
 import com.orbitz.monitoring.api.Decomposer;
 import com.orbitz.monitoring.api.monitor.AttributeHolder;
 
-import java.util.List;
-import java.util.ArrayList;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A mock implementation of the Decomposer interface that can be used for

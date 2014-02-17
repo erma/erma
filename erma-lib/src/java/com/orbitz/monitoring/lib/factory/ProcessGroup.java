@@ -1,7 +1,13 @@
 package com.orbitz.monitoring.lib.factory;
 
-import java.util.Collections;
-import java.util.List;
+import com.orbitz.monitoring.api.Monitor;
+import com.orbitz.monitoring.api.MonitorProcessor;
+import com.orbitz.monitoring.api.MonitoringLevel;
+
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 
 import org.apache.commons.jexl.Expression;
 import org.apache.commons.jexl.ExpressionFactory;
@@ -14,13 +20,8 @@ import org.springframework.jmx.export.annotation.ManagedOperationParameter;
 import org.springframework.jmx.export.annotation.ManagedOperationParameters;
 import org.springframework.jmx.export.annotation.ManagedResource;
 
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
-import com.orbitz.monitoring.api.Monitor;
-import com.orbitz.monitoring.api.MonitorProcessor;
-import com.orbitz.monitoring.api.MonitoringLevel;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * An object that contains the configuration for what processors should be called for which

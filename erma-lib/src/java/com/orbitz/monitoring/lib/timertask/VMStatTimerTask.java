@@ -1,5 +1,9 @@
 package com.orbitz.monitoring.lib.timertask;
 
+import com.orbitz.monitoring.api.Monitor;
+import com.orbitz.monitoring.api.MonitoringLevel;
+import com.orbitz.monitoring.api.monitor.EventMonitor;
+
 import java.lang.management.GarbageCollectorMXBean;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
@@ -13,10 +17,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
-
-import com.orbitz.monitoring.api.Monitor;
-import com.orbitz.monitoring.api.MonitoringLevel;
-import com.orbitz.monitoring.api.monitor.EventMonitor;
 
 /**
  * VMStatTimerTask uses jdk5 MXBeans access garbage collection and thread stats.  EventMonitors named

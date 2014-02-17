@@ -1,14 +1,17 @@
 package com.orbitz.monitoring.lib.interceptor;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.orbitz.monitoring.api.MonitoringLevel;
 import com.orbitz.monitoring.api.monitor.TransactionMonitor;
-import java.lang.reflect.Method;
+
+import com.google.common.annotations.VisibleForTesting;
+
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 import org.apache.log4j.Logger;
+
+import java.lang.reflect.Method;
 
 /**
  * Designed to intercept methods annotated with {@link com.orbitz.monitoring.api.annotation.Monitored}, applying

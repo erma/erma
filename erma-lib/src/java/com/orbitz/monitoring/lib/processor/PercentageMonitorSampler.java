@@ -1,13 +1,13 @@
 package com.orbitz.monitoring.lib.processor;
 
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
+import com.orbitz.monitoring.api.Monitor;
 
 import org.apache.log4j.Logger;
 import org.springframework.jmx.export.annotation.ManagedAttribute;
 import org.springframework.jmx.export.annotation.ManagedResource;
 
-import com.orbitz.monitoring.api.Monitor;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * MonitorSampler that accepts a defined percentage of all monitors

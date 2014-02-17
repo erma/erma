@@ -1,7 +1,7 @@
 package com.orbitz.monitoring.lib.processor;
 
-import com.orbitz.monitoring.api.Monitor;
 import com.orbitz.monitoring.api.Aggregator;
+import com.orbitz.monitoring.api.Monitor;
 
 /**
  * MonitorProcessor that delegates to an Aggregator.

@@ -1,8 +1,8 @@
 package com.orbitz.monitoring.api.monitor;
 
-import com.orbitz.monitoring.api.MonitoringLevel;
 import com.orbitz.monitoring.api.Attribute;
 import com.orbitz.monitoring.api.MonitoringEngine;
+import com.orbitz.monitoring.api.MonitoringLevel;
 
 /**
  * Monitor that represents a single value of interest.  Typical usage:

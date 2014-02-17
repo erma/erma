@@ -1,7 +1,7 @@
 package com.orbitz.monitoring.lib.processor;
 
-import com.orbitz.monitoring.api.Monitor;
 import com.orbitz.monitoring.api.CompositeMonitor;
+import com.orbitz.monitoring.api.Monitor;
 
 /**
  * ResultCodeAnnotatingMonitorProcessor will set the resultCode attribute with the failureThrowable

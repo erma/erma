@@ -2,11 +2,12 @@ package com.orbitz.monitoring.lib.processor;
 
 import com.orbitz.monitoring.api.Monitor;
 import com.orbitz.monitoring.lib.renderer.EventPatternMonitorRenderer;
+
 import org.apache.log4j.Logger;
 
-import java.util.Set;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 /**
  * A monitor processor that logs the monitors collected to a log4j logger in an

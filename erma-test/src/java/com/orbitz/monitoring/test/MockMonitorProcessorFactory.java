@@ -1,11 +1,12 @@
 package com.orbitz.monitoring.test;
 
-import java.util.Set;
-
-import junit.framework.Assert;
+import com.orbitz.monitoring.api.Monitor;
 import com.orbitz.monitoring.api.MonitorProcessor;
 import com.orbitz.monitoring.api.MonitorProcessorFactory;
-import com.orbitz.monitoring.api.Monitor;
+
+import junit.framework.Assert;
+
+import java.util.Set;
 
 /**
  * A mock implementation of {@link MonitorProcessorFactory}.
