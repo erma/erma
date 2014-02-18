@@ -38,18 +38,19 @@ import java.util.concurrent.TimeUnit;
 @ManagedResource(description = "Management interface for ERMA MonitoringEngine")
 // TODO: Remove the Javadoc annotation
 public class BaseMonitoringEngineManager {
-  private final Decomposer decomposer;
-  
-  private final MonitorProcessorFactory factory;
-  private InheritableStrategy inheritableStrategy;
-  private final Logger log = Logger.getLogger(BaseMonitoringEngineManager.class);
-  private boolean monitoringEnabled = true;
-  private ScheduledExecutorService scheduledExecutor;
   /**
    * Set into the {@link MonitoringEngine} using
    * {@link MonitoringEngine#setStartupRunnable(Runnable)}
    */
   protected Runnable startupRunnable;
+  
+  private final Decomposer decomposer;
+  private final MonitorProcessorFactory factory;
+  private final Logger log = Logger.getLogger(BaseMonitoringEngineManager.class);
+  
+  private InheritableStrategy inheritableStrategy;
+  private boolean monitoringEnabled = true;
+  private ScheduledExecutorService scheduledExecutor;
   private Map<Integer, Collection<TimerTask>> timerTasks;
   
   /**

@@ -19,7 +19,7 @@ import java.lang.reflect.Method;
  * @author Ray Krueger
  */
 public class TransactionMonitorInterceptor implements MethodInterceptor {
-    private static final Logger log = Logger.getLogger(TransactionMonitorInterceptor.class);
+
     /**
      * If {@link com.orbitz.monitoring.api.annotation.Monitored#includeArguments()} is true, the name of the monitor property that will
      * contain the arguments of the intercepted method
@@ -30,6 +30,8 @@ public class TransactionMonitorInterceptor implements MethodInterceptor {
      * contain the return value of the intercepted method
      */
     public static final String MONITOR_RESULT_NAME = "result";
+    
+    private static final Logger log = Logger.getLogger(TransactionMonitorInterceptor.class);
     
     private final MonitoredAttributeSource monitoredAttributeSource;
     /**

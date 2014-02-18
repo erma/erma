@@ -23,6 +23,53 @@ import java.util.Set;
  * @author Doug Barth
  */
 public interface Monitor {
+  
+  /**
+   * The name of this Monitor instance. This name should describe what is being monitored.
+   */
+  static final String NAME = Attribute.NAME;
+  
+  /**
+   * The VM id of the system that this monitor was monitoring. The MonitoringEngine sets this
+   * attribute when it receives the initMonitor() callback.
+   */
+  static final String VMID = Attribute.VMID;
+  
+  /**
+   * The host name of the system that this monitor was monitoring. The MonitoringEngine sets this
+   * attribute when it receives the initMonitor() callback.
+   */
+  static final String HOSTNAME = Attribute.HOSTNAME;
+  
+  /**
+   * The unqiue identifier of the thread that was being monitored. The MonitoringEngine set this
+   * attribute when it receives the initMonitor() callback.
+   */
+  static final String THREAD_ID = Attribute.THREAD_ID;
+  
+  /**
+   * The time that this monitor was created. The MonitoringEngine sets this attribute when it
+   * receives the initMonitor() callback.
+   */
+  static final String CREATED_AT = Attribute.CREATED_AT;
+  
+  /**
+   * The unqiue identifier of the monitor during a given path of execution. The MonitoringEngine set
+   * this attribute when it receives the initMonitor() callback.
+   */
+  static final String SEQUENCE_ID = Attribute.SEQUENCE_ID;
+  
+  /**
+   * The unqiue identifier of the parent monitor during a given path of execution. The
+   * MonitoringEngine set this attribute when it receives the initMonitor() callback.
+   */
+  static final String PARENT_SEQUENCE_ID = Attribute.PARENT_SEQUENCE_ID;
+  
+  /**
+   * The class of this Monitor instance.
+   */
+  static final String CLASS_NAME = Attribute.CLASS_NAME;
+
   /**
    * This adds an attribute to this monitor with the supplied value.
    * 
@@ -491,50 +538,4 @@ public interface Monitor {
    * @return a SeriailizableMonitor instance with all the same attributes as this monitor
    */
   SerializableMonitor getSerializableMomento();
-  
-  /**
-   * The name of this Monitor instance. This name should describe what is being monitored.
-   */
-  static final String NAME = Attribute.NAME;
-  
-  /**
-   * The VM id of the system that this monitor was monitoring. The MonitoringEngine sets this
-   * attribute when it receives the initMonitor() callback.
-   */
-  static final String VMID = Attribute.VMID;
-  
-  /**
-   * The host name of the system that this monitor was monitoring. The MonitoringEngine sets this
-   * attribute when it receives the initMonitor() callback.
-   */
-  static final String HOSTNAME = Attribute.HOSTNAME;
-  
-  /**
-   * The unqiue identifier of the thread that was being monitored. The MonitoringEngine set this
-   * attribute when it receives the initMonitor() callback.
-   */
-  static final String THREAD_ID = Attribute.THREAD_ID;
-  
-  /**
-   * The time that this monitor was created. The MonitoringEngine sets this attribute when it
-   * receives the initMonitor() callback.
-   */
-  static final String CREATED_AT = Attribute.CREATED_AT;
-  
-  /**
-   * The unqiue identifier of the monitor during a given path of execution. The MonitoringEngine set
-   * this attribute when it receives the initMonitor() callback.
-   */
-  static final String SEQUENCE_ID = Attribute.SEQUENCE_ID;
-  
-  /**
-   * The unqiue identifier of the parent monitor during a given path of execution. The
-   * MonitoringEngine set this attribute when it receives the initMonitor() callback.
-   */
-  static final String PARENT_SEQUENCE_ID = Attribute.PARENT_SEQUENCE_ID;
-  
-  /**
-   * The class of this Monitor instance.
-   */
-  static final String CLASS_NAME = Attribute.CLASS_NAME;
 }

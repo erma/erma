@@ -21,19 +21,22 @@ import java.util.Set;
  * @author Doug Barth
  */
 public abstract class AbstractMonitor implements Monitor {
+  
+  private static final String invalidCharacters = " \\[\\]*,|()$@|~?&<>\\^";
+  private static final Set<Character> invalidCharSet = buildInvalidCharSet();
   private static final Logger log = Logger.getLogger(AbstractMonitor.class);
-  /**
+ 
+ /**
    * Attributes, pairs of keys and values, that have been set on this monitor
    */
   protected AttributeMap attributes;
-  private boolean processed;
+
   /**
    * Determines which monitors will be processed
    */
   protected MonitoringLevel monitoringLevel = MonitoringLevel.INFO;
   
-  private static final String invalidCharacters = " \\[\\]*,|()$@|~?&<>\\^";
-  private static final Set<Character> invalidCharSet = buildInvalidCharSet();
+  private boolean processed;
   
   /**
    * Initializes the attribute map and global attributes. Subclasses will need to call init(String)

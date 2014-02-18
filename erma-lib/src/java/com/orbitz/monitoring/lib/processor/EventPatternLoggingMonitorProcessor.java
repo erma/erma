@@ -19,7 +19,7 @@ import java.util.Set;
  */
 public class EventPatternLoggingMonitorProcessor extends MonitorProcessorAdapter {
 
-    private EventPatternMonitorRenderer renderer;
+    private static final Logger log = Logger.getLogger(EventPatternLoggingMonitorProcessor.class);
 
     private static final List DEFAULT_ATTRIBUTES = new ArrayList();
     
@@ -29,15 +29,12 @@ public class EventPatternLoggingMonitorProcessor extends MonitorProcessorAdapter
         DEFAULT_ATTRIBUTES.add("failureThrowable");
     }
 
+    private EventPatternMonitorRenderer renderer;
+
     public EventPatternLoggingMonitorProcessor() {
         renderer = new EventPatternMonitorRenderer(DEFAULT_ATTRIBUTES);
     }
 
-    // ** STATIC/FINAL DATA ***************************************************
-    private static final Logger log = Logger.getLogger(
-            EventPatternLoggingMonitorProcessor.class);
-
-    // ** PUBLIC METHODS ******************************************************
     public void process(Monitor monitor) {
         String logString = renderMonitor(monitor);
         log.info(logString);

@@ -6,17 +6,18 @@ import java.io.Serializable;
  * MonitoringLevel
  */
 public class MonitoringLevel implements Serializable {
-    private String _levelStr;
-    private int _level;
+
+    /** DEBUG - Level with lowest processing priority */
+    static final public MonitoringLevel DEBUG = new MonitoringLevel("DEBUG", 300);
+    /** INFO - Default level for Monitors */
+    static final public MonitoringLevel INFO = new MonitoringLevel("INFO", 200);
+    /** ESSENTIAL - Level with highest processing priority */
+    static final public MonitoringLevel ESSENTIAL = new MonitoringLevel("ESSENTIAL", 100);
 
     private static final long serialVersionUID = 1L;
 
-    /** DEBUG - Level with lowest processing priority */
-    final static public MonitoringLevel DEBUG = new MonitoringLevel("DEBUG", 300);
-    /** INFO - Default level for Monitors */
-    final static public MonitoringLevel INFO = new MonitoringLevel("INFO", 200);
-    /** ESSENTIAL - Level with highest processing priority */
-    final static public MonitoringLevel ESSENTIAL = new MonitoringLevel("ESSENTIAL", 100);
+    private String _levelStr;
+    private int _level;
 
     private MonitoringLevel(String levelStr, int level) {
         _levelStr = levelStr;

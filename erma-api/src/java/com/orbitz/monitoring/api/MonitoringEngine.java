@@ -33,6 +33,24 @@ class MonitoringEngine {
   
   private static MonitoringEngine instance = new MonitoringEngine();
   
+  private static ProcessClosure MONITOR_CREATED_CLOSURE = new ProcessClosure() {
+    public void processWithProcessor(final Monitor monitor, final MonitorProcessor processor) {
+      processor.monitorCreated(monitor);
+    }
+  };
+  
+  private static ProcessClosure MONITOR_STARTED_CLOSURE = new ProcessClosure() {
+    public void processWithProcessor(final Monitor monitor, final MonitorProcessor processor) {
+      processor.monitorStarted(monitor);
+    }
+  };
+  
+  private static ProcessClosure PROCESS_CLOSURE = new ProcessClosure() {
+    public void processWithProcessor(final Monitor monitor, final MonitorProcessor processor) {
+      processor.process(monitor);
+    }
+  };
+  
   private boolean monitoringEnabled = true;
   private boolean running;
   
@@ -195,12 +213,6 @@ class MonitoringEngine {
     handleMonitor(monitor, MONITOR_CREATED_CLOSURE);
   }
   
-  private static ProcessClosure MONITOR_CREATED_CLOSURE = new ProcessClosure() {
-    public void processWithProcessor(final Monitor monitor, final MonitorProcessor processor) {
-      processor.monitorCreated(monitor);
-    }
-  };
-  
   /**
    * A lifecylce method that notifies observing MonitorProcessors that a monitor has been started.
    * All monitor implementations that have a start-stop concept should call this monitor at start.
@@ -214,12 +226,6 @@ class MonitoringEngine {
     
     handleMonitor(monitor, MONITOR_STARTED_CLOSURE);
   }
-  
-  private static ProcessClosure MONITOR_STARTED_CLOSURE = new ProcessClosure() {
-    public void processWithProcessor(final Monitor monitor, final MonitorProcessor processor) {
-      processor.monitorStarted(monitor);
-    }
-  };
   
   /**
    * A lifecycle method that notifies observing MonitorProcessors that a monitor is ready to be
@@ -236,12 +242,6 @@ class MonitoringEngine {
     
     handleMonitor(monitor, PROCESS_CLOSURE);
   }
-  
-  private static ProcessClosure PROCESS_CLOSURE = new ProcessClosure() {
-    public void processWithProcessor(final Monitor monitor, final MonitorProcessor processor) {
-      processor.process(monitor);
-    }
-  };
   
   /**
    * Adds the supplied CompositeMonitor to the stack for this thread. If this is the first

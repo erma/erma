@@ -22,5 +22,7 @@
       <property name="separated" value="true"/>
       <property name="option" value="above"/>
     </module>
+    <!-- 3.4.2 in part -->
+    <module name="DeclarationOrder"/>
   </module>
 </module>

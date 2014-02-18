@@ -22,8 +22,8 @@ import java.util.Map.Entry;
  */
 public class MonitorAttributeMapperImpl implements MonitorAttributeMapper {
 
-    private static final Logger log         = Logger.getLogger(MonitorAttributeMapperImpl.class);
     protected static final String NO_MAPPER = "<Unable to find Mapper for [%s]>";
+    private static final Logger log         = Logger.getLogger(MonitorAttributeMapperImpl.class);
 
     private Map<String, ObjectAttributeMapper> mappers;
 
