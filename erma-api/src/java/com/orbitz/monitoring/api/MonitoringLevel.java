@@ -60,12 +60,12 @@ public class MonitoringLevel implements Serializable {
     }
 
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) { return true;}
+        if (o == null || getClass() != o.getClass()) { return false; }
 
         MonitoringLevel that = (MonitoringLevel) o;
 
-        if (_level != that._level) return false;
+        if (_level != that._level) { return false; }
 
         return true;
     }

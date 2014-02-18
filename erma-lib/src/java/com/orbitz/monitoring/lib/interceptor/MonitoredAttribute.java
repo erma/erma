@@ -68,14 +68,14 @@ public class MonitoredAttribute {
     }
 
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {return true;}
+        if (o == null || getClass() != o.getClass()) {return false;}
 
         final MonitoredAttribute that = (MonitoredAttribute) o;
 
-        if (includeArguments != that.includeArguments) return false;
-        if (includeResult != that.includeResult) return false;
-        if (monitorName != null ? !monitorName.equals(that.monitorName) : that.monitorName != null) return false;
+        if (includeArguments != that.includeArguments) {return false;}
+        if (includeResult != that.includeResult) {return false;}
+        if (monitorName != null ? !monitorName.equals(that.monitorName) : that.monitorName != null) {return false;}
 
         return true;
     }

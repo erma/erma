@@ -261,8 +261,13 @@ public class StackBasedInheritableStrategy implements InheritableStrategy {
         }
 
         public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
+            if (this == o) {
+                return true;
+            }
+
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
 
             final StackFrame other = (StackFrame) o;
 

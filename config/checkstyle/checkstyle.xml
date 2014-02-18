@@ -24,5 +24,7 @@
     </module>
     <!-- 3.4.2 in part -->
     <module name="DeclarationOrder"/>
+    <!-- 4.1.1 -->
+    <module name="NeedBraces"/>
   </module>
 </module>

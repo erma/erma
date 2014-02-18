@@ -77,14 +77,14 @@ public class MongoDBMonitorProcessor extends MonitorProcessorAdapter {
 
     @Override
     public void process(final Monitor monitor) {
-        if (! initialized) return;
+        if (! initialized) {return;}
 
         incrementCounter(totalReceived);
 
-        if (monitor == null) return;
+        if (monitor == null) {return;}
 
         // sample monitors
-        if (! sampler.accept(monitor)) return;
+        if (! sampler.accept(monitor)) {return;}
 
         incrementCounter(totalSampled);
 
