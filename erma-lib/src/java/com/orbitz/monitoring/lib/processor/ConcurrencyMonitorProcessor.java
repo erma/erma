@@ -53,7 +53,7 @@ public class ConcurrencyMonitorProcessor extends MonitorProcessorAdapter {
           monitor.set("concurrencyCount", count);
           
           if (count == 1) {
-              map.remove(name);
+            map.remove(name);
           }
         }
       }
@@ -79,8 +79,8 @@ public class ConcurrencyMonitorProcessor extends MonitorProcessorAdapter {
   }
   
   public static void clear() {
-      synchronized (map) {
-          map.clear();
-      }
+    synchronized (map) {
+      map.clear();
+    }
   }
 }

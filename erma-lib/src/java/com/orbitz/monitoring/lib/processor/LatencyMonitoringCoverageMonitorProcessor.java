@@ -18,110 +18,109 @@ import java.util.Date;
  */
 
 public class LatencyMonitoringCoverageMonitorProcessor
-        extends MonitorProcessorAdapter {
+    extends MonitorProcessorAdapter {
 
-    private static final Logger log = Logger.getLogger(LatencyMonitoringCoverageMonitorProcessor.class);
+  private static final Logger log = Logger.getLogger(LatencyMonitoringCoverageMonitorProcessor.class);
 
-    private static final long DEFAULT_THRESHOLD = 5000;
+  private static final long DEFAULT_THRESHOLD = 5000;
 
-    private long threshold;
-    
-    private GapHandler gapHandler;
-    
-    public LatencyMonitoringCoverageMonitorProcessor() {
-        this(new EventFiringGapHandler());
-    }
-    
-    public LatencyMonitoringCoverageMonitorProcessor(GapHandler gapHandler) {
-        this(gapHandler, DEFAULT_THRESHOLD);
-    }
+  private long threshold;
+  
+  private GapHandler gapHandler;
+  
+  public LatencyMonitoringCoverageMonitorProcessor() {
+    this(new EventFiringGapHandler());
+  }
+  
+  public LatencyMonitoringCoverageMonitorProcessor(GapHandler gapHandler) {
+    this(gapHandler, DEFAULT_THRESHOLD);
+  }
 
-    public LatencyMonitoringCoverageMonitorProcessor(GapHandler gapHandler, long threshold) {
-        this.gapHandler = gapHandler;
-        setThreshold(threshold);
-    }
+  public LatencyMonitoringCoverageMonitorProcessor(GapHandler gapHandler, long threshold) {
+    this.gapHandler = gapHandler;
+    setThreshold(threshold);
+  }
 
-    public void process(Monitor monitor) {
+  public void process(Monitor monitor) {
 
-        try {
-            if (monitor instanceof TransactionMonitor) {
-                TransactionMonitor parent = (TransactionMonitor) monitor;
-                long latency = parent.getAsLong(Attribute.LATENCY);
-                if (latency > threshold) {
-                    processChildMonitors(parent, latency);
-                }
-            }
-        } catch (Exception e) {
-            log.warn("failed to check monitoring coverage; application is unaffected", e);
-        }
-    }
-
-    private void processChildMonitors(TransactionMonitor parent, long latency) {
-        TransactionMonitor leftChild = null;
-        TransactionMonitor rightChild = null;
-        for (Monitor child : parent.getChildMonitors()) {
-            if (child instanceof TransactionMonitor) {
-                leftChild = rightChild;
-                rightChild = (TransactionMonitor) child;
-                checkForGap(parent, leftChild, rightChild);
-            }
-        }
-        leftChild = rightChild;
-        rightChild = null;
-        checkForGap(parent, leftChild, rightChild);
-    }
-
-    private void checkForGap(TransactionMonitor parent, TransactionMonitor leftChild, TransactionMonitor rightChild) {
-        Date leftEnd;
-        if (leftChild == null) {
-            leftEnd = (Date) parent.get(Attribute.START_TIME);
-        } else {
-            leftEnd = (Date) leftChild.get(Attribute.END_TIME);
-        }
-        Date rightStart;
-        if (rightChild == null) {
-            rightStart = (Date) parent.get(Attribute.END_TIME);
-        } else {
-            rightStart = (Date) rightChild.get(Attribute.START_TIME);
-        }
-        long latency = rightStart.getTime() - leftEnd.getTime();
+    try {
+      if (monitor instanceof TransactionMonitor) {
+        TransactionMonitor parent = (TransactionMonitor) monitor;
+        long latency = parent.getAsLong(Attribute.LATENCY);
         if (latency > threshold) {
-            gapHandler.handleGap(parent, leftChild, rightChild, latency);
+          processChildMonitors(parent, latency);
         }
+      }
+    } catch (Exception e) {
+      log.warn("failed to check monitoring coverage; application is unaffected", e);
     }
+  }
 
-    public long getThreshold() {
-        return threshold;
+  private void processChildMonitors(TransactionMonitor parent, long latency) {
+    TransactionMonitor leftChild = null;
+    TransactionMonitor rightChild = null;
+    for (Monitor child : parent.getChildMonitors()) {
+      if (child instanceof TransactionMonitor) {
+        leftChild = rightChild;
+        rightChild = (TransactionMonitor) child;
+        checkForGap(parent, leftChild, rightChild);
+      }
     }
+    leftChild = rightChild;
+    rightChild = null;
+    checkForGap(parent, leftChild, rightChild);
+  }
 
-    public void setThreshold(long threshold) {
-        this.threshold = threshold;
+  private void checkForGap(TransactionMonitor parent, TransactionMonitor leftChild, TransactionMonitor rightChild) {
+    Date leftEnd;
+    if (leftChild == null) {
+      leftEnd = (Date) parent.get(Attribute.START_TIME);
+    } else {
+      leftEnd = (Date) leftChild.get(Attribute.END_TIME);
     }
-    
-    protected GapHandler getGapHandler() {
-        return gapHandler;
+    Date rightStart;
+    if (rightChild == null) {
+      rightStart = (Date) parent.get(Attribute.END_TIME);
+    } else {
+      rightStart = (Date) rightChild.get(Attribute.START_TIME);
     }
+    long latency = rightStart.getTime() - leftEnd.getTime();
+    if (latency > threshold) {
+      gapHandler.handleGap(parent, leftChild, rightChild, latency);
+    }
+  }
 
-    public static interface GapHandler {
-        public Monitor handleGap(TransactionMonitor parent, 
-                TransactionMonitor leftChild, TransactionMonitor rightChild, long latencyGap);
-    }
-    
-    public static class EventFiringGapHandler implements GapHandler {
+  public long getThreshold() {
+    return threshold;
+  }
 
-        @Override
-        public Monitor handleGap(TransactionMonitor parent,
-                TransactionMonitor leftChild, TransactionMonitor rightChild,
-                long latencyGap) {
-            EventMonitor eventMonitor = new EventMonitor("MonitoringCoverageGap");
-            eventMonitor.set("monitorName", parent.get(Attribute.NAME));
-            eventMonitor.set("leftChild", leftChild == null ? null : leftChild.get(Attribute.NAME));
-            eventMonitor.set("rightChild", rightChild == null ? null : rightChild.get(Attribute.NAME));
-            eventMonitor.set(Attribute.LATENCY, latencyGap);
-            eventMonitor.fire();
-            
-            return eventMonitor;
-       }
-        
+  public void setThreshold(long threshold) {
+    this.threshold = threshold;
+  }
+  
+  protected GapHandler getGapHandler() {
+    return gapHandler;
+  }
+
+  public static interface GapHandler {
+    public Monitor handleGap(TransactionMonitor parent, 
+        TransactionMonitor leftChild, TransactionMonitor rightChild, long latencyGap);
+  }
+  
+  public static class EventFiringGapHandler implements GapHandler {
+
+    @Override
+    public Monitor handleGap(TransactionMonitor parent,
+        TransactionMonitor leftChild, TransactionMonitor rightChild,
+        long latencyGap) {
+      EventMonitor eventMonitor = new EventMonitor("MonitoringCoverageGap");
+      eventMonitor.set("monitorName", parent.get(Attribute.NAME));
+      eventMonitor.set("leftChild", leftChild == null ? null : leftChild.get(Attribute.NAME));
+      eventMonitor.set("rightChild", rightChild == null ? null : rightChild.get(Attribute.NAME));
+      eventMonitor.set(Attribute.LATENCY, latencyGap);
+      eventMonitor.fire();
+      
+      return eventMonitor;
     }
+  }
 }

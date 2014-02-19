@@ -17,13 +17,13 @@ import java.util.Collections;
  */
 public class HeartbeatTimerTask extends MonitorEmittingTimerTask {
 
-    /**
-     * Sends a heartbeat event.
-     */
-    public Collection<EventMonitor> emitMonitors() {
-        EventMonitor monitor = new EventMonitor("MonitoringEngineManager.lifecycle", MonitoringLevel.ESSENTIAL);
-        monitor.set("eventType", "heartbeat");
-        monitor.fire();
-        return Collections.singleton(monitor);
-    }
+  /**
+   * Sends a heartbeat event.
+   */
+  public Collection<EventMonitor> emitMonitors() {
+    EventMonitor monitor = new EventMonitor("MonitoringEngineManager.lifecycle", MonitoringLevel.ESSENTIAL);
+    monitor.set("eventType", "heartbeat");
+    monitor.fire();
+    return Collections.singleton(monitor);
+  }
 }

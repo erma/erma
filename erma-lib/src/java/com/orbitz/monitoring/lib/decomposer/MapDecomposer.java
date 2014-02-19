@@ -14,28 +14,28 @@ import java.util.Map;
  * @author Doug Barth
  */
 class MapDecomposer extends AbstractAttributeDecomposerStep {
-    private AttributeDecomposer.Step _delegate;
+  private AttributeDecomposer.Step _delegate;
 
-    public MapDecomposer(AttributeDecomposer.Step delegate) {
-        _delegate = delegate;
+  public MapDecomposer(AttributeDecomposer.Step delegate) {
+    _delegate = delegate;
+  }
+
+  Serializable createMutableContainer(Object object) {
+    Map map = (Map) object;
+    return new HashMap(map.size());
+  }
+
+  void decomposeInto(Object o, Serializable container, IdentityHashMap alreadyDecomposed) {
+    Map map = (Map) o;
+    Map returnMap = (Map) container;
+
+    for (Iterator i = map.entrySet().iterator(); i.hasNext();) {
+      Map.Entry entry = (Map.Entry) i.next();
+      Object key = _delegate.decompose(entry.getKey(), alreadyDecomposed);
+      Object value = _delegate.decompose(entry.getValue(),
+                         alreadyDecomposed);
+
+      returnMap.put(key, value);
     }
-
-    Serializable createMutableContainer(Object object) {
-        Map map = (Map) object;
-        return new HashMap(map.size());
-    }
-
-    void decomposeInto(Object o, Serializable container, IdentityHashMap alreadyDecomposed) {
-        Map map = (Map) o;
-        Map returnMap = (Map) container;
-
-        for (Iterator i = map.entrySet().iterator(); i.hasNext();) {
-            Map.Entry entry = (Map.Entry) i.next();
-            Object key = _delegate.decompose(entry.getKey(), alreadyDecomposed);
-            Object value = _delegate.decompose(entry.getValue(),
-                                               alreadyDecomposed);
-
-            returnMap.put(key, value);
-        }
-    }
+  }
 }

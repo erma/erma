@@ -14,100 +14,100 @@ import org.apache.log4j.Logger;
  */
 
 public class LoggingMonitorProcessor extends MonitorProcessorAdapter {
-    // ** PRIVATE DATA ********************************************************
-    private Logger log;
+  // ** PRIVATE DATA ********************************************************
+  private Logger log;
 
-    private boolean _logMonitorCreated = false;
-    private boolean _logMonitorStarted = false;
-    private boolean _logProcess = true;
-    private boolean _includeStackTrace = false;
+  private boolean _logMonitorCreated = false;
+  private boolean _logMonitorStarted = false;
+  private boolean _logProcess = true;
+  private boolean _includeStackTrace = false;
 
-    private MonitorRenderer monitorRenderer;
+  private MonitorRenderer monitorRenderer;
 
-    private String _name;
+  private String _name;
 
-    public LoggingMonitorProcessor() {
-        monitorRenderer = new SimpleMonitorRenderer();
+  public LoggingMonitorProcessor() {
+    monitorRenderer = new SimpleMonitorRenderer();
+  }
+
+  public String getName() {
+    return _name;
+  }
+
+  public boolean isIncludeStackTrace() {
+    return _includeStackTrace;
+  }
+
+  // ** ACCESSORS ***********************************************************
+  public MonitorRenderer getMonitorRenderer() {
+    return monitorRenderer;
+  }
+
+  public boolean isLogMonitorCreated() {
+    return _logMonitorCreated;
+  }
+
+  public boolean isLogMonitorStarted() {
+    return _logMonitorStarted;
+  }
+
+  public boolean isLogProcess() {
+    return _logProcess;
+  }
+
+  public void monitorCreated(Monitor monitor) {
+    if (isLogMonitorCreated()) {
+      log.info("monitorCreated: " + renderMonitor(monitor));
     }
+  }
 
-    public String getName() {
-        return _name;
+  public void monitorStarted(Monitor monitor) {
+    if (isLogMonitorStarted()) {
+      log.info("monitorStarted: " + renderMonitor(monitor));
     }
+  }
 
-    public boolean isIncludeStackTrace() {
-        return _includeStackTrace;
+  public void process(Monitor monitor) {
+    if (isLogProcess()) {
+      log.info("process: " + renderMonitor(monitor));
     }
+  }
 
-    // ** ACCESSORS ***********************************************************
-    public MonitorRenderer getMonitorRenderer() {
-        return monitorRenderer;
-    }
+  public void setIncludeStackTrace(boolean includeStackTrace) {
+    _includeStackTrace = includeStackTrace;
+  }
 
-    public boolean isLogMonitorCreated() {
-        return _logMonitorCreated;
-    }
+  public void setLogMonitorCreated(boolean logMonitorCreated) {
+    _logMonitorCreated = logMonitorCreated;
+  }
 
-    public boolean isLogMonitorStarted() {
-        return _logMonitorStarted;
-    }
+  public void setLogMonitorStarted(boolean logMonitorStarted) {
+    _logMonitorStarted = logMonitorStarted;
+  }
 
-    public boolean isLogProcess() {
-        return _logProcess;
-    }
+  public void setLogProcess(boolean logProcess) {
+    _logProcess = logProcess;
+  }
 
-    public void monitorCreated(Monitor monitor) {
-        if (isLogMonitorCreated()) {
-            log.info("monitorCreated: " + renderMonitor(monitor));
-        }
-    }
+  public void setName(final String name) {
+    _name = name;
+  }
 
-    public void monitorStarted(Monitor monitor) {
-        if (isLogMonitorStarted()) {
-            log.info("monitorStarted: " + renderMonitor(monitor));
-        }
-    }
+  public void setMonitorRenderer(MonitorRenderer monitorRenderer) {
+    this.monitorRenderer = monitorRenderer;
+  }
 
-    public void process(Monitor monitor) {
-        if (isLogProcess()) {
-            log.info("process: " + renderMonitor(monitor));
-        }
-    }
+  public void shutdown() {
+    // No-op
+  }
 
-    public void setIncludeStackTrace(boolean includeStackTrace) {
-        _includeStackTrace = includeStackTrace;
-    }
+  // ** PUBLIC METHODS ******************************************************
+  public void startup() {
+    log = Logger.getLogger(getClass());
+  }
 
-    public void setLogMonitorCreated(boolean logMonitorCreated) {
-        _logMonitorCreated = logMonitorCreated;
-    }
-
-    public void setLogMonitorStarted(boolean logMonitorStarted) {
-        _logMonitorStarted = logMonitorStarted;
-    }
-
-    public void setLogProcess(boolean logProcess) {
-        _logProcess = logProcess;
-    }
-
-    public void setName(final String name) {
-        _name = name;
-    }
-
-    public void setMonitorRenderer(MonitorRenderer monitorRenderer) {
-        this.monitorRenderer = monitorRenderer;
-    }
-
-    public void shutdown() {
-        // No-op
-    }
-
-    // ** PUBLIC METHODS ******************************************************
-    public void startup() {
-        log = Logger.getLogger(getClass());
-    }
-
-    // ** PRIVATE METHODS *****************************************************
-    private String renderMonitor(Monitor monitor) {
-        return monitorRenderer.renderMonitor(monitor, _includeStackTrace);
-    }
+  // ** PRIVATE METHODS *****************************************************
+  private String renderMonitor(Monitor monitor) {
+    return monitorRenderer.renderMonitor(monitor, _includeStackTrace);
+  }
 }

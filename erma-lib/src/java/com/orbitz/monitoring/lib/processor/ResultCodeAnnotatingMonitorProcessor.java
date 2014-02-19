@@ -16,19 +16,19 @@ import com.orbitz.monitoring.api.Monitor;
  * <pre>
  * <code>
  * public void search() {
- *     TransactionMonitor monitor = new TransactionMonitor(getClass(), "search");
- *     try {
- *         // some code
- *         monitor.succeeded();
- *     } catch (NoResultsFoundException e) {
- *         monitor.failedDueTo(e);
- *         throw e;
- *     } catch (Throwable t) {
- *         monitor.failedDueTo(t);
- *         throw new RuntimeException(t);
- *     } finally {
- *         monitor.done();
- *     }
+ *   TransactionMonitor monitor = new TransactionMonitor(getClass(), "search");
+ *   try {
+ *     // some code
+ *     monitor.succeeded();
+ *   } catch (NoResultsFoundException e) {
+ *     monitor.failedDueTo(e);
+ *     throw e;
+ *   } catch (Throwable t) {
+ *     monitor.failedDueTo(t);
+ *     throw new RuntimeException(t);
+ *   } finally {
+ *     monitor.done();
+ *   }
  * }
  * </code>
  * </pre>
@@ -43,18 +43,18 @@ import com.orbitz.monitoring.api.Monitor;
  */
 public class ResultCodeAnnotatingMonitorProcessor extends MonitorProcessorAdapter {
 
-    public void process(Monitor monitor) {
+  public void process(Monitor monitor) {
 
-        if (CompositeMonitor.class.isAssignableFrom(monitor.getClass()) && !monitor.hasAttribute("resultCode")) {
-            if (monitor.hasAttribute("failureThrowable")) {
-                Throwable t = (Throwable) monitor.get("failureThrowable");
-                while (t.getCause() != null) {
-                    t = t.getCause();
-                }
-                monitor.set("resultCode", t.getClass().getName());
-            } else {
-                monitor.set("resultCode", "success");
-            }
+    if (CompositeMonitor.class.isAssignableFrom(monitor.getClass()) && !monitor.hasAttribute("resultCode")) {
+      if (monitor.hasAttribute("failureThrowable")) {
+        Throwable t = (Throwable) monitor.get("failureThrowable");
+        while (t.getCause() != null) {
+          t = t.getCause();
         }
+        monitor.set("resultCode", t.getClass().getName());
+      } else {
+        monitor.set("resultCode", "success");
+      }
     }
+  }
 }

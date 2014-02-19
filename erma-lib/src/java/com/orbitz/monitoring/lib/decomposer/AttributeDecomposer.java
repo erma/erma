@@ -71,7 +71,8 @@ class BaseAttributeDecomposer implements AttributeDecomposer.Step {
     
     Class<?> klass = object.getClass();
     AttributeDecomposer.Step decomposer = null;
-    CLASS_LOOP: while (klass != null) {
+  CLASS_LOOP: 
+    while (klass != null) {
       decomposer = _classToDecomposer.get(klass);
       
       if (decomposer != null) {

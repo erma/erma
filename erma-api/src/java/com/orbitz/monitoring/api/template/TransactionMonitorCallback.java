@@ -19,15 +19,15 @@ import com.orbitz.monitoring.api.monitor.TransactionMonitor;
  */
 public interface TransactionMonitorCallback {
 
-    /**
-     * Execute logic within a try/catch/finally block using the given {@link TransactionMonitor}.
-     * <b>Note</b> that the monitor given has already been declared as {@link TransactionMonitor#succeeded()}.
-     * If you wish to declare the monitor a failure either call {@link TransactionMonitor#failed()},
-     * {@link TransactionMonitor#failedDueTo(Throwable)}, or throw a <code>RuntimeException</code>
-     *
-     * @param monitor {@link TransactionMonitor} to use
-     * @return anything you wish to be returned from the template
-     */
-    Object doInMonitor(TransactionMonitor monitor);
+  /**
+   * Execute logic within a try/catch/finally block using the given {@link TransactionMonitor}.
+   * <b>Note</b> that the monitor given has already been declared as {@link TransactionMonitor#succeeded()}.
+   * If you wish to declare the monitor a failure either call {@link TransactionMonitor#failed()},
+   * {@link TransactionMonitor#failedDueTo(Throwable)}, or throw a <code>RuntimeException</code>
+   *
+   * @param monitor {@link TransactionMonitor} to use
+   * @return anything you wish to be returned from the template
+   */
+  Object doInMonitor(TransactionMonitor monitor);
 
 }

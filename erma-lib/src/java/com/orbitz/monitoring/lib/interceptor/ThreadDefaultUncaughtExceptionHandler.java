@@ -13,47 +13,47 @@ import org.apache.commons.lang.exception.ExceptionUtils;
  */
 public class ThreadDefaultUncaughtExceptionHandler implements Thread.UncaughtExceptionHandler {
 
-    public static class EventFiringThreadExceptionHandler implements ThreadExceptionHandler {
+  public static class EventFiringThreadExceptionHandler implements ThreadExceptionHandler {
 
-        @Override
-        public Monitor handleException(Thread thread, Throwable throwable) {
-            EventMonitor eventMonitor = new EventMonitor("ThreadTerminationDueToUncaughtThrowable");
-            eventMonitor.set("threadName", thread.getName());
-            eventMonitor.set("threadClass", thread.getClass().getName());
-            eventMonitor.set("stackTrace", ExceptionUtils.getStackTrace(throwable));
-            eventMonitor.fire();
-            return eventMonitor;
-        }
+    @Override
+    public Monitor handleException(Thread thread, Throwable throwable) {
+      EventMonitor eventMonitor = new EventMonitor("ThreadTerminationDueToUncaughtThrowable");
+      eventMonitor.set("threadName", thread.getName());
+      eventMonitor.set("threadClass", thread.getClass().getName());
+      eventMonitor.set("stackTrace", ExceptionUtils.getStackTrace(throwable));
+      eventMonitor.fire();
+      return eventMonitor;
     }
+  }
 
-    public static interface ThreadExceptionHandler {
-        Monitor handleException(Thread thread, Throwable throwable);
-    }
+  public static interface ThreadExceptionHandler {
+    Monitor handleException(Thread thread, Throwable throwable);
+  }
 
-    private ThreadExceptionHandler handler;
-    
-    public ThreadDefaultUncaughtExceptionHandler() {
-        this(new EventFiringThreadExceptionHandler());
-    }
-    
-    public ThreadDefaultUncaughtExceptionHandler(ThreadExceptionHandler handler) {
-        this.handler = handler;
-    }
+  private ThreadExceptionHandler handler;
+  
+  public ThreadDefaultUncaughtExceptionHandler() {
+    this(new EventFiringThreadExceptionHandler());
+  }
+  
+  public ThreadDefaultUncaughtExceptionHandler(ThreadExceptionHandler handler) {
+    this.handler = handler;
+  }
 
-    /**
-     * Method invoked when the given thread terminates due to the
-     * given uncaught Throwable.
-     * <p>Any exception thrown by this method will be ignored by the
-     * Java Virtual Machine.
-     *
-     * @param thread the Thread
-     * @param throwable the Throwable
-     */
-    public void uncaughtException(Thread thread, Throwable throwable) {
-        handler.handleException(thread, throwable);
-    }
-    
-    public ThreadExceptionHandler getHandler() {
-        return handler;
-    }
+  /**
+   * Method invoked when the given thread terminates due to the
+   * given uncaught Throwable.
+   * <p>Any exception thrown by this method will be ignored by the
+   * Java Virtual Machine.
+   *
+   * @param thread the Thread
+   * @param throwable the Throwable
+   */
+  public void uncaughtException(Thread thread, Throwable throwable) {
+    handler.handleException(thread, throwable);
+  }
+  
+  public ThreadExceptionHandler getHandler() {
+    return handler;
+  }
 }

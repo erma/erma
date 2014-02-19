@@ -9,17 +9,17 @@ import java.util.List;
  * @author Doug Barth
  */
 public interface MonitorProcessorAttachable {
-    /**
-     * Adds the supplied MonitorProcessor instance to this object.
-     *
-     * @param processor the MonitorProcessor to be attached
-     */
-    public void addMonitorProcessor(MonitorProcessor processor);
+  /**
+   * Adds the supplied MonitorProcessor instance to this object.
+   *
+   * @param processor the MonitorProcessor to be attached
+   */
+  public void addMonitorProcessor(MonitorProcessor processor);
 
-    /**
-     * Get the MonitorProcessors attached to this object.
-     *
-     * @return the processors attached to this object
-     */
-    public List getMonitorProcessors();
+  /**
+   * Get the MonitorProcessors attached to this object.
+   *
+   * @return the processors attached to this object
+   */
+  public List getMonitorProcessors();
 }

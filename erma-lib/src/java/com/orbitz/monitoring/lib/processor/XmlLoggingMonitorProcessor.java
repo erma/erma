@@ -15,22 +15,22 @@ import java.util.List;
  * @author Doug Barth
  */
 public class XmlLoggingMonitorProcessor extends MonitorProcessorAdapter {
-    // ** STATIC/FINAL DATA ***************************************************
-    protected Logger log = Logger.getLogger(XmlLoggingMonitorProcessor.class);
+  // ** STATIC/FINAL DATA ***************************************************
+  protected Logger log = Logger.getLogger(XmlLoggingMonitorProcessor.class);
 
-    private List allowedAttributes = new ArrayList();
+  private List allowedAttributes = new ArrayList();
 
-    // ** PUBLIC METHODS ******************************************************
-    public void process(Monitor monitor) {
-        XmlMonitorRenderer renderer = null;
+  // ** PUBLIC METHODS ******************************************************
+  public void process(Monitor monitor) {
+    XmlMonitorRenderer renderer = null;
 
-        renderer = new XmlMonitorRenderer(allowedAttributes);
+    renderer = new XmlMonitorRenderer(allowedAttributes);
 
-        String logString = renderer.renderMonitor(monitor);
-        log.info(logString);
-    }
+    String logString = renderer.renderMonitor(monitor);
+    log.info(logString);
+  }
 
-    public void setAllowedAttributes(List allowedAttributes) {
-        this.allowedAttributes = allowedAttributes;
-    }
+  public void setAllowedAttributes(List allowedAttributes) {
+    this.allowedAttributes = allowedAttributes;
+  }
 }

@@ -7,5 +7,5 @@ import com.orbitz.monitoring.api.Monitor;
  */
 public interface MonitorSampler {
 
-    boolean accept(Monitor monitor);
+  boolean accept(Monitor monitor);
 }

@@ -116,9 +116,9 @@ public class BaseMonitoringEngineManager {
     }
     
     for (MonitorProcessor processor : factory.getProcessorsByName(name)) {
-        processor.setLevel(MonitoringLevel.toLevel(levelStr));
-        log.info("Changed Processor level: " + name + " -> " + levelStr);
-        return;// two processors should not have same name
+      processor.setLevel(MonitoringLevel.toLevel(levelStr));
+      log.info("Changed Processor level: " + name + " -> " + levelStr);
+      return;// two processors should not have same name
     }
   }
   
@@ -165,11 +165,11 @@ public class BaseMonitoringEngineManager {
    */
   @ManagedAttribute(description = "Gets a view into processor level overrides")
   public String getOverrideProcessorLevelsListing() {
-      Map<String, MonitoringLevel> levels = new HashMap<String, MonitoringLevel>();
-      for (MonitorProcessor processor : this.factory.getAllProcessors()) {
-          levels.put(processor.getName(), processor.getLevel());
-      }
-      return levels.toString();
+    Map<String, MonitoringLevel> levels = new HashMap<String, MonitoringLevel>();
+    for (MonitorProcessor processor : this.factory.getAllProcessors()) {
+      levels.put(processor.getName(), processor.getLevel());
+    }
+    return levels.toString();
   }
   
   /**
@@ -223,7 +223,7 @@ public class BaseMonitoringEngineManager {
    */
   public void reload() {
     EventMonitor monitor = new EventMonitor("MonitoringEngineManager.lifecycle",
-        MonitoringLevel.ESSENTIAL);
+      MonitoringLevel.ESSENTIAL);
     monitor.set("eventType", "reload");
     monitor.fire();
     MonitoringEngine.getInstance().restart();
@@ -284,7 +284,7 @@ public class BaseMonitoringEngineManager {
   public void shutdown() {
     scheduledExecutor.shutdown();
     EventMonitor monitor = new EventMonitor("MonitoringEngineManager.lifecycle",
-        MonitoringLevel.ESSENTIAL);
+      MonitoringLevel.ESSENTIAL);
     monitor.set("eventType", "shutdown");
     monitor.fire();
     MonitoringEngine.getInstance().shutdown();
@@ -306,7 +306,7 @@ public class BaseMonitoringEngineManager {
     }
     MonitoringEngine.getInstance().startup();
     EventMonitor monitor = new EventMonitor("MonitoringEngineManager.lifecycle",
-        MonitoringLevel.ESSENTIAL);
+      MonitoringLevel.ESSENTIAL);
     monitor.set("eventType", "startup");
     monitor.fire();
     scheduledExecutor = Executors.newSingleThreadScheduledExecutor();
@@ -352,7 +352,7 @@ public class BaseMonitoringEngineManager {
     MonitoringEngine.getInstance().addMonitorLevel(nameStartsWith, level);
     if (log.isInfoEnabled()) {
       log.info("Added: " + nameStartsWith + " -> " + levelStr
-          + " to map of monitor level overrides.");
+        + " to map of monitor level overrides.");
     }
   }
 }

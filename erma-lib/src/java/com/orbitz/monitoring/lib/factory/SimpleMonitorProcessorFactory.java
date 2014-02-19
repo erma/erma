@@ -35,20 +35,20 @@ public class SimpleMonitorProcessorFactory implements MonitorProcessorFactory {
   }
   
   public void shutdown() {
-      for (MonitorProcessor processor : getAllMonitorProcessors()) {
-          processor.shutdown();
-        }
-      }
+    for (MonitorProcessor processor : getAllMonitorProcessors()) {
+      processor.shutdown();
+    }
+  }
   
   public MonitorProcessor[] getProcessorsForMonitor(final Monitor monitor) {
-      Set<MonitorProcessor> applicableProcessors = new LinkedHashSet<MonitorProcessor>();
-      for (ProcessGroup processGroup : _processGroups) {
-          for (MonitorProcessor processor : processGroup.getProcessorsFor(monitor)) {
-            applicableProcessors.add(processor);
-          }
+    Set<MonitorProcessor> applicableProcessors = new LinkedHashSet<MonitorProcessor>();
+    for (ProcessGroup processGroup : _processGroups) {
+      for (MonitorProcessor processor : processGroup.getProcessorsFor(monitor)) {
+        applicableProcessors.add(processor);
       }
-   
-      return applicableProcessors.toArray(new MonitorProcessor[applicableProcessors.size()]);
+    }
+ 
+    return applicableProcessors.toArray(new MonitorProcessor[applicableProcessors.size()]);
   }
   
   /**
@@ -76,15 +76,15 @@ public class SimpleMonitorProcessorFactory implements MonitorProcessorFactory {
     return allMps;
   }
 
-    @Override
-    public Set<MonitorProcessor> getProcessorsByName(String name) {
-        Set<MonitorProcessor> processors = new HashSet<MonitorProcessor>();
-        for (MonitorProcessor processor : (Set<MonitorProcessor>)getAllMonitorProcessors()) {
-            if (processor.getName().equals(name)) {
-                processors.add(processor);
-            }
-        }
-        
-        return processors;
+  @Override
+  public Set<MonitorProcessor> getProcessorsByName(String name) {
+    Set<MonitorProcessor> processors = new HashSet<MonitorProcessor>();
+    for (MonitorProcessor processor : (Set<MonitorProcessor>)getAllMonitorProcessors()) {
+      if (processor.getName().equals(name)) {
+        processors.add(processor);
+      }
     }
+    
+    return processors;
+  }
 }

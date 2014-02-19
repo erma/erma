@@ -25,66 +25,66 @@ import java.lang.management.ThreadMXBean;
  */
 @ManagedResource(description="This MonitorProcessor can be dis/enabled.")
 public class ThreadContentionMonitorProcessor
-        extends MonitorProcessorAdapter {
+    extends MonitorProcessorAdapter {
 
-    private static final Logger log = Logger.getLogger(ThreadContentionMonitorProcessor.class);
+  private static final Logger log = Logger.getLogger(ThreadContentionMonitorProcessor.class);
 
-    private boolean enabled = false;
+  private boolean enabled = false;
 
-    // ** PUBLIC METHODS ******************************************************
-    public void monitorStarted(Monitor monitor) {
-        if (enabled && monitor instanceof  TransactionMonitor) {
-            ThreadMXBean tmxbean = ManagementFactory.getThreadMXBean();
-            long id = Thread.currentThread().getId();
-            ThreadInfo threadInfo = tmxbean.getThreadInfo(id);
-            monitor.set("startBlockedCount", threadInfo.getBlockedCount());
-            monitor.set("startBlockedTime", threadInfo.getBlockedTime());
-            monitor.set("startWaitedCount", threadInfo.getWaitedCount());
-            monitor.set("startWaitedTime", threadInfo.getWaitedTime());
-        }
+  // ** PUBLIC METHODS ******************************************************
+  public void monitorStarted(Monitor monitor) {
+    if (enabled && monitor instanceof  TransactionMonitor) {
+      ThreadMXBean tmxbean = ManagementFactory.getThreadMXBean();
+      long id = Thread.currentThread().getId();
+      ThreadInfo threadInfo = tmxbean.getThreadInfo(id);
+      monitor.set("startBlockedCount", threadInfo.getBlockedCount());
+      monitor.set("startBlockedTime", threadInfo.getBlockedTime());
+      monitor.set("startWaitedCount", threadInfo.getWaitedCount());
+      monitor.set("startWaitedTime", threadInfo.getWaitedTime());
     }
+  }
 
-    public void process(Monitor monitor) {
-        if (enabled && monitor instanceof  TransactionMonitor) {
-            if (monitor.hasAttribute("startBlockedCount") 
-                    && monitor.hasAttribute("startBlockedCount") 
-                    && monitor.hasAttribute("startBlockedCount") 
-                    && monitor.hasAttribute("startBlockedCount")) {
-                TransactionMonitor tMon = (TransactionMonitor) monitor;
-                ThreadMXBean tmxbean = ManagementFactory.getThreadMXBean();            
-                long id = Thread.currentThread().getId();
-                ThreadInfo thInfo = tmxbean.getThreadInfo(id);
-                tMon.set("blockedCount", thInfo.getBlockedCount() - tMon.getAsLong("startBlockedCount"));
-                tMon.set("blockedTime",  thInfo.getBlockedTime()  - tMon.getAsLong("startBlockedTime"));
-                tMon.set("waitedCount",  thInfo.getWaitedCount()  - tMon.getAsLong("startWaitedCount"));
-                tMon.set("waitedTime",   thInfo.getWaitedTime()   - tMon.getAsLong("startWaitedTime"));
-            }
-        }
+  public void process(Monitor monitor) {
+    if (enabled && monitor instanceof  TransactionMonitor) {
+      if (monitor.hasAttribute("startBlockedCount") 
+          && monitor.hasAttribute("startBlockedCount") 
+          && monitor.hasAttribute("startBlockedCount") 
+          && monitor.hasAttribute("startBlockedCount")) {
+        TransactionMonitor tMon = (TransactionMonitor) monitor;
+        ThreadMXBean tmxbean = ManagementFactory.getThreadMXBean();      
+        long id = Thread.currentThread().getId();
+        ThreadInfo thInfo = tmxbean.getThreadInfo(id);
+        tMon.set("blockedCount", thInfo.getBlockedCount() - tMon.getAsLong("startBlockedCount"));
+        tMon.set("blockedTime",  thInfo.getBlockedTime()  - tMon.getAsLong("startBlockedTime"));
+        tMon.set("waitedCount",  thInfo.getWaitedCount()  - tMon.getAsLong("startWaitedCount"));
+        tMon.set("waitedTime",   thInfo.getWaitedTime()   - tMon.getAsLong("startWaitedTime"));
+      }
     }
+  }
 
-    /**
-     * @@org.springframework.jmx.export.metadata.ManagedAttribute (description="true if this MonitorProcessor is enabled")
-     *
-     * @return boolean
-     */
-    @ManagedAttribute(description="true if this MonitorProcessor is enabled")
-    public boolean isEnabled() {
-        return enabled;
-    }
+  /**
+   * @@org.springframework.jmx.export.metadata.ManagedAttribute (description="true if this MonitorProcessor is enabled")
+   *
+   * @return boolean
+   */
+  @ManagedAttribute(description="true if this MonitorProcessor is enabled")
+  public boolean isEnabled() {
+    return enabled;
+  }
 
-    /**
-     * @@org.springframework.jmx.export.metadata.ManagedAttribute (description="set to true to enable this MonitorProcessor")
-     *
-     * @param enabled boolean enabled status
-     */
-    @ManagedAttribute(description="set to true to enable this MonitorProcessor")
-    public void setEnabled(boolean enabled) {
-        ThreadMXBean tmxbean = ManagementFactory.getThreadMXBean();
-        if (tmxbean.isThreadContentionMonitoringSupported()) {
-            tmxbean.setThreadContentionMonitoringEnabled(enabled);
-            this.enabled = enabled;
-        } else {
-            log.warn("Thread contention monitoring is not supported by this VM");
-        }
+  /**
+   * @@org.springframework.jmx.export.metadata.ManagedAttribute (description="set to true to enable this MonitorProcessor")
+   *
+   * @param enabled boolean enabled status
+   */
+  @ManagedAttribute(description="set to true to enable this MonitorProcessor")
+  public void setEnabled(boolean enabled) {
+    ThreadMXBean tmxbean = ManagementFactory.getThreadMXBean();
+    if (tmxbean.isThreadContentionMonitoringSupported()) {
+      tmxbean.setThreadContentionMonitoringEnabled(enabled);
+      this.enabled = enabled;
+    } else {
+      log.warn("Thread contention monitoring is not supported by this VM");
     }
+  }
 }

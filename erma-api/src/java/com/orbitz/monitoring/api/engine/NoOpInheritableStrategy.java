@@ -15,41 +15,41 @@ import java.util.Map;
  * @author John VanDerpol
  */
 public class NoOpInheritableStrategy implements InheritableStrategy {
-    
-    public int clearCurrentThread() {
-        return 0;
-    }
-    
-    public void compositeMonitorCompleted(final CompositeMonitor monitor) {
-        // NOOP
-    }
-    
-    public void compositeMonitorStarted(final CompositeMonitor compositeMonitor) {
-        // NOOP
-    }
-    
-    public CompositeMonitor getCompositeMonitorNamed(final String name) {
-        return null;
-    }
-    
-    public Map<?, ?> getInheritableAttributes() {
-        return Collections.emptyMap();
-    }
-    
-    public void processMonitorForCompositeMonitor(final Monitor monitor) {
-        // NOOP
-    }
-    
-    public void setInheritable(final CompositeMonitor monitor, final String key,
-            final AttributeHolder original) {
-        // NOOP
-    }
-    
-    public void shutdown() {
-        // NOOP
-    }
-    
-    public void startup() {
-        // NOOP
-    }
+  
+  public int clearCurrentThread() {
+    return 0;
+  }
+  
+  public void compositeMonitorCompleted(final CompositeMonitor monitor) {
+    // NOOP
+  }
+  
+  public void compositeMonitorStarted(final CompositeMonitor compositeMonitor) {
+    // NOOP
+  }
+  
+  public CompositeMonitor getCompositeMonitorNamed(final String name) {
+    return null;
+  }
+  
+  public Map<?, ?> getInheritableAttributes() {
+    return Collections.emptyMap();
+  }
+  
+  public void processMonitorForCompositeMonitor(final Monitor monitor) {
+    // NOOP
+  }
+  
+  public void setInheritable(final CompositeMonitor monitor, final String key,
+      final AttributeHolder original) {
+    // NOOP
+  }
+  
+  public void shutdown() {
+    // NOOP
+  }
+  
+  public void startup() {
+    // NOOP
+  }
 }

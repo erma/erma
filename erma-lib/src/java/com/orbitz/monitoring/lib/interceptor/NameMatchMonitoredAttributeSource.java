@@ -19,63 +19,63 @@ import java.util.Set;
  */
 public class NameMatchMonitoredAttributeSource implements MonitoredAttributeSource {
 
-    private static final Logger log = Logger.getLogger(NameMatchMonitoredAttributeSource.class);
+  private static final Logger log = Logger.getLogger(NameMatchMonitoredAttributeSource.class);
 
-    private Map methodMap = new HashMap();
+  private Map methodMap = new HashMap();
 
-    public NameMatchMonitoredAttributeSource() {
-    }
+  public NameMatchMonitoredAttributeSource() {
+  }
 
-    public void setNameMap(Map nameMap) {
-        Iterator it = nameMap.entrySet().iterator();
-        while (it.hasNext()) {
-            Map.Entry entry = (Map.Entry) it.next();
-            String name = (String) entry.getKey();
+  public void setNameMap(Map nameMap) {
+    Iterator it = nameMap.entrySet().iterator();
+    while (it.hasNext()) {
+      Map.Entry entry = (Map.Entry) it.next();
+      String name = (String) entry.getKey();
 
-            // Check whether we need to convert from String.
-            MonitoredAttribute attr;
-            if (entry.getValue() instanceof MonitoredAttribute) {
-                attr = (MonitoredAttribute) entry.getValue();
-                if (StringUtils.trimToNull(attr.getMonitorName()) == null) {
-                    attr.setMonitorName(name);
-                }
-            } else {
-                MonitoredAttributeEditor editor = new MonitoredAttributeEditor();
-                editor.setAsText(entry.getValue().toString());
-                attr = (MonitoredAttribute) editor.getValue();
-            }
-
-            addMonitoredMethod(name, attr);
+      // Check whether we need to convert from String.
+      MonitoredAttribute attr;
+      if (entry.getValue() instanceof MonitoredAttribute) {
+        attr = (MonitoredAttribute) entry.getValue();
+        if (StringUtils.trimToNull(attr.getMonitorName()) == null) {
+          attr.setMonitorName(name);
         }
-    }
+      } else {
+        MonitoredAttributeEditor editor = new MonitoredAttributeEditor();
+        editor.setAsText(entry.getValue().toString());
+        attr = (MonitoredAttribute) editor.getValue();
+      }
 
-    public void setProperties(Properties props) {
-        Validate.notNull(props, "Properties must not be null");
-        Iterator iterator = props.entrySet().iterator();
-        while (iterator.hasNext()) {
-            Map.Entry entry = (Map.Entry) iterator.next();
-            MonitoredAttributeEditor editor = new MonitoredAttributeEditor();
-            editor.setAsText(entry.getValue().toString());
-            MonitoredAttribute attr = (MonitoredAttribute) editor.getValue();
-            addMonitoredMethod(entry.getKey().toString(), attr);
-        }
+      addMonitoredMethod(name, attr);
     }
+  }
 
-    public void addMonitoredMethod(String name, MonitoredAttribute attr) {
-        if (log.isDebugEnabled()) {
-            log.debug("Adding monitored method [" + name + "] with attribute [" + attr + "]");
-        }
-        this.methodMap.put(name, attr);
+  public void setProperties(Properties props) {
+    Validate.notNull(props, "Properties must not be null");
+    Iterator iterator = props.entrySet().iterator();
+    while (iterator.hasNext()) {
+      Map.Entry entry = (Map.Entry) iterator.next();
+      MonitoredAttributeEditor editor = new MonitoredAttributeEditor();
+      editor.setAsText(entry.getValue().toString());
+      MonitoredAttribute attr = (MonitoredAttribute) editor.getValue();
+      addMonitoredMethod(entry.getKey().toString(), attr);
     }
+  }
 
-    public MonitoredAttribute getMonitoredAttribute(Method method, Class targetClass) {
-        Set keys = methodMap.keySet();
-        for (Iterator iterator = keys.iterator(); iterator.hasNext();) {
-            String key = (String) iterator.next();
-            if (PatternMatchUtils.simpleMatch(key, method.getName())) {
-                return (MonitoredAttribute) methodMap.get(key);
-            }
-        }
-        return null;
+  public void addMonitoredMethod(String name, MonitoredAttribute attr) {
+    if (log.isDebugEnabled()) {
+      log.debug("Adding monitored method [" + name + "] with attribute [" + attr + "]");
     }
+    this.methodMap.put(name, attr);
+  }
+
+  public MonitoredAttribute getMonitoredAttribute(Method method, Class targetClass) {
+    Set keys = methodMap.keySet();
+    for (Iterator iterator = keys.iterator(); iterator.hasNext();) {
+      String key = (String) iterator.next();
+      if (PatternMatchUtils.simpleMatch(key, method.getName())) {
+        return (MonitoredAttribute) methodMap.get(key);
+      }
+    }
+    return null;
+  }
 }

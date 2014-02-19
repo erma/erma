@@ -304,7 +304,7 @@ class MonitoringEngine {
    * @throws IllegalArgumentException if name is null
    */
   public CompositeMonitor getCompositeMonitorNamed(final String name)
-      throws IllegalArgumentException {
+    throws IllegalArgumentException {
     return inheritableStrategy.getCompositeMonitorNamed(name);
   }
   
@@ -568,7 +568,7 @@ class MonitoringEngine {
   }
   
   public void setInheritableStrategy(final InheritableStrategy inheritableStrategy) {
-      System.out.println("Changed to..." + inheritableStrategy + " from..." + this.inheritableStrategy);
+    System.out.println("Changed to..." + inheritableStrategy + " from..." + this.inheritableStrategy);
     this.inheritableStrategy = inheritableStrategy;
   }
   
@@ -590,9 +590,9 @@ class MonitoringEngine {
     Set<MonitorProcessor> processorsByName = this.processorFactory.getProcessorsByName(name);
     
     if (processorsByName != null) {
-        for (MonitorProcessor processor : processorsByName) {
-            processor.setLevel(level);
-        }
+      for (MonitorProcessor processor : processorsByName) {
+        processor.setLevel(level);
+      }
     }
   }
   
@@ -601,11 +601,11 @@ class MonitoringEngine {
    * @return
    */
   public String getOverrideProcessorLevelsListing() {
-      Map<String, MonitoringLevel> levels = new HashMap<String, MonitoringLevel>();
-      for (MonitorProcessor processor : this.processorFactory.getAllProcessors()) {
-          levels.put(processor.getName(), processor.getLevel());
-      }
-      return levels.toString();
+    Map<String, MonitoringLevel> levels = new HashMap<String, MonitoringLevel>();
+    for (MonitorProcessor processor : this.processorFactory.getAllProcessors()) {
+      levels.put(processor.getName(), processor.getLevel());
+    }
+    return levels.toString();
   }
   
   public void addMonitorLevel(final String nameStartsWith, final MonitoringLevel level) {
@@ -633,9 +633,9 @@ class MonitoringEngine {
   public MonitoringLevel getProcessorLevel(final String name) {
     Set<MonitorProcessor> processors = processorFactory.getProcessorsByName(name);
     if (!processors.isEmpty()) {
-        return processors.iterator().next().getLevel();
+      return processors.iterator().next().getLevel();
     } else {
-        return null;
+      return null;
     }
   }
   
@@ -653,12 +653,12 @@ class MonitoringEngine {
     final String name = monitor.getAsString(Attribute.NAME);
 
     if (name != null) {
-        for (String key : monitorLevels.keySet()) {
-          if (name.startsWith(key)) {
-            keyToUse = key;
-            break;
-          }
+      for (String key : monitorLevels.keySet()) {
+        if (name.startsWith(key)) {
+          keyToUse = key;
+          break;
         }
+      }
     }
     
     return (keyToUse != null ? (MonitoringLevel)monitorLevels.get(keyToUse) : null);

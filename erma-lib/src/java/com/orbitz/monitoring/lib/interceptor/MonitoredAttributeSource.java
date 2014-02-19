@@ -6,5 +6,5 @@ import java.lang.reflect.Method;
  * @author Ray Krueger
  */
 public interface MonitoredAttributeSource {
-    MonitoredAttribute getMonitoredAttribute(Method method, Class targetClass);
+  MonitoredAttribute getMonitoredAttribute(Method method, Class targetClass);
 }

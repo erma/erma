@@ -13,20 +13,20 @@ import com.orbitz.monitoring.api.Monitor;
  */
 public class LocationAnnotatingMonitorProcessor extends MonitorProcessorAdapter {
 
-    public void monitorCreated(Monitor monitor) {
-                
-        StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
-        String attributeValue = null;
-        for (StackTraceElement stackTraceElement : stackTrace) {
-            String className = stackTraceElement.getClassName();
-            if (className.startsWith("com.orbitz") && !className.startsWith("com.orbitz.monitoring")) {
-                attributeValue = stackTraceElement.toString();
-                break;
-            }
-        }
-        if (attributeValue != null) {
-            monitor.set("stackTraceElement", attributeValue);
-        }
+  public void monitorCreated(Monitor monitor) {
+        
+    StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+    String attributeValue = null;
+    for (StackTraceElement stackTraceElement : stackTrace) {
+      String className = stackTraceElement.getClassName();
+      if (className.startsWith("com.orbitz") && !className.startsWith("com.orbitz.monitoring")) {
+        attributeValue = stackTraceElement.toString();
+        break;
+      }
     }
+    if (attributeValue != null) {
+      monitor.set("stackTraceElement", attributeValue);
+    }
+  }
 
 }

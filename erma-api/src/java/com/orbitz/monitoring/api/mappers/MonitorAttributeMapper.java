@@ -20,5 +20,5 @@ import java.util.Map;
  */
 public interface MonitorAttributeMapper {
 
-    public Map<String, Object> map(Monitor monitor);
+  public Map<String, Object> map(Monitor monitor);
 }

@@ -12,19 +12,19 @@ import java.io.Serializable;
  * <ul>
  * <li> All JavaBean properties must be available in the returned object
  * <li> The resulting object must be able to be introspected when the
- *      {@link Monitor#get(String)} method is called with an expression
- *      for a key
+ *    {@link Monitor#get(String)} method is called with an expression
+ *    for a key
  * </ul>
  *
  * @author Doug Barth
  */
 public interface Decomposer {
-    /**
-     * Takes an object that may not be able to be sent across the wire and turns
-     * it into one that can be.
-     *
-     * @param object the object to transform
-     * @return the Serializable version of this object
-     */
-    Serializable decompose(Object object);
+  /**
+   * Takes an object that may not be able to be sent across the wire and turns
+   * it into one that can be.
+   *
+   * @param object the object to transform
+   * @return the Serializable version of this object
+   */
+  Serializable decompose(Object object);
 }

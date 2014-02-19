@@ -19,40 +19,40 @@ import java.util.Set;
  */
 public class EventPatternLoggingMonitorProcessor extends MonitorProcessorAdapter {
 
-    private static final Logger log = Logger.getLogger(EventPatternLoggingMonitorProcessor.class);
+  private static final Logger log = Logger.getLogger(EventPatternLoggingMonitorProcessor.class);
 
-    private static final List DEFAULT_ATTRIBUTES = new ArrayList();
-    
-    static {
-        DEFAULT_ATTRIBUTES.add("vmid");
-        DEFAULT_ATTRIBUTES.add("name");
-        DEFAULT_ATTRIBUTES.add("failureThrowable");
-    }
+  private static final List DEFAULT_ATTRIBUTES = new ArrayList();
+  
+  static {
+    DEFAULT_ATTRIBUTES.add("vmid");
+    DEFAULT_ATTRIBUTES.add("name");
+    DEFAULT_ATTRIBUTES.add("failureThrowable");
+  }
 
-    private EventPatternMonitorRenderer renderer;
+  private EventPatternMonitorRenderer renderer;
 
-    public EventPatternLoggingMonitorProcessor() {
-        renderer = new EventPatternMonitorRenderer(DEFAULT_ATTRIBUTES);
-    }
+  public EventPatternLoggingMonitorProcessor() {
+    renderer = new EventPatternMonitorRenderer(DEFAULT_ATTRIBUTES);
+  }
 
-    public void process(Monitor monitor) {
-        String logString = renderMonitor(monitor);
-        log.info(logString);
-    }
+  public void process(Monitor monitor) {
+    String logString = renderMonitor(monitor);
+    log.info(logString);
+  }
 
-    protected String renderMonitor(Monitor monitor) {
-        return renderer.renderMonitor(monitor);
-    }
+  protected String renderMonitor(Monitor monitor) {
+    return renderer.renderMonitor(monitor);
+  }
 
-    public void setAllowedAttributes(final List allowedAttributes) {
-        renderer.setAllowedAttributes(allowedAttributes);
-    }
+  public void setAllowedAttributes(final List allowedAttributes) {
+    renderer.setAllowedAttributes(allowedAttributes);
+  }
 
-    public Set getMonitorsToSkip() {
-        return renderer.getMonitorsToSkip();
-    }
+  public Set getMonitorsToSkip() {
+    return renderer.getMonitorsToSkip();
+  }
 
-    public void setMonitorsToSkip(Set monitorsToSkip) {
-        renderer.setMonitorsToSkip(monitorsToSkip);
-    }
+  public void setMonitorsToSkip(Set monitorsToSkip) {
+    renderer.setMonitorsToSkip(monitorsToSkip);
+  }
 }

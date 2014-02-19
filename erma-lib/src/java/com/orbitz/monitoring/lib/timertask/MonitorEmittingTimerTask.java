@@ -7,11 +7,11 @@ import java.util.TimerTask;
 
 public abstract class MonitorEmittingTimerTask extends TimerTask {
 
-    public abstract Collection<? extends Monitor> emitMonitors();
+  public abstract Collection<? extends Monitor> emitMonitors();
 
-    @Override
-    public void run() {
-        emitMonitors();
-    }
+  @Override
+  public void run() {
+    emitMonitors();
+  }
 
 }

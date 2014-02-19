@@ -15,15 +15,15 @@ import java.util.List;
  * @author Doug Barth
  */
 public class MockDecomposer implements Decomposer {
-    private List _decomposedObjects = new ArrayList();
+  private List _decomposedObjects = new ArrayList();
 
-    public Serializable decompose(Object object) {
+  public Serializable decompose(Object object) {
 
-        _decomposedObjects.add(((AttributeHolder)object).getValue());
-        return (Serializable)object;
-    }
+    _decomposedObjects.add(((AttributeHolder)object).getValue());
+    return (Serializable)object;
+  }
 
-    public List getDecomposedObjects() {
-        return _decomposedObjects;
-    }
+  public List getDecomposedObjects() {
+    return _decomposedObjects;
+  }
 }

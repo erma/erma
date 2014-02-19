@@ -41,16 +41,16 @@ public class CPUProfilingMonitorProcessor extends MonitorProcessorAdapter {
   @Override
   public void process(final Monitor monitor) {
     if (enabled && TransactionMonitor.class.isAssignableFrom(monitor.getClass())) {
-        if (monitor.hasAttribute("startCPUTime")) {
-            ThreadMXBean tmxbean = ManagementFactory.getThreadMXBean();
-            long endTime = tmxbean.getCurrentThreadCpuTime();
-            monitor.set("endCPUTime", endTime);
-            long diff = endTime - monitor.getAsLong("startCPUTime");
-            double cpuTimeMillis = diff / 1000000.0;
-            monitor.set("cpuTimeMillis", cpuTimeMillis);
-        } else {
-            log.warn("No startCPUTime for Monitor named " + monitor.getAsString(Attribute.NAME));
-        }
+      if (monitor.hasAttribute("startCPUTime")) {
+        ThreadMXBean tmxbean = ManagementFactory.getThreadMXBean();
+        long endTime = tmxbean.getCurrentThreadCpuTime();
+        monitor.set("endCPUTime", endTime);
+        long diff = endTime - monitor.getAsLong("startCPUTime");
+        double cpuTimeMillis = diff / 1000000.0;
+        monitor.set("cpuTimeMillis", cpuTimeMillis);
+      } else {
+        log.warn("No startCPUTime for Monitor named " + monitor.getAsString(Attribute.NAME));
+      }
     }
   }
   

@@ -10,12 +10,12 @@ import java.util.IdentityHashMap;
  * @author Doug Barth
  */
 class IdentityDecomposer extends AbstractAttributeDecomposerStep {
-    Serializable createMutableContainer(Object o) {
-        return (Serializable) o;
-    }
+  Serializable createMutableContainer(Object o) {
+    return (Serializable) o;
+  }
 
-    void decomposeInto(Object o, Serializable container,
-                       IdentityHashMap alreadyDecomposed) {
-        // No-op
-    }
+  void decomposeInto(Object o, Serializable container,
+             IdentityHashMap alreadyDecomposed) {
+    // No-op
+  }
 }
