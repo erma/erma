@@ -58,8 +58,7 @@ public class TransactionMonitorInterceptor implements MethodInterceptor {
             final String name = nameFromAnnotation == null ? invocation.getMethod().getName()
                     : nameFromAnnotation;
             return new TransactionMonitor(invocation.getMethod().getDeclaringClass(), name, level);
-        }
-        else {
+        } else {
             return new TransactionMonitor(nameFromAnnotation, level);
         }
     }
@@ -86,8 +85,7 @@ public class TransactionMonitorInterceptor implements MethodInterceptor {
         
         if (att == null) {
             return MonitoringLevel.INFO;
-        }
-        else {
+        } else {
             return MonitoringLevel.toLevel(att.getLevelStr());
         }
     }
@@ -97,8 +95,7 @@ public class TransactionMonitorInterceptor implements MethodInterceptor {
         final MonitoredAttribute attribute = getAttribute(invocation);
         if (attribute == null || StringUtils.trimToNull(attribute.getMonitorName()) == null) {
             return invocation.getMethod().getName();
-        }
-        else {
+        } else {
             return attribute.getMonitorName();
         }
     }
@@ -152,13 +149,11 @@ public class TransactionMonitorInterceptor implements MethodInterceptor {
             monitor.succeeded();
             
             return result;
-        }
-        catch (final Throwable t) {
+        } catch (final Throwable t) {
             log.debug("Monitor failed due to [" + t + "]");
             monitor.failedDueTo(t);
             throw t;
-        }
-        finally {
+        } finally {
             log.debug("Monitor done");
             monitor.done();
         }

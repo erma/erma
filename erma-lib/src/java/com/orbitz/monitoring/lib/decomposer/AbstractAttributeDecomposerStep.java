@@ -16,8 +16,7 @@ abstract class AbstractAttributeDecomposerStep implements AttributeDecomposer.St
     
     if (alreadyDecomposed.containsKey(object)) {
       return alreadyDecomposed.get(object);
-    }
-    else {
+    } else {
       final Serializable mutableContainer = createMutableContainer(object);
       alreadyDecomposed.put(object, mutableContainer);
       decomposeInto(object, mutableContainer, alreadyDecomposed);

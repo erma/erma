@@ -29,8 +29,7 @@ public class AnnotationMonitoredAttributeSource implements MonitoredAttributeSou
   private String getMonitorName(final Method method, final Monitored annotation) {
     if (annotation == null || StringUtils.trimToNull(annotation.value()) == null) {
       return method.getName();
-    }
-    else {
+    } else {
       return annotation.value();
     }
   }
@@ -82,8 +81,7 @@ public class AnnotationMonitoredAttributeSource implements MonitoredAttributeSou
             annotation = targetMethod.getAnnotation(Monitored.class);
           }
         }
-      }
-      catch (final NoSuchMethodException e) {
+      } catch (final NoSuchMethodException e) {
         log.warn("This should not happen: cannot get declared method from target class", e);
       }
       

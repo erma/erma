@@ -111,8 +111,7 @@ public class BaseMonitoringEngineManager {
   public void addLevelForProcessor(final String name, final String levelStr) {
     if (name == null) {
       throw new IllegalArgumentException("processor name cannot be null");
-    }
-    else if (!MonitoringLevel.isValidLevelStr(levelStr)) {
+    } else if (!MonitoringLevel.isValidLevelStr(levelStr)) {
       throw new IllegalArgumentException("levelStr must match an existing MonitoringLevel");
     }
     
@@ -346,8 +345,7 @@ public class BaseMonitoringEngineManager {
   public void updateLevelForMonitor(final String nameStartsWith, final String levelStr) {
     if (nameStartsWith == null) {
       throw new IllegalArgumentException("nameStartsWith cannot be null");
-    }
-    else if (!MonitoringLevel.isValidLevelStr(levelStr)) {
+    } else if (!MonitoringLevel.isValidLevelStr(levelStr)) {
       throw new IllegalArgumentException("levelStr must match an existing MonitoringLevel");
     }
     MonitoringLevel level = MonitoringLevel.toLevel(levelStr);

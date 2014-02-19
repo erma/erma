@@ -330,8 +330,7 @@ public abstract class AbstractMonitor implements Monitor {
   protected void process() {
     if (processed) {
       log.error("This monitor has already been processed: " + this);
-    }
-    else {
+    } else {
       MonitoringEngine.getInstance().process(this);
       processed = true;
     }

@@ -31,8 +31,7 @@ public class ConcurrencyMonitorProcessor extends MonitorProcessorAdapter {
         Integer cnt = map.get(name);
         if (cnt == null) {
           map.put(name, Integer.valueOf(1));
-        }
-        else {
+        } else {
           int count = cnt.intValue();
           map.put(name, Integer.valueOf(count + 1));
         }
@@ -48,8 +47,7 @@ public class ConcurrencyMonitorProcessor extends MonitorProcessorAdapter {
         Integer cnt = map.get(name);
         if (cnt == null) {
           log.warn("No count available for Monitor named " + name);
-        }
-        else {
+        } else {
           int count = cnt.intValue();
           map.put(name, Integer.valueOf(count - 1));
           monitor.set("concurrencyCount", count);

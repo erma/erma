@@ -116,8 +116,7 @@ public class AttributeHolder implements Serializable, Cloneable {
   public Object clone() {
     try {
       return super.clone();
-    }
-    catch (CloneNotSupportedException e) {
+    } catch (CloneNotSupportedException e) {
       // should never happen as this class is Cloneable
       throw new RuntimeException(e);
     }

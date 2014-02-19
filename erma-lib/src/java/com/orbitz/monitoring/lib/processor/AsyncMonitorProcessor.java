@@ -94,8 +94,7 @@ public final class AsyncMonitorProcessor extends MonitorProcessorAdapter impleme
     while (!oldMonitorProcessingExecutor.isTerminated()) {
       try {
         oldMonitorProcessingExecutor.awaitTermination(100, TimeUnit.MILLISECONDS);
-      }
-      catch (InterruptedException e) {
+      } catch (InterruptedException e) {
         // ignore
       }
     }

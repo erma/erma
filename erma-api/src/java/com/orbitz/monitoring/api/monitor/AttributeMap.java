@@ -205,8 +205,7 @@ public class AttributeMap implements Serializable {
   public boolean getAsBoolean(final String key, final boolean defaultValue) {
     if (!hasAttribute(key)) {
       return defaultValue;
-    }
-    else {
+    } else {
       return getAsBoolean(key);
     }
   }
@@ -228,8 +227,7 @@ public class AttributeMap implements Serializable {
     }
     try {
       return Byte.parseByte(value.toString());
-    }
-    catch (final NumberFormatException e) {
+    } catch (final NumberFormatException e) {
       throw new CantCoerceException(key, value, "byte");
     }
   }
@@ -248,8 +246,7 @@ public class AttributeMap implements Serializable {
   public byte getAsByte(final String key, final byte defaultValue) {
     if (hasAttribute(key)) {
       return getAsByte(key);
-    }
-    else {
+    } else {
       return defaultValue;
     }
   }
@@ -290,8 +287,7 @@ public class AttributeMap implements Serializable {
   public char getAsChar(final String key, final char defaultValue) {
     if (!hasAttribute(key)) {
       return defaultValue;
-    }
-    else {
+    } else {
       return getAsChar(key);
     }
   }
@@ -312,8 +308,7 @@ public class AttributeMap implements Serializable {
     }
     try {
       return Double.parseDouble(value.toString());
-    }
-    catch (final NumberFormatException e) {
+    } catch (final NumberFormatException e) {
       throw new CantCoerceException(key, value, "double");
     }
   }
@@ -331,8 +326,7 @@ public class AttributeMap implements Serializable {
   public double getAsDouble(final String key, final double defaultValue) {
     if (!(hasAttribute(key))) {
       return defaultValue;
-    }
-    else {
+    } else {
       return getAsDouble(key);
     }
   }
@@ -353,8 +347,7 @@ public class AttributeMap implements Serializable {
     }
     try {
       return Float.parseFloat(value.toString());
-    }
-    catch (final NumberFormatException e) {
+    } catch (final NumberFormatException e) {
       throw new CantCoerceException(key, value, "float");
     }
   }
@@ -372,8 +365,7 @@ public class AttributeMap implements Serializable {
   public float getAsFloat(final String key, final float defaultValue) {
     if (!(hasAttribute(key))) {
       return defaultValue;
-    }
-    else {
+    } else {
       return getAsFloat(key);
     }
   }
@@ -394,8 +386,7 @@ public class AttributeMap implements Serializable {
     }
     try {
       return Integer.parseInt(value.toString());
-    }
-    catch (final NumberFormatException e) {
+    } catch (final NumberFormatException e) {
       throw new CantCoerceException(key, value, "int");
     }
   }
@@ -413,8 +404,7 @@ public class AttributeMap implements Serializable {
   public int getAsInt(final String key, final int defaultValue) {
     if (!(hasAttribute(key))) {
       return defaultValue;
-    }
-    else {
+    } else {
       return getAsInt(key);
     }
   }
@@ -465,8 +455,7 @@ public class AttributeMap implements Serializable {
     }
     try {
       return Long.parseLong(value.toString());
-    }
-    catch (final NumberFormatException e) {
+    } catch (final NumberFormatException e) {
       throw new CantCoerceException(key, value, "long");
     }
   }
@@ -484,8 +473,7 @@ public class AttributeMap implements Serializable {
   public long getAsLong(final String key, final long defaultValue) {
     if (!(hasAttribute(key))) {
       return defaultValue;
-    }
-    else {
+    } else {
       return getAsLong(key);
     }
   }
@@ -502,8 +490,7 @@ public class AttributeMap implements Serializable {
     final Object value = get(key);
     if (value instanceof Map) {
       return (Map<K, V>)value;
-    }
-    else {
+    } else {
       throw new CantCoerceException(key, value, "Map");
     }
   }
@@ -520,8 +507,7 @@ public class AttributeMap implements Serializable {
     Object value = get(key);
     try {
       return (Set<T>)value;
-    }
-    catch (ClassCastException ex) {
+    } catch (ClassCastException ex) {
       throw new CantCoerceException(key, value, "Set");
     }
   }
@@ -542,8 +528,7 @@ public class AttributeMap implements Serializable {
     }
     try {
       return Short.parseShort(value.toString());
-    }
-    catch (final NumberFormatException e) {
+    } catch (final NumberFormatException e) {
       throw new CantCoerceException(key, value, "short");
     }
   }
@@ -562,8 +547,7 @@ public class AttributeMap implements Serializable {
   public short getAsShort(final String key, final short defaultValue) {
     if (!(hasAttribute(key))) {
       return defaultValue;
-    }
-    else {
+    } else {
       return getAsShort(key);
     }
   }
@@ -635,14 +619,12 @@ public class AttributeMap implements Serializable {
     if (attributeHolder == null) {
       attributeHolder = createHolderForValue(value);
       attributes.put(key, attributeHolder);
-    }
-    else {
+    } else {
       if (attributeHolder.isLocked()) {
         if (logger.isDebugEnabled()) {
           logger.debug("Attempt to overwrite locked attribute with key '" + key + "'");
         }
-      }
-      else {
+      } else {
         attributeHolder = createHolderForValue(attributeHolder, value);
         attributes.put(key, attributeHolder);
       }
@@ -794,8 +776,7 @@ public class AttributeMap implements Serializable {
           final AttributeHolder original = (AttributeHolder)value;
           final AttributeHolder copy = (AttributeHolder)original.clone();
           getAttributes().put(key, copy);
-        }
-        else {
+        } else {
           set(key, value);
         }
       }

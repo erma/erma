@@ -71,8 +71,7 @@ public class ProcessGroup {
             MonitoringLevel processorLevel = processor.getLevel();
             if (processorLevel != null) {
               return monitorLevel.hasHigherOrEqualPriorityThan(processorLevel);
-            }
-            else {
+            } else {
               return monitorLevel.hasHigherOrEqualPriorityThan(_monitoringLevel);
             }
           }
@@ -102,12 +101,10 @@ public class ProcessGroup {
         if (result != null && result instanceof Boolean) {
           Boolean expressionResult = (Boolean)result;
           applies = expressionResult.booleanValue();
-        }
-        else {
+        } else {
           applies = false;
         }
-      }
-      catch (Exception e) {
+      } catch (Exception e) {
         log.debug("Exception while applying expression: ", e);
         applies = false;
       }
@@ -122,8 +119,7 @@ public class ProcessGroup {
     if (expressionString != null) {
       try {
         expression = ExpressionFactory.createExpression(expressionString);
-      }
-      catch (Exception e) {
+      } catch (Exception e) {
         log.error("Error setting expression: ", e);
       }
     }

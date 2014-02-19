@@ -46,8 +46,7 @@ public class AttributeHolderDecomposer extends AbstractAttributeDecomposerStep {
     
     if (alreadyDecomposed.containsKey(object)) {
       return alreadyDecomposed.get(object);
-    }
-    else {
+    } else {
       Serializable mutableContainer = createMutableContainer(object);
       alreadyDecomposed.put(object, mutableContainer);
       decomposeInto(object, mutableContainer, alreadyDecomposed);

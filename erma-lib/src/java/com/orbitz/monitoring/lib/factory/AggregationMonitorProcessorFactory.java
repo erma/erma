@@ -55,8 +55,7 @@ public class AggregationMonitorProcessorFactory extends SimpleMonitorProcessorFa
       final List<MonitorProcessor> processors = Lists.newArrayList(aggregationGroup
           .getProcessorsFor(monitor));
       return processors.toArray(new MonitorProcessor[processors.size()]);
-    }
-    else {
+    } else {
       return super.getProcessorsForMonitor(monitor);
     }
   }
@@ -70,8 +69,7 @@ public class AggregationMonitorProcessorFactory extends SimpleMonitorProcessorFa
   public Iterable<MonitorProcessor> findProcessorsForMonitor(final Monitor monitor) {
     if (clazzes.contains(monitor.getClass())) {
       return aggregationGroup.getProcessorsFor(monitor);
-    }
-    else {
+    } else {
       return super.findProcessorsForMonitor(monitor);
     }
   }

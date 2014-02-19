@@ -28,5 +28,6 @@
     <module name="NeedBraces"/>
     <!-- 4.1.2 -->
     <module name="LeftCurly"/>
+    <module name="RightCurly"/>
   </module>
 </module>

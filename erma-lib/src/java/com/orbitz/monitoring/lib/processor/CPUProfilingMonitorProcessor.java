@@ -79,8 +79,7 @@ public class CPUProfilingMonitorProcessor extends MonitorProcessorAdapter {
     if (tmxbean.isCurrentThreadCpuTimeSupported()) {
       tmxbean.setThreadCpuTimeEnabled(enabled);
       this.enabled = enabled;
-    }
-    else {
+    } else {
       log.warn("Thread CPU time monitoring is not supported by this VM");
     }
   }

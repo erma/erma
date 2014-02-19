@@ -45,8 +45,7 @@ public class CompositeAttributeMap extends AttributeMap {
         final CompositeAttributeHolder original = (CompositeAttributeHolder)value;
         final CompositeAttributeHolder copy = (CompositeAttributeHolder)original.clone();
         getAttributes().put(key, copy);
-      }
-      else if (AttributeHolder.class.isAssignableFrom(value.getClass())) {
+      } else if (AttributeHolder.class.isAssignableFrom(value.getClass())) {
         final AttributeHolder original = (AttributeHolder)value;
         final CompositeAttributeHolder copy = new CompositeAttributeHolder(original.getValue());
         if (original.isSerializable()) {
@@ -56,8 +55,7 @@ public class CompositeAttributeMap extends AttributeMap {
           copy.lock();
         }
         getAttributes().put(key, copy);
-      }
-      else {
+      } else {
         set(key, value);
       }
     }

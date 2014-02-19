@@ -495,14 +495,12 @@ class MonitoringEngine {
       for (int i = 0; i < processors.length; i++) {
         try {
           closure.processWithProcessor(monitor, processors[i]);
-        }
-        catch (final Throwable t) {
+        } catch (final Throwable t) {
           log.warn(
               "Throwable caught while processing " + monitor + "; application is unaffected: ", t);
         }
       }
-    }
-    catch (final Throwable t) {
+    } catch (final Throwable t) {
       log.warn("Throwable caught while processing " + monitor + "; application is unaffected: ", t);
     }
   }

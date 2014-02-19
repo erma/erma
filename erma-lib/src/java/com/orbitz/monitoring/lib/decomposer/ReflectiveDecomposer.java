@@ -47,8 +47,7 @@ class ReflectiveDecomposer extends AbstractAttributeDecomposerStep {
         Object beanProperty;
         try {
           beanProperty = bean.get(name);
-        }
-        catch (RuntimeException e) {
+        } catch (RuntimeException e) {
           throw new RuntimeException("Unable to decompose " + o.getClass().getName() + "." + name,
               e);
         }
