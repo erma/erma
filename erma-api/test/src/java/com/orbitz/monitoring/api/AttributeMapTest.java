@@ -224,8 +224,7 @@ public class AttributeMapTest {
     try {
       attributes.set("x.y|z", "foo");
       fail("An exception should be thrown when an attribute's key in invalid");
-    }
-    catch (IllegalArgumentException iae) {
+    } catch (IllegalArgumentException iae) {
       // expected
     }
   }
@@ -278,17 +277,14 @@ public class AttributeMapTest {
       
       attributes.getAsShort("dne");
       fail("exception should have been thrown");
-    }
-    catch (AttributeUndefinedException e) {
+    } catch (AttributeUndefinedException e) {
       // expected
     }
     
     try {
-      
       attributes.getAsFloat("dne");
       fail("exception should have been thrown");
-    }
-    catch (AttributeUndefinedException e) {
+    } catch (AttributeUndefinedException e) {
       // expected
     }
     

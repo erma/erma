@@ -1,18 +1,19 @@
 package com.orbitz.monitoring.api;
 
+import com.orbitz.monitoring.api.engine.StackBasedInheritableStrategy;
+import com.orbitz.monitoring.api.monitor.AttributeHolder;
 import com.orbitz.monitoring.api.monitor.EventMonitor;
 import com.orbitz.monitoring.api.monitor.TransactionMonitor;
-import com.orbitz.monitoring.api.monitor.AttributeHolder;
 import com.orbitz.monitoring.api.monitor.serializable.SerializableMonitor;
-import com.orbitz.monitoring.api.engine.StackBasedInheritableStrategy;
 import com.orbitz.monitoring.test.MockDecomposer;
 import com.orbitz.monitoring.test.MockMonitorProcessor;
 import com.orbitz.monitoring.test.MockMonitorProcessorFactory;
+
 import junit.framework.TestCase;
 
 import java.util.Collection;
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Unit tests for the {@link MonitoringEngine}.
