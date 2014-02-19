@@ -20,7 +20,7 @@
       <property name="groups" value="com.orbitz,com,junit,org,sun,java,javax"/>
       <property name="ordered" value="true"/>
       <property name="separated" value="true"/>
-      <property name="option" value="above"/>
+      <property name="option" value="top"/>
     </module>
     <!-- 3.4.2 in part -->
     <module name="DeclarationOrder"/>

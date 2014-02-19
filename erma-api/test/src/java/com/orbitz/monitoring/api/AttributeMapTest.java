@@ -1,22 +1,32 @@
 package com.orbitz.monitoring.api;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.spy;
 
-import com.google.common.collect.Lists;
 import com.orbitz.monitoring.api.monitor.AttributeHolder;
 import com.orbitz.monitoring.api.monitor.AttributeMap;
 import com.orbitz.monitoring.api.monitor.CompositeAttributeHolder;
 import com.orbitz.monitoring.api.monitor.CompositeAttributeMap;
 import com.orbitz.monitoring.api.monitor.TransactionMonitor;
+
+import com.google.common.collect.Lists;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 
 /**
  * Tests {@link AttributeMap}, {@link AttributeHolder}, {@link CompositeAttributeMap} and
