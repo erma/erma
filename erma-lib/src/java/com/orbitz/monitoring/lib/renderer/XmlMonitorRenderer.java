@@ -108,7 +108,8 @@ public class XmlMonitorRenderer {
       monitorClassName = monitorClassName.substring(classIdx + 1);
     }
 
-    String message = "Error rendering event pattern: length is " + length + ", max length is " +  maxCharacters;
+    String message = "Error rendering event pattern: length is " + length + ", max length is " 
+        +  maxCharacters;
 
     writer.startNode(monitorClassName);
     appendMonitorDataAsAttributes(writer, monitor);

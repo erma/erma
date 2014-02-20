@@ -31,9 +31,8 @@ import java.util.concurrent.TimeUnit;
 /**
  * Allows {@link MonitoringEngine} to be manageable.
  * @author Doug Barth
- * @@org.springframework.jmx.export.metadata.ManagedResource 
- *                                                           (description="Management interface for ERMA MonitoringEngine"
- *                                                           )
+ * @@org.springframework.jmx.export.metadata.ManagedResource(
+ *     description="Management interface for ERMA MonitoringEngine")
  */
 @ManagedResource(description = "Management interface for ERMA MonitoringEngine")
 // TODO: Remove the Javadoc annotation
@@ -91,22 +90,19 @@ public class BaseMonitoringEngineManager {
    * @param name MonitorProcessor name
    * @param levelStr monitoring level
    * 
-   * @@org.springframework.jmx.export.metadata.ManagedOperation 
-   *                                                            (description="Sets a monitoring level on a MonitorProcessor"
-   *                                                            )
+   * @@org.springframework.jmx.export.metadata.ManagedOperation(
+   *     description="Sets a monitoring level on a MonitorProcessor")
    * @@org.springframework.jmx.export.metadata.ManagedOperationParameter (index=0, name="name",
-   *                                                                     description=
-   *                                                                     "processor name as configured in spring bean definition"
-   *                                                                     )
+   *     description="processor name as configured in spring bean definition"xi)
    * @@org.springframework.jmx.export.metadata.ManagedOperationParameter (index=1, name="levelStr",
-   *                                                                     description=
-   *                                                                     "Monitoring level to apply to processor"
-   *                                                                     )
+   *     description="Monitoring level to apply to processor")
    */
   @ManagedOperation(description = "Sets a monitoring level on a MonitorProcessor")
   @ManagedOperationParameters({
-      @ManagedOperationParameter(name = "name", description = "processor name as configured in spring bean definition"),
-      @ManagedOperationParameter(name = "levelStr", description = "Monitoring level to apply to processor")})
+      @ManagedOperationParameter(name = "name", 
+          description = "processor name as configured in spring bean definition"),
+      @ManagedOperationParameter(name = "levelStr", 
+          description = "Monitoring level to apply to processor")})
   // TODO: Remove the Javadoc annotation
   public void addLevelForProcessor(final String name, final String levelStr) {
     if (name == null) {
@@ -144,9 +140,8 @@ public class BaseMonitoringEngineManager {
    * {@link MonitoringEngine#getOverrideMonitorLevelsListing()}
    * @return description of override monitor levels map
    * @see MonitoringEngine#getOverrideMonitorLevelsListing()
-   * @@org.springframework.jmx.export.metadata.ManagedAttribute 
-   *                                                            (description="Gets a view into monitor level overrides"
-   *                                                            )
+   * @@org.springframework.jmx.export.metadata.ManagedAttribute(
+   *     description="Gets a view into monitor level overrides")
    */
   @ManagedAttribute(description = "Gets a view into monitor level overrides")
   // TODO: Remove the Javadoc annotation
@@ -159,9 +154,8 @@ public class BaseMonitoringEngineManager {
    * {@link MonitoringEngine#getOverrideProcessorLevelsListing()}
    * @return description of override processor levels map
    * @see MonitoringEngine#getOverrideProcessorLevelsListing()
-   * @@org.springframework.jmx.export.metadata.ManagedAttribute 
-   *                                                            (description="Gets a view into processor level overrides"
-   *                                                            )
+   * @@org.springframework.jmx.export.metadata.ManagedAttribute(
+   *     description="Gets a view into processor level overrides")
    */
   @ManagedAttribute(description = "Gets a view into processor level overrides")
   public String getOverrideProcessorLevelsListing() {
@@ -230,8 +224,8 @@ public class BaseMonitoringEngineManager {
   }
   
   /**
-   * Sets the strategy that determines whether {@link com.orbitz.monitoring.api.Monitor} attributes are inherited by their
-   * children
+   * Sets the strategy that determines whether {@link com.orbitz.monitoring.api.Monitor} attributes 
+   * are inherited by their children
    * @param inheritableStrategy the strategy
    */
   public void setInheritableStrategy(final InheritableStrategy inheritableStrategy) {
@@ -324,23 +318,20 @@ public class BaseMonitoringEngineManager {
    *        to match on the beginning of the monitor name
    * @param levelStr string representation of the monitoring level to set
    * @see MonitoringEngine#addMonitorLevel(String, MonitoringLevel)
-   * @@org.springframework.jmx.export.metadata.ManagedOperation 
-   *                                                            (description="Sets the monitoring level for the monitor(s)"
-   *                                                            )
+   * @@org.springframework.jmx.export.metadata.ManagedOperation(
+   *     description="Sets the monitoring level for the monitor(s)")
    * @@org.springframework.jmx.export.metadata.ManagedOperationParameter (index=0,
-   *                                                                     name="nameStartsWith",
-   *                                                                     description=
-   *                                                                     "Apply to all monitor names that start with the given string"
-   *                                                                     )
+   *     name="nameStartsWith", 
+   *     description="Apply to all monitor names that start with the given string")
    * @@org.springframework.jmx.export.metadata.ManagedOperationParameter (index=1, name="levelStr",
-   *                                                                     description=
-   *                                                                     "Monitoring level to apply to monitor(s)"
-   *                                                                     )
+   *     description="Monitoring level to apply to monitor(s)")
    */
   @ManagedOperation(description = "Sets the monitoring level for the monitor(s)")
   @ManagedOperationParameters({
-      @ManagedOperationParameter(name = "nameStartsWith", description = "Apply to all monitor names that start with the given string"),
-      @ManagedOperationParameter(name = "levelStr", description = "Monitoring level to apply to monitor(s)")})
+      @ManagedOperationParameter(name = "nameStartsWith", 
+          description = "Apply to all monitor names that start with the given string"),
+      @ManagedOperationParameter(name = "levelStr", 
+          description = "Monitoring level to apply to monitor(s)")})
   // TODO: Remove the Javadoc annotation
   public void updateLevelForMonitor(final String nameStartsWith, final String levelStr) {
     if (nameStartsWith == null) {

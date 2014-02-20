@@ -7,8 +7,8 @@ import com.orbitz.monitoring.lib.renderer.SimpleMonitorRenderer;
 import org.apache.log4j.Logger;
 
 /**
- * This is an implementation of the {@link com.orbitz.monitoring.api.MonitorProcessor} interface that
- * logs Monitor callback events to Log4j.
+ * This is an implementation of the {@link com.orbitz.monitoring.api.MonitorProcessor} interface 
+ * that logs Monitor callback events to Log4j.
  *
  * @author Doug Barth
  */

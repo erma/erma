@@ -30,7 +30,8 @@ public class PercentageMonitorSampler implements MonitorSampler {
   }
 
   /**
-   * Accepts the given monitor if that current sample percentage is less than the target sample rate.
+   * Accepts the given monitor if that current sample percentage is less than the target sample 
+   * rate.
    *
    * @param monitor monitor instance
    * @return true if the monitor should be accepted in the sample
@@ -58,8 +59,9 @@ public class PercentageMonitorSampler implements MonitorSampler {
     }
 
     if (logger.isDebugEnabled()) {
-      logger.debug((shouldAccept ? "ACCEPTED" : "REJECTED") + " monitor \"" + monitor.get(Monitor.NAME) +
-          "\" due to actual sample rate of " + actualRate + " and target " + this.sampleRate);
+      logger.debug((shouldAccept ? "ACCEPTED" : "REJECTED") + " monitor \"" 
+          + monitor.get(Monitor.NAME) + "\" due to actual sample rate of " + actualRate 
+          + " and target " + this.sampleRate);
     }
 
     return shouldAccept;
@@ -70,11 +72,14 @@ public class PercentageMonitorSampler implements MonitorSampler {
    *
    * @param samplePercentage sample rate as percentage
    */
-  @ManagedAttribute(description="Set the sampling rate.  For e.g. a value of 33.3 will result in sampling every 3rd monitor")
+  @ManagedAttribute(
+      description="Set the sampling rate.  For e.g. a value of 33.3 will result in sampling every"
+          + "3rd monitor")
   public void setSamplePercentage(float samplePercentage) {
     float previousRate = getSamplePercentage();
     setSamplePercentageInternal(samplePercentage);
-    logger.info("Sampling percentage successfully changed from " + previousRate + " => " + samplePercentage);
+    logger.info("Sampling percentage successfully changed from " + previousRate + " => " 
+        + samplePercentage);
   }
 
   @ManagedAttribute(description="Get the sampling rate as a percentage.")

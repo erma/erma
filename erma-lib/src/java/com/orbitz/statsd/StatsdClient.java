@@ -154,8 +154,8 @@ public class StatsdClient {
         return true;
       } else {
         log.error(String.format(
-            "Could not send entirely stat %s to host %s:%d. Only sent %d bytes out of %d bytes", stat,
-            _address.getHostName(), _address.getPort(), nbSentBytes, data.length));
+            "Could not send entirely stat %s to host %s:%d. Only sent %d bytes out of %d bytes", 
+            stat, _address.getHostName(), _address.getPort(), nbSentBytes, data.length));
         return false;
       }
 

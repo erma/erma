@@ -1,6 +1,10 @@
 package com.orbitz.monitoring.lib.processor.statsd;
 
-import com.orbitz.monitoring.api.Attribute;
+import static com.orbitz.monitoring.api.Attribute.FAILED;
+import static com.orbitz.monitoring.api.Attribute.LATENCY;
+import static com.orbitz.monitoring.api.Attribute.NAME;
+import static com.orbitz.monitoring.api.Attribute.VALUE;
+
 import com.orbitz.monitoring.api.Monitor;
 import com.orbitz.monitoring.lib.processor.MonitorProcessorAdapter;
 import com.orbitz.statsd.StatsdClient;
@@ -25,16 +29,16 @@ public class StatsdMonitorProcessor extends MonitorProcessorAdapter {
       return;
     }
 
-    if (monitor.hasAttribute(Attribute.LATENCY)) {
-      _statsdClient.timing(monitor.getAsString(Attribute.NAME), monitor.getAsInt(Attribute.LATENCY));
-    } else if (monitor.hasAttribute(Attribute.VALUE)) {
-      _statsdClient.gauge(monitor.getAsString(Attribute.NAME), (int) monitor.getAsInt(Attribute.VALUE));
+    if (monitor.hasAttribute(LATENCY)) {
+      _statsdClient.timing(monitor.getAsString(NAME), monitor.getAsInt(LATENCY));
+    } else if (monitor.hasAttribute(VALUE)) {
+      _statsdClient.gauge(monitor.getAsString(NAME), (int) monitor.getAsInt(VALUE));
     } else {
-      _statsdClient.increment(monitor.getAsString(Attribute.NAME));
+      _statsdClient.increment(monitor.getAsString(NAME));
     }
     
-    if (monitor.getAsBoolean(Attribute.FAILED, false)) {
-      _statsdClient.increment(monitor.getAsString(Attribute.NAME) + ".failed");
+    if (monitor.getAsBoolean(FAILED, false)) {
+      _statsdClient.increment(monitor.getAsString(NAME) + ".failed");
     }
   }
 

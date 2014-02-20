@@ -58,19 +58,21 @@ public abstract class Attribute {
   public static final String RESULT_CODE = "resultCode";
   
   /**
-   * {@link com.orbitz.monitoring.api.monitor.EventMonitor}: The time at which the event occurred {@link com.orbitz.monitoring.api.monitor.TransactionMonitor}: The
-   * time at which the transaction started
+   * {@link com.orbitz.monitoring.api.monitor.EventMonitor}: The time at which the event occurred 
+   * {@link com.orbitz.monitoring.api.monitor.TransactionMonitor}: The time at which the 
+   * transaction started
    */
   public static final String START_TIME = "startTime";
   
   /**
-   * For a {@link com.orbitz.monitoring.api.monitor.TransactionMonitor}, the time at which the transaction completed, whether
-   * successfully or not
+   * For a {@link com.orbitz.monitoring.api.monitor.TransactionMonitor}, the time at which the 
+   * transaction completed, whether successfully or not
    */
   public static final String END_TIME = "endTime";
   
   /**
-   * For a {@link com.orbitz.monitoring.api.monitor.TransactionMonitor}, the duration of the transaction
+   * For a {@link com.orbitz.monitoring.api.monitor.TransactionMonitor}, the duration of the 
+   * transaction
    */
   public static final String LATENCY = "latency";
   

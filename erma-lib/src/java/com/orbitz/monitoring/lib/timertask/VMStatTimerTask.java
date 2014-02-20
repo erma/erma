@@ -1,5 +1,7 @@
 package com.orbitz.monitoring.lib.timertask;
 
+import static java.lang.management.ManagementFactory.getGarbageCollectorMXBeans;
+
 import com.orbitz.monitoring.api.Monitor;
 import com.orbitz.monitoring.api.MonitoringLevel;
 import com.orbitz.monitoring.api.monitor.EventMonitor;
@@ -19,8 +21,8 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
- * VMStatTimerTask uses jdk5 MXBeans access garbage collection and thread stats.  EventMonitors named
- * GarbageCollectorStats and ThreadStats are fired containing the stats as attributes.
+ * VMStatTimerTask uses jdk5 MXBeans access garbage collection and thread stats.  EventMonitors 
+ * named GarbageCollectorStats and ThreadStats are fired containing the stats as attributes.
  *
  * @since 3.5
  *
@@ -36,7 +38,7 @@ public class VMStatTimerTask extends MonitorEmittingTimerTask {
   public VMStatTimerTask() {
     super();
     gc = new HashMap<String,AtomicLong>(8);
-    for (GarbageCollectorMXBean garbageCollectorMXBean : ManagementFactory.getGarbageCollectorMXBeans()) {
+    for (GarbageCollectorMXBean garbageCollectorMXBean : getGarbageCollectorMXBeans()) {
       final String name = garbageCollectorMXBean.getName();
       gc.put(name + ".count", new AtomicLong());
       gc.put(name + ".time", new AtomicLong());
@@ -48,7 +50,7 @@ public class VMStatTimerTask extends MonitorEmittingTimerTask {
    */
   public Collection<Monitor> emitMonitors() {
     Set<Monitor> monitors = new HashSet<Monitor>();
-    for (GarbageCollectorMXBean garbageCollectorMXBean : ManagementFactory.getGarbageCollectorMXBeans()) {
+    for (GarbageCollectorMXBean garbageCollectorMXBean : getGarbageCollectorMXBeans()) {
       String name = garbageCollectorMXBean.getName();
       long count = setGCAndGetDelta(name + ".count", garbageCollectorMXBean.getCollectionCount());
       long time = setGCAndGetDelta(name + ".time", garbageCollectorMXBean.getCollectionTime());
@@ -59,20 +61,17 @@ public class VMStatTimerTask extends MonitorEmittingTimerTask {
     monitors.add(fireJvmStat("Thread", (long) threadBean.getThreadCount()));
 
     MemoryMXBean memoryMXBean = ManagementFactory.getMemoryMXBean();
-    MemoryUsage usage = memoryMXBean.getHeapMemoryUsage();
-    monitors.add(fireJvmStat("Memory.Heap.memoryUsage", toMegaBytes(usage.getUsed()), null, getUsedPercentage(usage)));
+    long objectPendingFinalizationCount = memoryMXBean.getObjectPendingFinalizationCount();
+    monitors.add(fireJvmStat("Memory.objectPendingFinalization", objectPendingFinalizationCount));
+    monitors.add(fireJvmStat("Memory.Heap.memoryUsage", memoryMXBean.getHeapMemoryUsage()));
+    monitors.add(fireJvmStat("Memory.NonHeap.memoryUsage", memoryMXBean.getNonHeapMemoryUsage()));
     
-    usage = memoryMXBean.getNonHeapMemoryUsage();
-    monitors.add(fireJvmStat("Memory.NonHeap.memoryUsage", toMegaBytes(usage.getUsed()), null, getUsedPercentage(usage)));
-    monitors.add(fireJvmStat("Memory.objectPendingFinalization", (long) memoryMXBean.getObjectPendingFinalizationCount()));
-
     for(MemoryPoolMXBean memoryPoolMXBean: ManagementFactory.getMemoryPoolMXBeans()) {
       String type = (MemoryType.HEAP == memoryPoolMXBean.getType()) ? "Heap" : "NonHeap";
       String name = "Memory." + type + ".Pool." + memoryPoolMXBean.getName();
-      usage = memoryPoolMXBean.getUsage();
-      monitors.add(fireJvmStat(name + ".memoryUsage", toMegaBytes(usage.getUsed()), null, getUsedPercentage(usage)));
+      monitors.add(fireJvmStat(name + ".memoryUsage", memoryPoolMXBean.getUsage()));
 
-      usage = memoryPoolMXBean.getCollectionUsage();
+      MemoryUsage usage = memoryPoolMXBean.getCollectionUsage();
       if (usage != null) {
         monitors.add(fireJvmStat(name + ".memoryCollectionUsage", toMegaBytes(usage.getUsed())));
       }
@@ -97,6 +96,12 @@ public class VMStatTimerTask extends MonitorEmittingTimerTask {
   }
 
   // fire JvmStats monitor; sets the name, type, count, time and percent
+  private EventMonitor fireJvmStat(String type, MemoryUsage usage) {
+    long usedMegaBytes = toMegaBytes(usage.getUsed());
+    double usedPercentage = getUsedPercentage(usage);
+    return fireJvmStat(type, usedMegaBytes, null, usedPercentage);
+  }
+  
   private EventMonitor fireJvmStat(String type, Long count) {
     return fireJvmStat(type, count, null, null);
   }

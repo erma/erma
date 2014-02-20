@@ -26,10 +26,6 @@ import java.util.List;
 /**
  * An object that contains the configuration for what processors should be called for which
  * monitors.
- * 
- * @@org.springframework.jmx.export.metadata.ManagedResource 
- *                                                           (description="ProcessGroup can be enabled/disabled and MonitoringLevel adjusted"
- *                                                           )
  */
 @ManagedResource(description = "ProcessGroup can be enabled/disabled and MonitoringLevel adjusted")
 public class ProcessGroup {
@@ -127,25 +123,11 @@ public class ProcessGroup {
     _appliesExpression = expression;
   }
   
-  /**
-   * @@org.springframework.jmx.export.metadata.ManagedAttribute 
-   *                                                            (description="Returns true if this process group is enabled"
-   *                                                            )
-   */
   @ManagedAttribute(description = "Returns true if this process group is enabled")
   public boolean isActive() {
     return _active;
   }
   
-  /**
-   * @@org.springframework.jmx.export.metadata.ManagedAttribute 
-   *                                                            (description="Set to true/false to activate/deactivate the process group"
-   *                                                            )
-   * @@org.springframework.jmx.export.metadata.ManagedOperationParameter (index=0, name="active",
-   *                                                                     description=
-   *                                                                     "boolean value for activating the process group"
-   *                                                                     )
-   */
   @ManagedAttribute(description = "Set to true/false to activate/deactivate the process group")
   public void setActive(final boolean active) {
     _active = active;
@@ -171,28 +153,15 @@ public class ProcessGroup {
     return _processors;
   }
   
-  /**
-   * @@org.springframework.jmx.export.metadata.ManagedAttribute 
-   *                                                            (description="get the string representation of the monitoring level for this process group"
-   *                                                            )
-   */
-  @ManagedAttribute(description = "get the string representation of the monitoring level for this process group")
+  @ManagedAttribute(
+      description = "get the string representation of the monitoring level for this process group")
   public String getMonitoringLevel() {
     return _monitoringLevel.toString();
   }
   
-  /**
-   * @@org.springframework.jmx.export.metadata.ManagedOperation 
-   *                                                            (description="Set the monitoring level for this process group"
-   *                                                            )
-   * @@org.springframework.jmx.export.metadata.ManagedOperationParameter (index=0,
-   *                                                                     name="levelString",
-   *                                                                     description=
-   *                                                                     "new MonitoringLevel to apply"
-   *                                                                     )
-   */
   @ManagedOperation(description = "Set the monitoring level for this process group")
-  @ManagedOperationParameters({@ManagedOperationParameter(name = "levelString", description = "new MonitoringLevel to apply")})
+  @ManagedOperationParameters({@ManagedOperationParameter(name = "levelString", 
+      description = "new MonitoringLevel to apply")})
   public void updateMonitoringLevel(final String levelString) {
     if (!MonitoringLevel.isValidLevelStr(levelString)) {
       throw new IllegalArgumentException("levelString must match an existing MonitoringLevel");

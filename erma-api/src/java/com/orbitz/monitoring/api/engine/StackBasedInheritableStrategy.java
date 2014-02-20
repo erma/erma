@@ -49,7 +49,8 @@ public class StackBasedInheritableStrategy implements InheritableStrategy {
           }
           monitorNames.append(s);
         }
-        log.warn("clearing old CompositeMonitor refs for current thread; "+count+" found; names: "+monitorNames);
+        log.warn("clearing old CompositeMonitor refs for current thread; " + count 
+            + " found; names: " + monitorNames);
         stack.clear();
       }
     }
@@ -78,7 +79,8 @@ public class StackBasedInheritableStrategy implements InheritableStrategy {
         StackFrame stackFrame = (StackFrame) stack.removeLast();
         CompositeMonitor missedMonitor = stackFrame.getCompositeMonitor();
         String name = (String) missedMonitor.get(Attribute.NAME);
-        log.warn("unfinished child monitor \""+name+"\" found so will process now and remove; app is fine");
+        log.warn("unfinished child monitor \"" + name 
+            + "\" found so will process now and remove; app is fine");
         MonitoringEngine.getInstance().process(missedMonitor);
       }
 
@@ -188,7 +190,8 @@ public class StackBasedInheritableStrategy implements InheritableStrategy {
       sequenceId += "_" + counter.getAndIncrement();
     }
 
-    inheritable.put(Attribute.SEQUENCE_ID, new CompositeAttributeHolder(sequenceId, true).serializable().lock());
+    AttributeHolder holder = new CompositeAttributeHolder(sequenceId, true).serializable().lock();
+    inheritable.put(Attribute.SEQUENCE_ID, holder);
 
     return inheritable;
   }
@@ -205,7 +208,8 @@ public class StackBasedInheritableStrategy implements InheritableStrategy {
         // by its monitoring level
         MonitoringLevel monitorLevel = monitor.getLevel();
 
-        if ((monitorLevel != null) && (monitorLevel.hasHigherOrEqualPriorityThan(getEventPatternLevel()))) {
+        if ((monitorLevel != null) 
+            && (monitorLevel.hasHigherOrEqualPriorityThan(getEventPatternLevel()))) {
           parentMonitor.addChildMonitor(monitor);
         }
       } else {

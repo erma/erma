@@ -67,7 +67,7 @@ public class CompositeAttributeMap extends AttributeMap {
    */
   public Map<String, Object> getAllInheritable() {
     final Map<String, Object> allInheritable = new HashMap<String, Object>();
-    for (final Entry<String, CompositeAttributeHolder> entry : findCompositeAttributes().entrySet()) {
+    for (Entry<String, CompositeAttributeHolder> entry : findCompositeAttributes().entrySet()) {
       final CompositeAttributeHolder attribute = entry.getValue();
       if (attribute.isInheritable()) {
         allInheritable.put(entry.getKey(), attribute.getValue());

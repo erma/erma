@@ -28,7 +28,8 @@ public class MonitoredAttribute {
     this.includeArguments = includeArguments;
   }
 
-  public MonitoredAttribute(final String monitorName, final String levelStr, final boolean includeResult, final boolean includeArguments) {
+  public MonitoredAttribute(String monitorName, String levelStr, boolean includeResult, 
+      boolean includeArguments) {
     this.monitorName = monitorName;
     this.levelStr = levelStr;
     this.includeResult = includeResult;
@@ -75,7 +76,11 @@ public class MonitoredAttribute {
 
     if (includeArguments != that.includeArguments) {return false;}
     if (includeResult != that.includeResult) {return false;}
-    if (monitorName != null ? !monitorName.equals(that.monitorName) : that.monitorName != null) {return false;}
+    if (monitorName != null 
+        ? !monitorName.equals(that.monitorName) 
+        : that.monitorName != null) {
+      return false;
+    }
 
     return true;
   }

@@ -568,7 +568,8 @@ class MonitoringEngine {
   }
   
   public void setInheritableStrategy(final InheritableStrategy inheritableStrategy) {
-    System.out.println("Changed to..." + inheritableStrategy + " from..." + this.inheritableStrategy);
+    System.out.println("Changed to..." + inheritableStrategy + " from..." 
+        + this.inheritableStrategy);
     this.inheritableStrategy = inheritableStrategy;
   }
   
@@ -645,8 +646,8 @@ class MonitoringEngine {
    * "com.orbitz.foo"
    * 
    * @param monitor the monitor to check for an updated level
-   * @return the appropriate level for this monitor, if a new level has been set at runtime that will
-   *         be returned, if not the monitor's level set at construction time will be returned.
+   * @return the appropriate level for this monitor, if a new level has been set at runtime that 
+   *         will be returned, if not the monitor's level set at construction time will be returned.
    */
   public MonitoringLevel getOverrideLevelForMonitor(final Monitor monitor) {
     String keyToUse = null;

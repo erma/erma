@@ -42,12 +42,14 @@ public class MonitoringLevel implements Serializable {
   }
 
   /**
-   * Given a string representing a level, return whether or not that string matches a MonitoringLevel
+   * Given a string representing a level, return whether or not that string matches a 
+   * MonitoringLevel
    * @param levelStr represents a level
    * @return true if the string corresponds to a MonitoringLevel, otherwise false
    */
   public static boolean isValidLevelStr(String levelStr) {
-    return ESSENTIAL._levelStr.equalsIgnoreCase(levelStr) || INFO._levelStr.equalsIgnoreCase(levelStr)
+    return ESSENTIAL._levelStr.equalsIgnoreCase(levelStr) 
+        || INFO._levelStr.equalsIgnoreCase(levelStr)
         || DEBUG._levelStr.equalsIgnoreCase(levelStr);
   }
 

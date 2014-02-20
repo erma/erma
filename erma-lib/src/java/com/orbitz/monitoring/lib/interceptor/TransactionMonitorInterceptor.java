@@ -14,20 +14,22 @@ import org.apache.log4j.Logger;
 import java.lang.reflect.Method;
 
 /**
- * Designed to intercept methods annotated with {@link com.orbitz.monitoring.api.annotation.Monitored}, applying
+ * Designed to intercept methods annotated with 
+ * {@link com.orbitz.monitoring.api.annotation.Monitored}, applying
  * {@link TransactionMonitor transaction monitors} to them
  * @author Ray Krueger
  */
 public class TransactionMonitorInterceptor implements MethodInterceptor {
 
   /**
-   * If {@link com.orbitz.monitoring.api.annotation.Monitored#includeArguments()} is true, the name of the monitor property that will
-   * contain the arguments of the intercepted method
+   * If {@link com.orbitz.monitoring.api.annotation.Monitored#includeArguments()} is true, the name 
+   * of the monitor property that will contain the arguments of the intercepted method
    */
   public static final String MONITOR_ARGUMENTS_NAME = "arguments";
+
   /**
-   * If {@link com.orbitz.monitoring.api.annotation.Monitored#includeResult()} is true, the name of the monitor property that will
-   * contain the return value of the intercepted method
+   * If {@link com.orbitz.monitoring.api.annotation.Monitored#includeResult()} is true, the name of 
+   * the monitor property that will contain the return value of the intercepted method
    */
   public static final String MONITOR_RESULT_NAME = "result";
   

@@ -1,6 +1,7 @@
 package com.orbitz.monitoring.lib.timertask;
 
-import com.orbitz.monitoring.api.MonitoringLevel;
+import static com.orbitz.monitoring.api.MonitoringLevel.ESSENTIAL;
+
 import com.orbitz.monitoring.api.monitor.EventMonitor;
 
 import java.util.Collection;
@@ -21,7 +22,7 @@ public class HeartbeatTimerTask extends MonitorEmittingTimerTask {
    * Sends a heartbeat event.
    */
   public Collection<EventMonitor> emitMonitors() {
-    EventMonitor monitor = new EventMonitor("MonitoringEngineManager.lifecycle", MonitoringLevel.ESSENTIAL);
+    EventMonitor monitor = new EventMonitor("MonitoringEngineManager.lifecycle", ESSENTIAL);
     monitor.set("eventType", "heartbeat");
     monitor.fire();
     return Collections.singleton(monitor);

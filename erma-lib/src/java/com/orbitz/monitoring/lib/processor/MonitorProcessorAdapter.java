@@ -5,8 +5,8 @@ import com.orbitz.monitoring.api.MonitorProcessor;
 import com.orbitz.monitoring.api.MonitoringLevel;
 
 /**
- * An abstract adapter class for MonitorProcessors. The methods in this class are empty. This class exists as
- * convenience for creating MonitorProcessor objects; subclass it and override what you
+ * An abstract adapter class for MonitorProcessors. The methods in this class are empty. This class 
+ * exists as convenience for creating MonitorProcessor objects; subclass it and override what you
  * need.
  *
  * @since 3.5

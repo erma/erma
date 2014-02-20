@@ -10,9 +10,9 @@ import org.apache.log4j.Logger;
 import java.util.Date;
 
 /**
- * This is an implementation of the {@link com.orbitz.monitoring.api.MonitorProcessor} interface that
- * checks to see if latency > a given threshold and no child monitors are contained within a given
- * TransactionMonitor.
+ * This is an implementation of the {@link com.orbitz.monitoring.api.MonitorProcessor} interface 
+ * that checks to see if latency > a given threshold and no child monitors are contained within a 
+ * given TransactionMonitor.
  *
  * @author Matt O'Keefe
  */
@@ -20,7 +20,8 @@ import java.util.Date;
 public class LatencyMonitoringCoverageMonitorProcessor
     extends MonitorProcessorAdapter {
 
-  private static final Logger log = Logger.getLogger(LatencyMonitoringCoverageMonitorProcessor.class);
+  private static final Logger log = 
+      Logger.getLogger(LatencyMonitoringCoverageMonitorProcessor.class);
 
   private static final long DEFAULT_THRESHOLD = 5000;
 
@@ -71,7 +72,8 @@ public class LatencyMonitoringCoverageMonitorProcessor
     checkForGap(parent, leftChild, rightChild);
   }
 
-  private void checkForGap(TransactionMonitor parent, TransactionMonitor leftChild, TransactionMonitor rightChild) {
+  private void checkForGap(TransactionMonitor parent, TransactionMonitor leftChild, 
+      TransactionMonitor rightChild) {
     Date leftEnd;
     if (leftChild == null) {
       leftEnd = (Date) parent.get(Attribute.START_TIME);

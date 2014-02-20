@@ -27,10 +27,9 @@ public class MonitoredAttributeSourceAdvisor extends StaticMethodMatcherPointcut
   /**
    * Creates a new monitor pointcut advisor that ignores {@link Object} methods<br />
    * TODO: Version 5: Remove this constructor or reduce its visibility to default
-   * @deprecated Use
-   *       {@link MonitoredAttributeSourceAdvisor#MonitoredAttributeSourceAdvisor(MonitoredAttributeSource)}
-   *       instead
-   * @param interceptor the interceptor to apply to {@link com.orbitz.monitoring.api.annotation.Monitored} annotated methods
+   * @deprecated Use MonitoredAttributeSourceAdvisor(MonitoredAttributeSource) instead
+   * @param interceptor the interceptor to apply to 
+   *     {@link com.orbitz.monitoring.api.annotation.Monitored} annotated methods
    */
   @Deprecated
   public MonitoredAttributeSourceAdvisor(final TransactionMonitorInterceptor interceptor) {

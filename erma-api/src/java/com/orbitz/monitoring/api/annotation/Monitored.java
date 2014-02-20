@@ -24,14 +24,16 @@ import java.lang.annotation.Target;
 public @interface Monitored {
     
     /**
-     * The name to use for the monitor. If a value is not specified, the method name will be used.<br />
+     * The name to use for the monitor. If a value is not specified, the method name will be used.
      * TODO: Version 5: Change the default to null
      */
     String value() default "";
     
     /**
-     * A string representation of the {@link com.orbitz.monitoring.api.MonitoringLevel}. The default is "info".<br/>
-     * FIXME: Version 5: Change this to "INFO" to match {@link com.orbitz.monitoring.api.MonitoringLevel#INFO}
+     * A string representation of the {@link com.orbitz.monitoring.api.MonitoringLevel}. The default
+     * is "info".<br/>
+     * FIXME: Version 5: Change this to "INFO" to match 
+     * {@link com.orbitz.monitoring.api.MonitoringLevel#INFO}
      * @return the level name
      */
     String levelStr() default "info";

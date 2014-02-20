@@ -11,6 +11,8 @@
   <module name="TreeWalker">
     <module name="RedundantImport"/>
     <module name="UnusedImports"/>
+    <module name="CovariantEquals"/>
+    <module name="EmptyStatement"/>
     <!-- 2.1 and 3.3.1 -->
     <module name="OuterTypeFilename"/>
     <!-- 3.3.1 -->
@@ -33,6 +35,12 @@
     <module name="Indentation">
       <property name="basicOffset" value="2"/>
       <property name="caseIndent" value="2"/>
+    </module>
+    <!-- 4.3 -->
+    <module name="OneStatementPerLine"/>
+    <!-- 4.4 -->
+    <module name="LineLength">
+      <property name="max" value="100"/>
     </module>
   </module>
 </module>

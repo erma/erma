@@ -766,8 +766,9 @@ public abstract class MonitorTestBase extends TestCase {
     otherMonitor.setAllAttributeHolders(attributeHolders);
 
     Map serializableAttributes = otherMonitor.getAllSerializable();
+    Object baz = serializableAttributes.get("baz");
     
-    assertEquals("Strings should be serializable by default","ccc", serializableAttributes.get("baz"));
+    assertEquals("Strings should be serializable by default", "ccc", baz);
   }
 
   // custom processor needed for next test...

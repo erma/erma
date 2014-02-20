@@ -12,11 +12,11 @@ import java.lang.management.ThreadInfo;
 import java.lang.management.ThreadMXBean;
 
 /**
- * This is an implementation of the {@link com.orbitz.monitoring.api.MonitorProcessor} interface that
- * reports synchronization statistics for the current thread within the scope of a TransactionMonitor.
- *
- * <br>
- * Metrics are derived from <a href="http://java.sun.com/j2se/1.5.0/docs/api/java/lang/management/ThreadInfo.html">ThreadInfo</a>.
+ * This is an implementation of the {@link com.orbitz.monitoring.api.MonitorProcessor} interface 
+ * that reports synchronization statistics for the current thread within the scope of a 
+ * TransactionMonitor.
+ * <br/>
+ * Metrics are derived from java.lang.management.ThreadInfo.
  *
  * @author Matt O'Keefe
  *
@@ -63,8 +63,6 @@ public class ThreadContentionMonitorProcessor
   }
 
   /**
-   * @@org.springframework.jmx.export.metadata.ManagedAttribute (description="true if this MonitorProcessor is enabled")
-   *
    * @return boolean
    */
   @ManagedAttribute(description="true if this MonitorProcessor is enabled")
@@ -73,8 +71,6 @@ public class ThreadContentionMonitorProcessor
   }
 
   /**
-   * @@org.springframework.jmx.export.metadata.ManagedAttribute (description="set to true to enable this MonitorProcessor")
-   *
    * @param enabled boolean enabled status
    */
   @ManagedAttribute(description="set to true to enable this MonitorProcessor")

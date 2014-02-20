@@ -18,7 +18,8 @@ public interface MonitorRenderer {
    * Renders a Monitor in a particular rendering format.
    *
    * @param monitor monitor to render
-   * @param includeStackTraces true if every Throwable attribute value should render with a stack trace
+   * @param includeStackTraces true if every Throwable attribute value should render with a stack 
+   *     trace
    * @return a String representation of the monitor.
    */
   public String renderMonitor(Monitor monitor, boolean includeStackTraces);

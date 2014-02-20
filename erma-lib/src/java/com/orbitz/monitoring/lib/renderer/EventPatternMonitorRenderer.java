@@ -143,7 +143,8 @@ public class EventPatternMonitorRenderer {
       LazyDynaBean ex = (LazyDynaBean) o;
       HashSet causeSet = new HashSet();
       causeSet.add(ex);
-      while ((ex.get("cause") != null) && (LazyDynaBean.class.isAssignableFrom(ex.get("cause").getClass()))) {
+      while ((ex.get("cause") != null) 
+          && (LazyDynaBean.class.isAssignableFrom(ex.get("cause").getClass()))) {
         if(!causeSet.contains(ex.get("cause"))) {
           ex = (LazyDynaBean) ex.get("cause");
           causeSet.add(ex);
@@ -235,7 +236,7 @@ public class EventPatternMonitorRenderer {
   // used to format dynabeans into a standard stack trace
   private String formatThrowable(LazyDynaBean ex) {
     final StringBuffer sb = new StringBuffer();
-    final Object exceptionClass = (ex.get("class") == null) ? "(Unknown Exception)" : ex.get("class");
+    Object exceptionClass = (ex.get("class") == null) ? "(Unknown Exception)" : ex.get("class");
     sb.append(exceptionClass).append(": ").append(ex.get("message"));
     final Object trace[] = (Object[]) ex.get("stackTrace");
     for (int i = 0; i < trace.length; i++) {

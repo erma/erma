@@ -68,7 +68,7 @@ public abstract class AbstractCompositeMonitor extends AbstractMonitor implement
    * @param name the name of the monitor
    * @param inheritedAttributes the collection of inherited attributes
    */
-  public AbstractCompositeMonitor(final String name, final Map<String, Object> inheritedAttributes) {
+  public AbstractCompositeMonitor(String name, Map<String, Object> inheritedAttributes) {
     this(name, MonitoringLevel.INFO, inheritedAttributes);
   }
   

@@ -6,7 +6,8 @@ import com.orbitz.monitoring.api.monitor.TransactionMonitor;
  * Encapsulates the logic involed in properly handling a TransactionMonitor.
  * It also avoids breaking that logic by eliminating the cancer pattern of the logic itself.
  * <p/>
- * A new {@link TransactionMonitor} will be built using the given Class and Monitor name, handed to the callback for use.
+ * A new {@link TransactionMonitor} will be built using the given Class and Monitor name, handed to 
+ * the callback for use.
  *
  * @author Ray Krueger
  */
@@ -15,8 +16,8 @@ public class TransactionMonitorTemplate {
   public static final TransactionMonitorTemplate INSTANCE = new TransactionMonitorTemplate();
 
   /**
-   * Builds a {@link TransactionMonitor} with just a monitor name and exeuctes the given callback within the
-   * monitored try/catch/finally block.
+   * Builds a {@link TransactionMonitor} with just a monitor name and exeuctes the given callback 
+   * within the monitored try/catch/finally block.
    *
    * @param monitorName MonitorName used to construct a {@link TransactionMonitor}
    * @param callback {@link TransactionMonitorCallback} to execute
@@ -27,8 +28,8 @@ public class TransactionMonitorTemplate {
   }
 
   /**
-   * Builds a {@link TransactionMonitor} with a class name and monitor name; and exeuctes the given callback within the
-   * monitored try/catch/finally block.
+   * Builds a {@link TransactionMonitor} with a class name and monitor name; and exeuctes the given 
+   * callback within the monitored try/catch/finally block.
    *
    * @param cls class to use when constructing the {@link TransactionMonitor}
    * @param monitorName MonitorName used to construct a {@link TransactionMonitor}
@@ -65,7 +66,8 @@ public class TransactionMonitorTemplate {
    * @param monitor {@link TransactionMonitor} to use
    * @return anything the callback returns
    */
-  protected Object executeCallback(TransactionMonitorCallback callback, TransactionMonitor monitor) {
+  protected Object executeCallback(TransactionMonitorCallback callback, 
+      TransactionMonitor monitor) {
     try {
       // This looks wrong but it's intentional. We want to allow the callback to
       // mark the monitor as failed in its code, even if it didn't throw an exception.

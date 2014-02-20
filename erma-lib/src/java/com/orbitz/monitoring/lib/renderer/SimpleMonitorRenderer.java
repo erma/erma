@@ -50,7 +50,8 @@ public class SimpleMonitorRenderer implements MonitorRenderer {
   /**
    * Renders a Monitor in a multiple-line String format.
    * @param monitor monitor to render
-   * @param includeStackTraces true if every Throwable attribute value should render with a stack trace
+   * @param includeStackTraces true if every Throwable attribute value should render with a stack 
+   *     trace
    * @return a String representation of the monitor.
    */
   public String renderMonitor(Monitor monitor, boolean includeStackTraces) {
@@ -79,7 +80,8 @@ public class SimpleMonitorRenderer implements MonitorRenderer {
   /**
    * Renders an attribute map in xml format, will not contain the monitor's classname
    * @param attributeMap
-   * @param includeStackTraces true if every Throwable attribute value should render with a stack trace
+   * @param includeStackTraces true if every Throwable attribute value should render with a stack 
+   *     trace
    * @return a string representation of the attribute map in multiple-line format
    */
   private String renderMonitor(Map attributeMap, boolean includeStackTraces) {

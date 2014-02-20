@@ -43,7 +43,7 @@ public class MapBasedInheritableStrategy implements InheritableStrategy {
   }
 
   public CompositeMonitor getCompositeMonitorNamed(String name) throws IllegalArgumentException {
-    throw new UnsupportedOperationException("MapBasedInheritableStrategy.getCompositeMonitorNamed()");
+    throw new UnsupportedOperationException(getClass().getName() + ".getCompositeMonitorNamed()");
   }
 
   public Map getInheritableAttributes() {

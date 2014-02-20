@@ -13,12 +13,12 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 /**
- * By default, this class maps {@link String}, {@link Number},
- * {@link java.util.Date}, {@link Boolean}, {@link Collection}, {@link Map} and {@link java.lang.reflect.Array}.
- * The mapper also accepts custom {@link ObjectAttributeMapper}.
- * Currently does not support nested {@link Collection}, {@link Map} and {@link java.lang.reflect.Array}.
- * @author hbouabdallah
+ * By default, this class maps {@link String}, {@link Number}, {@link java.util.Date}, 
+ * {@link Boolean}, {@link Collection}, {@link Map} and {@link java.lang.reflect.Array}. The mapper 
+ * also accepts custom {@link ObjectAttributeMapper}. Currently does not support nested 
+ * {@link Collection}, {@link Map} and {@link java.lang.reflect.Array}.
  *
+ * @author hbouabdallah
  */
 public class MonitorAttributeMapperImpl implements MonitorAttributeMapper {
 
@@ -140,8 +140,9 @@ public class MonitorAttributeMapperImpl implements MonitorAttributeMapper {
     if ((attrObj instanceof Map)
         || (attrObj instanceof Collection)
         || (attrObj.getClass().isArray())) {
-      throw new IllegalArgumentException(
-          String.format("Cannot map the following object [%s] with class [%s]", attrObj, attrObj.getClass()));
+      String msg = String.format("Cannot map the following object [%s] with class [%s]", 
+          attrObj, attrObj.getClass());
+      throw new IllegalArgumentException(msg);
     }
 
     String attrClassName     = attrObj.getClass().getCanonicalName();

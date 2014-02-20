@@ -12,14 +12,11 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadMXBean;
 
 /**
- * This is an implementation of the {@link com.orbitz.monitoring.api.MonitorProcessor} interface that uses a ThreadMXBean to
- * determine CPU time used by the current thread within the scope of a TransactionMonitor.
+ * This is an implementation of the {@link com.orbitz.monitoring.api.MonitorProcessor} interface 
+ * that uses a ThreadMXBean to determine CPU time used by the current thread within the scope of a 
+ * TransactionMonitor.
  * 
  * @author Matt O'Keefe
- * 
- * @@org.springframework.jmx.export.metadata.ManagedResource 
- *                                                           (description="This MonitorProcessor can be dis/enabled."
- *                                                           )
  */
 @ManagedResource(description = "This MonitorProcessor can be dis/enabled.")
 public class CPUProfilingMonitorProcessor extends MonitorProcessorAdapter {
@@ -55,10 +52,6 @@ public class CPUProfilingMonitorProcessor extends MonitorProcessorAdapter {
   }
   
   /**
-   * @@org.springframework.jmx.export.metadata.ManagedAttribute 
-   *                                                            (description="true if this feature is enabled"
-   *                                                            )
-   * 
    * @return boolean
    */
   @ManagedAttribute(description = "true if this feature is enabled")
@@ -69,9 +62,6 @@ public class CPUProfilingMonitorProcessor extends MonitorProcessorAdapter {
   /**
    * Enables or disables the {@link CPUProfilingMonitorProcessor}
    * @param enabled true if the processor should be enabled, false otherwise
-   * @@org.springframework.jmx.export.metadata.ManagedAttribute 
-   *                                                            (description="set to true to enable this feature"
-   *                                                            )
    */
   @ManagedAttribute(description = "set to true to enable this feature")
   public void setEnabled(final boolean enabled) {

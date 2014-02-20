@@ -21,7 +21,8 @@ import java.util.Map;
  * <pre>
  * {@code 
  * String[] attributes = new String[] { "hostname", "threadId" };
- * RenamingMonitorProcessor processor = new RenamingMonitorProcessor(delegate, (List<String>) Arrays.asList(attributes));
+ * RenamingMonitorProcessor processor = new RenamingMonitorProcessor(delegate, 
+ *     (List<String>) Arrays.asList(attributes));
  * }
  * </pre>
  * <p/>Thus, given a {@link Monitor} with a hostname attribute of 
@@ -80,7 +81,8 @@ public class RenamingMonitorProcessor extends MonitorProcessorAdapter {
         getAttributeAsStringWithDefault(monitor, Attribute.NAME, "");
     Monitor renamedMonitor;
     if (CompositeMonitor.class.isAssignableFrom(monitor.getClass())) {
-      renamedMonitor = new NonLifecycleMonitor(newName, monitor.getAll(), ((CompositeMonitor) monitor).getChildMonitors());
+      renamedMonitor = new NonLifecycleMonitor(newName, monitor.getAll(), 
+          ((CompositeMonitor) monitor).getChildMonitors());
     } else {
       renamedMonitor = new NonLifecycleMonitor(newName, monitor.getAll());
     }
@@ -95,7 +97,8 @@ public class RenamingMonitorProcessor extends MonitorProcessorAdapter {
    */
   private static class NonLifecycleMonitor extends AbstractCompositeMonitor {
     
-    public NonLifecycleMonitor(String name, Map<String, Object> inheritedAttributes, Collection<Monitor> childMonitors) {
+    public NonLifecycleMonitor(String name, Map<String, Object> inheritedAttributes, 
+        Collection<Monitor> childMonitors) {
       super(name, inheritedAttributes);
       if (childMonitors != null) {
         for (Iterator<Monitor> iterator = childMonitors.iterator(); iterator.hasNext();) {

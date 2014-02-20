@@ -23,18 +23,18 @@ public class TransactionMonitorProxyFactoryBean extends AbstractSingletonProxyFa
     setMonitoredAttributeSource(monitoredAttributeSource);
   }
 
-  public TransactionMonitorProxyFactoryBean(TransactionMonitorInterceptor transactionMonitorInterceptor) {
-    setTransactionMonitorInterceptor(transactionMonitorInterceptor);
+  public TransactionMonitorProxyFactoryBean(TransactionMonitorInterceptor interceptor) {
+    setTransactionMonitorInterceptor(interceptor);
   }
 
-  public void setTransactionMonitorInterceptor(TransactionMonitorInterceptor transactionMonitorInterceptor) {
-    Validate.notNull(transactionMonitorInterceptor, "transactionMonitorInterceptor is required");
-    this.transactionMonitorInterceptor = transactionMonitorInterceptor;
+  public void setTransactionMonitorInterceptor(TransactionMonitorInterceptor interceptor) {
+    Validate.notNull(interceptor, "transactionMonitorInterceptor is required");
+    this.transactionMonitorInterceptor = interceptor;
   }
 
-  public void setMonitoredAttributeSource(MonitoredAttributeSource monitoredAttributeSource) {
-    Validate.notNull(monitoredAttributeSource, "monitoredAttributeSource is required");
-    this.transactionMonitorInterceptor = new TransactionMonitorInterceptor(monitoredAttributeSource);
+  public void setMonitoredAttributeSource(MonitoredAttributeSource source) {
+    Validate.notNull(source, "monitoredAttributeSource is required");
+    this.transactionMonitorInterceptor = new TransactionMonitorInterceptor(source);
   }
 
   public void setTransactionMonitorAttributes(Properties props) {
