@@ -215,8 +215,8 @@ public class MongoDBMonitorProcessor extends MonitorProcessorAdapter {
     if (failFastOnStartup) {
       throw new RuntimeException("Startup of MongoDBMonitorProcessor failed", e);
     } else {
-      logger.warn("Failed to initialize Mongo client, processor disabled, " +
-          "application and MonitoringEngine unaffected.", e);
+      logger.warn("Failed to initialize Mongo client, processor disabled, " 
+          + "application and MonitoringEngine unaffected.", e);
     }
   }
 

@@ -165,8 +165,7 @@ public class EventPatternMonitorRenderer {
         buffer.append("failed");
       }
     } else {
-      logger.warn("Unexpected type for failureThrowable field : "+
-          o.getClass().getName());
+      logger.warn("Unexpected type for failureThrowable field : " + o.getClass().getName());
       buffer.append("failed");
     }
   }

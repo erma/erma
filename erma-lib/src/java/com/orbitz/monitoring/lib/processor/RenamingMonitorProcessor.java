@@ -77,8 +77,8 @@ public class RenamingMonitorProcessor extends MonitorProcessorAdapter {
   }
 
   private Monitor getRenamedMonitor(Monitor monitor) {
-    String newName = getMonitorNamePrefix(monitor) + 
-        getAttributeAsStringWithDefault(monitor, Attribute.NAME, "");
+    String newName = getMonitorNamePrefix(monitor) 
+        + getAttributeAsStringWithDefault(monitor, Attribute.NAME, "");
     Monitor renamedMonitor;
     if (CompositeMonitor.class.isAssignableFrom(monitor.getClass())) {
       renamedMonitor = new NonLifecycleMonitor(newName, monitor.getAll(), 

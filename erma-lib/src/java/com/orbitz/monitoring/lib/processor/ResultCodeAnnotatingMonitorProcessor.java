@@ -45,8 +45,8 @@ public class ResultCodeAnnotatingMonitorProcessor extends MonitorProcessorAdapte
 
   public void process(Monitor monitor) {
 
-    if (CompositeMonitor.class.isAssignableFrom(monitor.getClass()) && 
-        !monitor.hasAttribute("resultCode")) {
+    if (CompositeMonitor.class.isAssignableFrom(monitor.getClass()) 
+        && !monitor.hasAttribute("resultCode")) {
       if (monitor.hasAttribute("failureThrowable")) {
         Throwable t = (Throwable) monitor.get("failureThrowable");
         while (t.getCause() != null) {

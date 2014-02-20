@@ -85,9 +85,8 @@ public class MapBasedInheritableStrategy implements InheritableStrategy {
     } else {
       if(log.isDebugEnabled()) {
         AttributeHolder holder = (AttributeHolder) inheritableAttributes.get(key);
-        log.debug("Attempted to re-add " + key + " with new value [" +
-            original.getValue() + "] to inheritableMap; old value is [" +
-            holder.getValue() + "]");
+        log.debug("Attempted to re-add " + key + " with new value [" + original.getValue() 
+            + "] to inheritableMap; old value is [" + holder.getValue() + "]");
       }
     }
   }

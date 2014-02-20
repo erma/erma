@@ -42,5 +42,12 @@
     <module name="LineLength">
       <property name="max" value="100"/>
     </module>
+    <!-- 4.5.1 -->
+    <module name="OperatorWrap"/>
+    <module name="OperatorWrap">
+      <property name="tokens" value="ASSIGN"/>
+      <property name="option" value="eol"/>
+    </module>
+    <module name="MethodParamPad"/>
   </module>
 </module>
