@@ -212,7 +212,7 @@ public class EventPatternMonitorRenderer {
   private String formatThrowable(Throwable t) {
     final StringBuffer sb = new StringBuffer();
     sb.append(t.getClass().getName()).append(": ").append(t.getMessage());
-    final StackTraceElement trace[] = t.getStackTrace();
+    final StackTraceElement[] trace = t.getStackTrace();
     for (int i = 0; i < trace.length; i++) {
       sb.append("\n  ").append(trace[i].getClassName())
         .append(".").append(trace[i].getMethodName());
@@ -237,7 +237,7 @@ public class EventPatternMonitorRenderer {
     final StringBuffer sb = new StringBuffer();
     Object exceptionClass = (ex.get("class") == null) ? "(Unknown Exception)" : ex.get("class");
     sb.append(exceptionClass).append(": ").append(ex.get("message"));
-    final Object trace[] = (Object[]) ex.get("stackTrace");
+    final Object[] trace = (Object[]) ex.get("stackTrace");
     for (int i = 0; i < trace.length; i++) {
       final LazyDynaBean bean = (LazyDynaBean) trace[i];
       final Object nativeMethod = bean.get("nativeMethod");

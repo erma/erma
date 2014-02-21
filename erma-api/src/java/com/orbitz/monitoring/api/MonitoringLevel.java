@@ -8,11 +8,11 @@ import java.io.Serializable;
 public class MonitoringLevel implements Serializable {
 
   /** DEBUG - Level with lowest processing priority */
-  static final public MonitoringLevel DEBUG = new MonitoringLevel("DEBUG", 300);
+  public static final MonitoringLevel DEBUG = new MonitoringLevel("DEBUG", 300);
   /** INFO - Default level for Monitors */
-  static final public MonitoringLevel INFO = new MonitoringLevel("INFO", 200);
+  public static final MonitoringLevel INFO = new MonitoringLevel("INFO", 200);
   /** ESSENTIAL - Level with highest processing priority */
-  static final public MonitoringLevel ESSENTIAL = new MonitoringLevel("ESSENTIAL", 100);
+  public static final MonitoringLevel ESSENTIAL = new MonitoringLevel("ESSENTIAL", 100);
 
   private static final long serialVersionUID = 1L;
 

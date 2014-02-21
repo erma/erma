@@ -13,6 +13,14 @@
     <module name="UnusedImports"/>
     <module name="CovariantEquals"/>
     <module name="EmptyStatement"/>
+    <module name="EmptyBlock">
+      <property name="tokens" value="LITERAL_DO, LITERAL_ELSE, LITERAL_FINALLY, LITERAL_IF, LITERAL_FOR, LITERAL_TRY, LITERAL_WHILE, INSTANCE_INIT, STATIC_INIT"/>
+    </module>
+    <module name="EmptyBlock">
+      <property name="option" value="text"/>
+      <property name="tokens" value="LITERAL_CATCH"/>
+    </module>
+    <module name="AvoidNestedBlocks"/>
     <!-- 2.1 and 3.3.1 -->
     <module name="OuterTypeFilename"/>
     <!-- 3.3.1 -->
@@ -31,7 +39,7 @@
     <!-- 4.1.2 and 4.1.3 (implicit) -->
     <module name="LeftCurly"/>
     <module name="RightCurly"/>
-    <!-- 4.2 -->
+    <!-- 4.2 and 4.8.4.1 -->
     <module name="Indentation">
       <property name="basicOffset" value="2"/>
       <property name="caseIndent" value="2"/>
@@ -51,5 +59,18 @@
     <module name="MethodParamPad"/>
     <!-- 4.6.2 -->
     <!--module name="WhitespaceAround"/-->
+    <!-- 4.8.2.1 -->
+    <module name="MultipleVariableDeclarations"/>
+    <!-- 4.8.3.1 -->
+    <module name="ArrayTypeStyle"/>
+    <!-- 4.8.4.2 -->
+    <module name="FallThrough"/>
+    <!-- 4.8.4.3 -->
+    <module name="DefaultComesLast"/>
+    <module name="MissingSwitchDefault"/>
+    <!-- 4.8.7 -->
+    <module name="ModifierOrder"/>
+    <!-- 4.8.8 -->
+    <module name="UpperEll"/>
   </module>
 </module>

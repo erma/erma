@@ -34,7 +34,7 @@ public class AttributeMap implements Serializable {
   private static final long serialVersionUID = 2L;
   
   private final ConcurrentHashMap<String, AttributeHolder> attributes;
-  private transient final Logger logger = Logger.getLogger(AttributeMap.class);
+  private final transient Logger logger = Logger.getLogger(AttributeMap.class);
   
   /**
    * Creates an empty attribute map
