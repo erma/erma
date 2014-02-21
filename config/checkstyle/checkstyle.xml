@@ -49,5 +49,7 @@
       <property name="option" value="eol"/>
     </module>
     <module name="MethodParamPad"/>
+    <!-- 4.6.2 -->
+    <!--module name="WhitespaceAround"/-->
   </module>
 </module>

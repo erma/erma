@@ -8,8 +8,12 @@
  * as defined in this project's gradlew script.
  */
 buildscript {
-  repositories {  maven { url 'http://repos.ssdt.nwoca.org/artifactory/repo' }  }
-  dependencies { classpath 'me.davesmith:jaranalyzerplugin:0.1.0-SNAPSHOT' }
+  repositories {  
+    maven { url 'http://repos.ssdt.nwoca.org/artifactory/repo' }  
+  }
+  dependencies { 
+    classpath 'me.davesmith:jaranalyzerplugin:0.1.0-SNAPSHOT' 
+  }
 }
 
 apply plugin: 'jaranalyzer'  // in a build script
@@ -23,6 +27,7 @@ allprojects {
   apply plugin: 'checkstyle'
 
   checkstyle {
+//    toolVersion = "5.8-SNAPSHOT"
     configFile = new File(rootDir, "/config/checkstyle/checkstyle.xml")
   }
   
@@ -106,6 +111,7 @@ subprojects { subproject ->
   
   repositories {
     mavenCentral()
+    mavenLocal()
   }
  
   def pomConfig = {

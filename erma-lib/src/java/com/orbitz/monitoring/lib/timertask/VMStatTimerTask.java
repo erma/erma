@@ -66,7 +66,7 @@ public class VMStatTimerTask extends MonitorEmittingTimerTask {
     monitors.add(fireJvmStat("Memory.Heap.memoryUsage", memoryMXBean.getHeapMemoryUsage()));
     monitors.add(fireJvmStat("Memory.NonHeap.memoryUsage", memoryMXBean.getNonHeapMemoryUsage()));
     
-    for(MemoryPoolMXBean memoryPoolMXBean: ManagementFactory.getMemoryPoolMXBeans()) {
+    for (MemoryPoolMXBean memoryPoolMXBean: ManagementFactory.getMemoryPoolMXBeans()) {
       String type = (MemoryType.HEAP == memoryPoolMXBean.getType()) ? "Heap" : "NonHeap";
       String name = "Memory." + type + ".Pool." + memoryPoolMXBean.getName();
       monitors.add(fireJvmStat(name + ".memoryUsage", memoryPoolMXBean.getUsage()));
@@ -113,13 +113,13 @@ public class VMStatTimerTask extends MonitorEmittingTimerTask {
   private EventMonitor fireJvmStat(String type, Long count, Long time, Double percent) {
     final EventMonitor monitor = new EventMonitor("JvmStats", MonitoringLevel.ESSENTIAL);
     monitor.set("type", type);
-    if(count != null) {
+    if (count != null) {
       monitor.set("count", count);
     }
-    if(time != null) {
+    if (time != null) {
       monitor.set("time", time);
     }
-    if(percent != null) {
+    if (percent != null) {
       monitor.set("percent", percent);
     }
     monitor.fire();

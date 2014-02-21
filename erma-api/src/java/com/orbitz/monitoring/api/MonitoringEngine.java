@@ -303,8 +303,7 @@ class MonitoringEngine {
    * @return the first CompositeMonitor with the supplied name, or null if not found
    * @throws IllegalArgumentException if name is null
    */
-  public CompositeMonitor getCompositeMonitorNamed(final String name)
-    throws IllegalArgumentException {
+  public CompositeMonitor getCompositeMonitorNamed(String name) throws IllegalArgumentException {
     return inheritableStrategy.getCompositeMonitorNamed(name);
   }
   

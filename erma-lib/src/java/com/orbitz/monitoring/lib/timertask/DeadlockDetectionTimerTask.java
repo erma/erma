@@ -19,7 +19,7 @@ public class DeadlockDetectionTimerTask extends MonitorEmittingTimerTask {
    */
   public DeadlockDetectionTimerTask() {
     final ThreadMXBean threadBean = ManagementFactory.getThreadMXBean();
-    if(threadBean.isThreadContentionMonitoringSupported()) {
+    if (threadBean.isThreadContentionMonitoringSupported()) {
       threadBean.setThreadContentionMonitoringEnabled(true);
     }
   }
@@ -27,9 +27,9 @@ public class DeadlockDetectionTimerTask extends MonitorEmittingTimerTask {
   public Collection<EventMonitor> emitMonitors() {
     EventMonitor monitor = null;
     final ThreadMXBean threadBean = ManagementFactory.getThreadMXBean();
-    if(threadBean.isThreadContentionMonitoringEnabled()) {
+    if (threadBean.isThreadContentionMonitoringEnabled()) {
       long[] findMonitorDeadlockedThreads = threadBean.findMonitorDeadlockedThreads();
-      if(findMonitorDeadlockedThreads != null) {
+      if (findMonitorDeadlockedThreads != null) {
         monitor = new EventMonitor("JvmStats", MonitoringLevel.ESSENTIAL);
         monitor.set("type", "Thread.Deadlock");
         monitor.set("count", 1);

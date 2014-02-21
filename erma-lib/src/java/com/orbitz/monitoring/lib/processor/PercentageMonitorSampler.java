@@ -14,7 +14,7 @@ import java.util.concurrent.locks.ReentrantLock;
  *
  * @author Greg Opaczewski
  */
-@ManagedResource(description="PercentageMonitorSampler mbean")
+@ManagedResource(description = "PercentageMonitorSampler mbean")
 public class PercentageMonitorSampler implements MonitorSampler {
 
   private static final Logger logger = Logger.getLogger(PercentageMonitorSampler.class.getName());
@@ -73,7 +73,7 @@ public class PercentageMonitorSampler implements MonitorSampler {
    * @param samplePercentage sample rate as percentage
    */
   @ManagedAttribute(
-      description="Set the sampling rate.  For e.g. a value of 33.3 will result in sampling every"
+      description = "Set the sampling rate.  For e.g. a value of 33.3 will result in sampling every"
           + "3rd monitor")
   public void setSamplePercentage(float samplePercentage) {
     float previousRate = getSamplePercentage();
@@ -82,7 +82,7 @@ public class PercentageMonitorSampler implements MonitorSampler {
         + samplePercentage);
   }
 
-  @ManagedAttribute(description="Get the sampling rate as a percentage.")
+  @ManagedAttribute(description = "Get the sampling rate as a percentage.")
   public float getSamplePercentage() {
     return this.sampleRate * 100.0f;
   }

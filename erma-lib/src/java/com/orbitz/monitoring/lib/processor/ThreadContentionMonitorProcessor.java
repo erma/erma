@@ -23,7 +23,7 @@ import java.lang.management.ThreadMXBean;
  * @@org.springframework.jmx.export.metadata.ManagedResource
  * (description="This MonitorProcessor can be dis/enabled.")
  */
-@ManagedResource(description="This MonitorProcessor can be dis/enabled.")
+@ManagedResource(description = "This MonitorProcessor can be dis/enabled.")
 public class ThreadContentionMonitorProcessor
     extends MonitorProcessorAdapter {
 
@@ -65,7 +65,7 @@ public class ThreadContentionMonitorProcessor
   /**
    * @return boolean
    */
-  @ManagedAttribute(description="true if this MonitorProcessor is enabled")
+  @ManagedAttribute(description = "true if this MonitorProcessor is enabled")
   public boolean isEnabled() {
     return enabled;
   }
@@ -73,7 +73,7 @@ public class ThreadContentionMonitorProcessor
   /**
    * @param enabled boolean enabled status
    */
-  @ManagedAttribute(description="set to true to enable this MonitorProcessor")
+  @ManagedAttribute(description = "set to true to enable this MonitorProcessor")
   public void setEnabled(boolean enabled) {
     ThreadMXBean tmxbean = ManagementFactory.getThreadMXBean();
     if (tmxbean.isThreadContentionMonitoringSupported()) {

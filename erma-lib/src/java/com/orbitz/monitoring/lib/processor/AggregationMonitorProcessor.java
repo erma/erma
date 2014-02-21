@@ -17,7 +17,7 @@ public class AggregationMonitorProcessor extends MonitorProcessorAdapter {
    */
   public AggregationMonitorProcessor(final Aggregator aggregator) {
     super();
-    if(aggregator == null) {
+    if (aggregator == null) {
       throw new IllegalArgumentException("Aggregator cannot be null");
     }
     this.aggregator = aggregator;

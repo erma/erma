@@ -76,7 +76,7 @@ public class XmlMonitorRenderer {
 
     writeMonitor(xmlWriter, monitor);
 
-    if((maxCharacters != -1) && (stringWriter.getBuffer().length() > maxCharacters)) {
+    if ((maxCharacters != -1) && (stringWriter.getBuffer().length() > maxCharacters)) {
       // clear the buffer and reuse the streams
       StringBuffer sb = stringWriter.getBuffer();
       int length = sb.length();
@@ -162,7 +162,7 @@ public class XmlMonitorRenderer {
             }
           }
           int idx = attributeValue.indexOf("\n");
-          if(idx > -1) {
+          if (idx > -1) {
             attributeValue = attributeValue.substring(0, idx);
           }
           writer.addAttribute(attributeName, attributeValue);

@@ -28,16 +28,16 @@ public class MapBasedInheritableStrategy implements InheritableStrategy {
   }
 
   public void compositeMonitorCompleted(CompositeMonitor monitor) {
-    if(threadBasedMap.containsKey(Thread.currentThread())) {
+    if (threadBasedMap.containsKey(Thread.currentThread())) {
       Map map = (Map) threadBasedMap.get(Thread.currentThread());
-      if(map != null && map.containsKey(monitor)) {
+      if (map != null && map.containsKey(monitor)) {
         map.remove(monitor);
       }
     }
   }
 
   public void compositeMonitorStarted(CompositeMonitor monitor) {
-    if(!threadBasedMap.containsKey(Thread.currentThread())) {
+    if (!threadBasedMap.containsKey(Thread.currentThread())) {
       threadBasedMap.put(Thread.currentThread(), new HashMap());
     }
   }
@@ -49,14 +49,14 @@ public class MapBasedInheritableStrategy implements InheritableStrategy {
   public Map getInheritableAttributes() {
     Map inheritableAttributes = new HashMap();
     Map map = (Map) threadBasedMap.get(Thread.currentThread());
-    if(map != null) {
-      for(Iterator it = map.values().iterator(); it.hasNext(); ) {
+    if (map != null) {
+      for (Iterator it = map.values().iterator(); it.hasNext(); ) {
         Map attributes = (Map) it.next();
-        for(Iterator ij = attributes.entrySet().iterator(); ij.hasNext(); ) {
+        for (Iterator ij = attributes.entrySet().iterator(); ij.hasNext(); ) {
           Map.Entry entry = (Map.Entry) ij.next();
           AttributeHolder original = (AttributeHolder) entry.getValue();
           AttributeHolder copy = new AttributeHolder(original.getValue());
-          if(original.isSerializable()) {
+          if (original.isSerializable()) {
             copy.serializable();
           }
 
@@ -73,17 +73,17 @@ public class MapBasedInheritableStrategy implements InheritableStrategy {
 
   public void setInheritable(CompositeMonitor monitor, String key, AttributeHolder original) {
     Map inheritableAttributes = getInheritableAttributes();
-    if(!inheritableAttributes.containsKey(key) && original != null) {
+    if (!inheritableAttributes.containsKey(key) && original != null) {
       compositeMonitorStarted(monitor);
       Map map = (Map) threadBasedMap.get(Thread.currentThread());
-      if(!map.containsKey(monitor)) {
+      if (!map.containsKey(monitor)) {
         map.put(monitor, new HashMap());
       }
 
       Map monitorMap = (Map) map.get(monitor);
       monitorMap.put(key, original);
     } else {
-      if(log.isDebugEnabled()) {
+      if (log.isDebugEnabled()) {
         AttributeHolder holder = (AttributeHolder) inheritableAttributes.get(key);
         log.debug("Attempted to re-add " + key + " with new value [" + original.getValue() 
             + "] to inheritableMap; old value is [" + holder.getValue() + "]");

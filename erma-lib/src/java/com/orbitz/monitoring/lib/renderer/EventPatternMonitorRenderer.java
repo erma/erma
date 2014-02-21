@@ -83,22 +83,22 @@ public class EventPatternMonitorRenderer {
       }
     }
 
-    if (buffer.lastIndexOf(String.valueOf(delimeter)) == buffer.length()-1) {
-      buffer.deleteCharAt(buffer.length()-1);//the last delimeter
+    if (buffer.lastIndexOf(String.valueOf(delimeter)) == buffer.length() - 1) {
+      buffer.deleteCharAt(buffer.length() - 1); //the last delimeter
     }
     
     if (monitor instanceof CompositeMonitor) {
       CompositeMonitor compositeMonitor = (CompositeMonitor) monitor;
       Collection childMonitors = compositeMonitor.getChildMonitors();
-      if(!childMonitors.isEmpty()) {
+      if (!childMonitors.isEmpty()) {
         StringBuffer lastBuffer = null;
         int monitorCount = 1;
         for (Iterator i = childMonitors.iterator(); i.hasNext();) {
           final Monitor childMonitor = (Monitor) i.next();
-          if(shouldRender(childMonitor)) {
+          if (shouldRender(childMonitor)) {
             final StringBuffer childBuffer = new StringBuffer();
             renderMonitorToBuffer(childMonitor, childBuffer, indentLevel + 1);
-            if(lastBuffer != null && lastBuffer.toString().contentEquals(childBuffer)) {
+            if (lastBuffer != null && lastBuffer.toString().contentEquals(childBuffer)) {
               monitorCount++;
             } else {
               if (lastBuffer != null) {
@@ -126,7 +126,7 @@ public class EventPatternMonitorRenderer {
       HashSet causeSet = new HashSet();
       causeSet.add(t);
       while (t.getCause() != null) {
-        if(!causeSet.contains(t.getCause())) {
+        if (!causeSet.contains(t.getCause())) {
           t = t.getCause();
           causeSet.add(t);
         } else {
@@ -145,7 +145,7 @@ public class EventPatternMonitorRenderer {
       causeSet.add(ex);
       while ((ex.get("cause") != null) 
           && (LazyDynaBean.class.isAssignableFrom(ex.get("cause").getClass()))) {
-        if(!causeSet.contains(ex.get("cause"))) {
+        if (!causeSet.contains(ex.get("cause"))) {
           ex = (LazyDynaBean) ex.get("cause");
           causeSet.add(ex);
         } else {
@@ -172,7 +172,7 @@ public class EventPatternMonitorRenderer {
 
   protected String indentString(int indentLevel) {
     StringBuffer buf = new StringBuffer(indentLevel * 2);
-    while(indentLevel > 0) {
+    while (indentLevel > 0) {
       buf.append("  ");
       indentLevel--;
     }
@@ -181,7 +181,7 @@ public class EventPatternMonitorRenderer {
 
   // adds the child buffer to the real buffer
   protected void addChildToBuffer(StringBuffer buffer, StringBuffer child, int count) {
-    if(count > 1) {
+    if (count > 1) {
       final int endOfFirst = child.indexOf("\n", 1);
       if (endOfFirst > 0) {
         child.insert(endOfFirst, String.valueOf(delimeter) + count + " occurences");
@@ -198,7 +198,7 @@ public class EventPatternMonitorRenderer {
     if (monitor.hasAttribute(Attribute.NAME)) {
       String name = monitor.getAsString(Attribute.NAME);
       Iterator it = monitorsToSkip.iterator();
-      while(render && it.hasNext()) {
+      while (render && it.hasNext()) {
         String sName = (String) it.next();
         if (name.indexOf(sName) > -1) {
           render = false;
@@ -220,7 +220,7 @@ public class EventPatternMonitorRenderer {
         sb.append("(Native Method)");
       } else if (trace[i].getFileName() != null) {
         sb.append("(").append(trace[i].getFileName());
-        if(trace[i].getLineNumber() >= 0) {
+        if (trace[i].getLineNumber() >= 0) {
           sb.append(":").append(trace[i].getLineNumber());
         }
         sb.append(")");
@@ -251,7 +251,7 @@ public class EventPatternMonitorRenderer {
         sb.append("(Native Method)");
       } else if (bean.get("fileName") != null) {
         sb.append("(").append(bean.get("fileName"));
-        if(Integer.class.isAssignableFrom(lineNumber.getClass())
+        if (Integer.class.isAssignableFrom(lineNumber.getClass())
             && ((Integer) lineNumber).intValue() >= 0) {
           sb.append(":").append(bean.get("lineNumber"));
         }

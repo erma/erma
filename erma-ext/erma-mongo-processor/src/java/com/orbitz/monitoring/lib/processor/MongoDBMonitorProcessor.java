@@ -30,7 +30,7 @@ import java.util.concurrent.atomic.AtomicLong;
  *
  * @author Greg Opaczewski
  */
-@ManagedResource(description="MongoDBMonitorProcessor MBean")
+@ManagedResource(description = "MongoDBMonitorProcessor MBean")
 public class MongoDBMonitorProcessor extends MonitorProcessorAdapter {
   private static final Logger logger = Logger.getLogger(MongoDBMonitorProcessor.class.getName());
 
@@ -77,14 +77,14 @@ public class MongoDBMonitorProcessor extends MonitorProcessorAdapter {
 
   @Override
   public void process(final Monitor monitor) {
-    if (! initialized) {return;}
+    if (! initialized) { return; }
 
     incrementCounter(totalReceived);
 
-    if (monitor == null) {return;}
+    if (monitor == null) { return; }
 
     // sample monitors
-    if (! sampler.accept(monitor)) {return;}
+    if (! sampler.accept(monitor)) { return; }
 
     incrementCounter(totalSampled);
 
@@ -261,28 +261,28 @@ public class MongoDBMonitorProcessor extends MonitorProcessorAdapter {
     this.sampler = sampler;
   }
 
-  @ManagedAttribute(description="Get the maximum monitor queue size")
+  @ManagedAttribute(description = "Get the maximum monitor queue size")
   public int getBufferSize() {
     return bufferSize;
   }
 
-  @ManagedAttribute(description="Get the current monitor queue size")
+  @ManagedAttribute(description = "Get the current monitor queue size")
   public int getMonitorQueueSize() {
     return enqueueBuffer.size();
   }
 
-  @ManagedAttribute(description="Get total sampled monitors")
+  @ManagedAttribute(description = "Get total sampled monitors")
   public long getTotalSampled() {
     return totalSampled.get();
   }
 
-  @ManagedAttribute(description="Get total received monitors")
+  @ManagedAttribute(description = "Get total received monitors")
   public long getTotalReceived() {
     return totalReceived.get();
   }
 
 
-  @ManagedAttribute(description="Get total rejected monitors")
+  @ManagedAttribute(description = "Get total rejected monitors")
   public long getTotalRejected() {
     return totalRejected.get();
   }
