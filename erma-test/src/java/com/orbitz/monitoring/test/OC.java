@@ -5,15 +5,15 @@ package com.orbitz.monitoring.test;
  * <p/>
  */
 public class OC {
-  private Object _object;
-  private Object _privateObject = new Object();
+  private Object object;
+  private Object privateObject = new Object();
 
   public OC(Object object) {
-    _object = object;
+    this.object = object;
   }
 
   public Object getObject() {
-    return _object;
+    return object;
   }
 
   public Object getExceptionThrower() {
@@ -21,6 +21,6 @@ public class OC {
   }
 
   private Object getPrivateObject() {
-    return _privateObject;
+    return privateObject;
   }
 }

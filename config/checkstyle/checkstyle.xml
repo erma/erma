@@ -3,24 +3,33 @@
     "-//Puppy Crawl//DTD Check Configuration 1.3//EN" 
      "http://www.puppycrawl.com/dtds/configuration_1_3.dtd"> 
 <module name="Checker">
+  <module name="SuppressWarningsFilter"/>
   <!-- 2.2 -->
   <property name="charset" value="UTF-8"/>
   <!-- 2.3.1 -->
   <module name="FileTabCharacter"/>
 
   <module name="TreeWalker">
+    <module name="SuppressWarningsHolder"/>
     <module name="RedundantImport"/>
     <module name="UnusedImports"/>
     <module name="CovariantEquals"/>
     <module name="EmptyStatement"/>
     <module name="EmptyBlock">
-      <property name="tokens" value="LITERAL_DO, LITERAL_ELSE, LITERAL_FINALLY, LITERAL_IF, LITERAL_FOR, LITERAL_TRY, LITERAL_WHILE, INSTANCE_INIT, STATIC_INIT"/>
+     <property name="tokens" value="LITERAL_DO, LITERAL_ELSE, LITERAL_FINALLY, LITERAL_IF, LITERAL_FOR, LITERAL_TRY, LITERAL_WHILE, INSTANCE_INIT, STATIC_INIT"/>
     </module>
     <module name="EmptyBlock">
       <property name="option" value="text"/>
       <property name="tokens" value="LITERAL_CATCH"/>
     </module>
     <module name="AvoidNestedBlocks"/>
+    <module name="VisibilityModifier">
+      <property name="protectedAllowed" value="true" />
+    </module>
+    <module name="FinalClass"/>
+    <module name="InterfaceIsType"/>
+    <module name="HideUtilityClassConstructor"/>
+    <module name="MutableException"/>
     <!-- 2.1 and 3.3.1 -->
     <module name="OuterTypeFilename"/>
     <!-- 3.3.1 -->
@@ -61,16 +70,53 @@
     <!--module name="WhitespaceAround"/-->
     <!-- 4.8.2.1 -->
     <module name="MultipleVariableDeclarations"/>
+    <!-- 4.8.2.2 -->
+    <!-- Checkstyle cannot enforce Declared when needed, initialized as soon as possible. -->
     <!-- 4.8.3.1 -->
+    <!-- Checkstyle cannot enforce the positive style rule: Array init: can be "block-like". -->
+    <!-- 4.8.3.2 -->
     <module name="ArrayTypeStyle"/>
     <!-- 4.8.4.2 -->
     <module name="FallThrough"/>
     <!-- 4.8.4.3 -->
     <module name="DefaultComesLast"/>
     <module name="MissingSwitchDefault"/>
+    <!-- 4.8.5 -->
+    <!-- Checkstyle cannot enforce the Annotations style. -->
+    <!-- 4.8.6 -->
+    <!-- Checkstyle cannot enforce the Comments style. -->
     <!-- 4.8.7 -->
     <module name="ModifierOrder"/>
     <!-- 4.8.8 -->
     <module name="UpperEll"/>
+    <!-- 5.1 -->
+    <!-- Checkstyle cannot enforce the lack of special prefixes or suffixes. -->
+    <!-- 5.2.1 -->
+    <module name="PackageName">
+      <property name="format" value="^[a-z]+(\.[a-z]+)*$"/>
+    </module>
+    <!-- 5.2.2 -->
+    <module name="TypeName"/>
+    <!-- 5.2.3 -->
+    <module name="MethodName"/>
+    <!-- 5.2.4 -->
+    <!-- Checkstyle cannot correcty disern that is a constant. -->
+    <!-- 5.2.5 -->
+    <!-- This requires backwards incompatable changes to fix. -->
+    <module name="MemberName">
+      <property name="severity" value="warning"/>
+    </module>
+    <!-- This likely requires backwards incompatable changes to fix, but also catches missed final constants. -->
+    <module name="StaticVariableName"/>
+    <!-- 5.2.6 -->
+    <module name="ParameterName"/>
+    <!-- 5.2.7 -->
+    <module name="LocalFinalVariableName"/>
+    <module name="LocalVariableName"/>
+    <!-- 5.2.8 -->
+    <module name="ClassTypeParameterName"/>
+    <module name="MethodTypeParameterName"/>
+    <!-- 6.1 -->
+    <module name="MissingOverride"/>
   </module>
 </module>

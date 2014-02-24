@@ -28,8 +28,8 @@ import java.util.Set;
  */
 public abstract class MonitorTestBase extends TestCase {
   // ** PRIVATE DATA ********************************************************
-  private MockMonitorProcessor _processor;
-  private MockDecomposer _decomposer;
+  private MockMonitorProcessor processor;
+  private MockDecomposer decomposer;
 
   // ** CONSTRUCTORS ********************************************************
   protected MonitorTestBase() {
@@ -41,16 +41,16 @@ public abstract class MonitorTestBase extends TestCase {
 
   // ** TEST SUITE METHODS **************************************************
   protected void setUp() throws Exception {
-    _processor = new MockMonitorProcessor();
+    processor = new MockMonitorProcessor();
     MockMonitorProcessorFactory processorFactory =
         new MockMonitorProcessorFactory(
-            new MonitorProcessor[]{_processor});
+            new MonitorProcessor[]{processor});
 
-    _decomposer = new MockDecomposer();
+    decomposer = new MockDecomposer();
 
     MonitoringEngine mEngine = MonitoringEngine.getInstance();
     mEngine.setProcessorFactory(processorFactory);
-    mEngine.setDecomposer(_decomposer);
+    mEngine.setDecomposer(decomposer);
     mEngine.restart();
     mEngine.setMonitoringEnabled(true);
   }
@@ -774,7 +774,7 @@ public abstract class MonitorTestBase extends TestCase {
   // custom processor needed for next test...
   private static class CreateTestMonitorProcessor
       extends MockMonitorProcessor {
-    public boolean failed = false;
+    private boolean failed = false;
 
     public void monitorCreated(Monitor m) {
       // next line won't work here, doug is too smart...
@@ -806,7 +806,7 @@ public abstract class MonitorTestBase extends TestCase {
 
   // ** PROTECTED METHODS ***************************************************
   protected MockMonitorProcessor getMockProcessor(Monitor monitor) {
-    return _processor;
+    return processor;
   }
 
   protected Monitor createMonitor(String name) {
@@ -826,7 +826,7 @@ public abstract class MonitorTestBase extends TestCase {
     Map originalAttrs = monitor.getAllSerializable();
     Map serializableAttrs = momento.getAll();
 
-    List decomposedObjects = _decomposer.getDecomposedObjects();
+    List decomposedObjects = decomposer.getDecomposedObjects();
     
     assertEquals(originalAttrs.keySet(), serializableAttrs.keySet());
     for (Iterator i = originalAttrs.entrySet().iterator(); i.hasNext();) {

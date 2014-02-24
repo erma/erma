@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * MonitoringLevel
  */
-public class MonitoringLevel implements Serializable {
+public final class MonitoringLevel implements Serializable {
 
   /** DEBUG - Level with lowest processing priority */
   public static final MonitoringLevel DEBUG = new MonitoringLevel("DEBUG", 300);
@@ -16,7 +16,9 @@ public class MonitoringLevel implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
+  @SuppressWarnings("checkstyle:membername")
   private String _levelStr;
+  @SuppressWarnings("checkstyle:membername")
   private int _level;
 
   private MonitoringLevel(String levelStr, int level) {

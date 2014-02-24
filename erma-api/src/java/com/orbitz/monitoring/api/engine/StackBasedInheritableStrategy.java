@@ -247,7 +247,7 @@ public class StackBasedInheritableStrategy implements InheritableStrategy {
    */
   private class StackFrame {
 
-    private final CompositeMonitor _monitor;
+    @SuppressWarnings(value="membername") private final CompositeMonitor _monitor;
     private final AtomicInteger _counter;
 
     public StackFrame(CompositeMonitor monitor) {

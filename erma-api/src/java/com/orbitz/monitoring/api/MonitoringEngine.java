@@ -31,21 +31,21 @@ class MonitoringEngine {
   
   private static final int MAX_LEVEL_OVERRIDES = 128;
   
-  private static MonitoringEngine instance = new MonitoringEngine();
+  private static final MonitoringEngine instance = new MonitoringEngine();
   
-  private static ProcessClosure MONITOR_CREATED_CLOSURE = new ProcessClosure() {
+  private static final ProcessClosure MONITOR_CREATED_CLOSURE = new ProcessClosure() {
     public void processWithProcessor(final Monitor monitor, final MonitorProcessor processor) {
       processor.monitorCreated(monitor);
     }
   };
   
-  private static ProcessClosure MONITOR_STARTED_CLOSURE = new ProcessClosure() {
+  private static final ProcessClosure MONITOR_STARTED_CLOSURE = new ProcessClosure() {
     public void processWithProcessor(final Monitor monitor, final MonitorProcessor processor) {
       processor.monitorStarted(monitor);
     }
   };
   
-  private static ProcessClosure PROCESS_CLOSURE = new ProcessClosure() {
+  private static final ProcessClosure PROCESS_CLOSURE = new ProcessClosure() {
     public void processWithProcessor(final Monitor monitor, final MonitorProcessor processor) {
       processor.process(monitor);
     }

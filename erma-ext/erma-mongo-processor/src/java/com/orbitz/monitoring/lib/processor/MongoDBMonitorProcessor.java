@@ -179,34 +179,6 @@ public class MongoDBMonitorProcessor extends MonitorProcessorAdapter {
     this.mongoFactory = mongoFactory;
   }
 
-  // helper classes
-
-  public interface NamespaceProvider {
-    String getNamespaceFor(Monitor monitor);
-  }
-
-  interface MongoFactory {
-    Mongo getMongo(String host, int port) throws UnknownHostException;
-  }
-
-  private class DefaultNamespaceProvider implements NamespaceProvider {
-    public String getNamespaceFor(Monitor monitor) {
-      if (monitor.hasAttribute(Attribute.NAME)) {
-        return monitor.getAsString(Attribute.NAME);
-      } else {
-        return "null";
-      }
-    }
-  }
-
-  private class DefaultMongoFactory implements MongoFactory {
-    public Mongo getMongo(String host, int port) throws UnknownHostException {
-      return new Mongo(host, port);
-    }
-  }
-
-  // private methods
-
   private void handleStartupException(Exception e) {
     /*
      * By default, failFastOnStartup is false, instead this processor will effectively
@@ -301,4 +273,29 @@ public class MongoDBMonitorProcessor extends MonitorProcessorAdapter {
 
     } while (! atomicLong.compareAndSet(currentValue, newValue) );
   }
+
+  public interface NamespaceProvider {
+    String getNamespaceFor(Monitor monitor);
+  }
+
+  interface MongoFactory {
+    Mongo getMongo(String host, int port) throws UnknownHostException;
+  }
+
+  private class DefaultNamespaceProvider implements NamespaceProvider {
+    public String getNamespaceFor(Monitor monitor) {
+      if (monitor.hasAttribute(Attribute.NAME)) {
+        return monitor.getAsString(Attribute.NAME);
+      } else {
+        return "null";
+      }
+    }
+  }
+
+  private class DefaultMongoFactory implements MongoFactory {
+    public Mongo getMongo(String host, int port) throws UnknownHostException {
+      return new Mongo(host, port);
+    }
+  }
+
 }

@@ -27,7 +27,8 @@ allprojects {
   apply plugin: 'checkstyle'
 
   checkstyle {
-//    toolVersion = "5.8-SNAPSHOT"
+    //toolVersion = "5.7"
+    toolVersion = "5.8-SNAPSHOT"
     configFile = new File(rootDir, "/config/checkstyle/checkstyle.xml")
   }
   
