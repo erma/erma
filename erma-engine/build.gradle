@@ -13,7 +13,6 @@ dependencies {
     compile(
         project(':erma-api'),
         project(':erma-lib'), //I would like to remove this
-        [group: 'org.springframework', name: 'spring', version: '2.0.6'],
         /*
         [group: 'log4j', name: 'log4j', version: '1.2.9'],
         [group: 'commons-lang', name: 'commons-lang', version: '2.2'],
