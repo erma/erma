@@ -2,6 +2,10 @@ package com.orbitz.monitoring.lib.factory;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
 
 import java.util.Collections;
 
@@ -13,8 +17,8 @@ import org.junit.Test;
 import com.google.common.collect.Iterables;
 import com.orbitz.monitoring.api.Monitor;
 import com.orbitz.monitoring.api.MonitorProcessor;
+import com.orbitz.monitoring.api.MonitoringEngine;
 import com.orbitz.monitoring.api.MonitoringLevel;
-import com.orbitz.monitoring.api.monitor.AbstractMonitor;
 import com.orbitz.monitoring.api.monitor.EventMonitor;
 import com.orbitz.monitoring.test.MockMonitorProcessor;
 
@@ -51,16 +55,19 @@ public class ProcessGroupTest {
   }
   
   private Monitor makeMonitor() {
-    return makeMonitor(MonitoringLevel.ESSENTIAL);
+    Monitor monitor = mock(Monitor.class);
+    when(monitor.getLevel()).thenReturn(MonitoringLevel.ESSENTIAL);
+    return monitor;
   }
   
-  private Monitor makeMonitor(MonitoringLevel level) {
-    return new AbstractMonitor("", level) {};
-  }
-
   private ProcessGroup makeProcessGroup() {
-    MonitorProcessor processor = new MockMonitorProcessor(MONITOR_PROCESSOR_NAME);
-    ProcessGroup group = new ProcessGroup(processor);
+    MonitoringEngine engine = mock(MonitoringEngine.class);
+    MonitorProcessor processor = mock(MonitorProcessor.class);
+    ProcessGroup group = spy(new ProcessGroup(processor));
+    when(group.findMonitoringEngine()).thenReturn(engine);
+    when(group.matchesExpressionFor(any(Monitor.class))).thenReturn(true);
+    when(processor.getName()).thenReturn(MONITOR_PROCESSOR_NAME);
+    when(engine.getProcessorLevel(MONITOR_PROCESSOR_NAME)).thenReturn(MonitoringLevel.INFO);
     return group;
   }
   
@@ -77,7 +84,7 @@ public class ProcessGroupTest {
   @Test
   public void testGetProcessorsForInactive() {
     ProcessGroup group = makeProcessGroup();
-    group.setActive(false);
+    when(group.isActive()).thenReturn(false);
     assertEquals(Collections.emptyList(), group.getProcessorsFor(makeMonitor()));
   }
   
@@ -87,6 +94,7 @@ public class ProcessGroupTest {
   @Test
   public void testGetProcessorsForGroupLevel() {
     ProcessGroup group = makeProcessGroup();
+    when(group.findMonitoringEngine().getProcessorLevel(MONITOR_PROCESSOR_NAME)).thenReturn(null);
     assertElementsEqual(group.getAllProcessors(), group.getProcessorsFor(makeMonitor()));
   }
   
@@ -95,18 +103,21 @@ public class ProcessGroupTest {
    */
   @Test
   public void testGetProcessorsForLowerGroupLevel() {
-    Monitor monitor = makeMonitor(MonitoringLevel.DEBUG);
+    Monitor monitor = makeMonitor();
     ProcessGroup group = makeProcessGroup();
+    when(group.findMonitoringEngine().getProcessorLevel(MONITOR_PROCESSOR_NAME)).thenReturn(null);
+    when(monitor.getLevel()).thenReturn(MonitoringLevel.DEBUG);
     assertElementsEqual(Collections.emptyList(), group.getProcessorsFor(monitor));
   }
-
-/**
+  
+  /**
    * @see ProcessGroup#getProcessorsFor(Monitor)
    */
   @Test
   public void testGetProcessorsForLowerMonitorLevel() {
     ProcessGroup group = makeProcessGroup();
-    Monitor monitor = makeMonitor(MonitoringLevel.DEBUG);
+    Monitor monitor = makeMonitor();
+    when(monitor.getLevel()).thenReturn(MonitoringLevel.DEBUG);
     assertElementsEqual(Collections.emptyList(), group.getProcessorsFor(monitor));
   }
   
@@ -126,7 +137,7 @@ public class ProcessGroupTest {
   public void testGetProcessorsForMonitorDoesNotMatchExpression() {
     Monitor monitor = makeMonitor();
     ProcessGroup group = makeProcessGroup();
-    group.setExpression("m != m");
+    when(group.matchesExpressionFor(monitor)).thenReturn(false);
     assertElementsEqual(Collections.emptyList(), group.getProcessorsFor(monitor));
   }
   
@@ -159,14 +170,14 @@ public class ProcessGroupTest {
     MonitorProcessor mp = new MockMonitorProcessor("mpA");
     ProcessGroup processGroup = new ProcessGroup(mp);
     
-    mp.setLevel(MonitoringLevel.DEBUG);
+    MonitoringEngine.getInstance().addProcessorLevel("mpA", MonitoringLevel.DEBUG);
     
     EventMonitor event = new EventMonitor("baz", MonitoringLevel.DEBUG);
     
     Iterable processors = processGroup.getProcessorsFor(event);
     assertSize("Processor should process this monitor b/c its level is DEBUG", 1, processors);
     
-    mp.setLevel(MonitoringLevel.ESSENTIAL);
+    MonitoringEngine.getInstance().addProcessorLevel("mpA", MonitoringLevel.ESSENTIAL);
     
     processors = processGroup.getProcessorsFor(event);
     assertSize("No processor should process this monitor b/c its level is DEBUG", 0, processors);
@@ -205,8 +216,7 @@ public class ProcessGroupTest {
     EventMonitor event = new EventMonitor("baz", MonitoringLevel.DEBUG);
     processGroup.updateMonitoringLevel(MonitoringLevel.DEBUG.toString());
     
-    
-    mp.setLevel(MonitoringLevel.INFO);
+    MonitoringEngine.getInstance().addProcessorLevel("mpA", MonitoringLevel.INFO);
     
     Iterable processors = processGroup.getProcessorsFor(event);
     assertSize("No processor should process this monitor b/c its level is DEBUG", 0, processors);
@@ -214,7 +224,7 @@ public class ProcessGroupTest {
     event = new EventMonitor("baz", MonitoringLevel.DEBUG);
     processGroup.updateMonitoringLevel(MonitoringLevel.INFO.toString());
     
-    mp.setLevel(MonitoringLevel.DEBUG);
+    MonitoringEngine.getInstance().addProcessorLevel("mpA", MonitoringLevel.DEBUG);
     
     processors = processGroup.getProcessorsFor(event);
     assertSize("Processor should process this monitor b/c its level is DEBUG", 1, processors);

@@ -14,7 +14,7 @@ import org.apache.log4j.Logger;
  */
 
 public class LoggingMonitorProcessor extends MonitorProcessorAdapter {
-  // ** PRIVATE DATA ********************************************************
+
   private Logger log;
 
   private boolean _logMonitorCreated = false;

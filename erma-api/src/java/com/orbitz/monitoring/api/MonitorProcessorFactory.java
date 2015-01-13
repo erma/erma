@@ -1,7 +1,5 @@
 package com.orbitz.monitoring.api;
 
-import java.util.Set;
-
 /**
  * The interface that can be implemented to hook into the process of choosing
  * the processors that are applicable for a given Monitor object.
@@ -35,12 +33,4 @@ public interface MonitorProcessorFactory {
    * @return The processors for this MPF
    */
   public MonitorProcessor[] getAllProcessors();
-
-  /**
-   * Retrieve a set of all the MonitorProcessors for this MPF whose names' match the name 
-   * parameter.
-   * @param name
-   * @return The processors for this MPF
-   */
-  public Set<MonitorProcessor> getProcessorsByName(String name);
 }

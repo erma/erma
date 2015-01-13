@@ -1,6 +1,7 @@
 package com.orbitz.monitoring.lib.factory;
 
 import com.orbitz.monitoring.api.Monitor;
+import com.orbitz.monitoring.api.MonitoringEngine;
 import com.orbitz.monitoring.api.MonitorProcessor;
 import com.orbitz.monitoring.api.MonitoringLevel;
 
@@ -8,6 +9,9 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+
+import java.util.Collections;
+import java.util.List;
 
 import org.apache.commons.jexl.Expression;
 import org.apache.commons.jexl.ExpressionFactory;
@@ -19,9 +23,6 @@ import org.springframework.jmx.export.annotation.ManagedOperation;
 import org.springframework.jmx.export.annotation.ManagedOperationParameter;
 import org.springframework.jmx.export.annotation.ManagedOperationParameters;
 import org.springframework.jmx.export.annotation.ManagedResource;
-
-import java.util.Collections;
-import java.util.List;
 
 /**
  * An object that contains the configuration for what processors should be called for which
@@ -64,7 +65,8 @@ public class ProcessGroup {
     Iterable<MonitorProcessor> processorsForMonitor = Iterables.filter(_processors,
         new Predicate<MonitorProcessor>() {
           public boolean apply(final MonitorProcessor processor) {
-            MonitoringLevel processorLevel = processor.getLevel();
+            MonitoringLevel processorLevel = findMonitoringEngine().getProcessorLevel(
+                processor.getName());
             if (processorLevel != null) {
               return monitorLevel.hasHigherOrEqualPriorityThan(processorLevel);
             } else {
@@ -78,6 +80,11 @@ public class ProcessGroup {
       }
     }
     return processorsForMonitor;
+  }
+  
+  @VisibleForTesting
+  MonitoringEngine findMonitoringEngine() {
+    return MonitoringEngine.getInstance();
   }
   
   /**

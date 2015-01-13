@@ -52,17 +52,4 @@ public interface MonitorProcessor {
    * @return Processor name.
    */
   public String getName();
-
-  /**
-   * Set the monitoring level for this processor. This should be used to regulate which monitors 
-   * this processor processes.
-   * @param level
-   */
-  public void setLevel(MonitoringLevel level);
-
-  /**
-   * Get the monitoring level for this processor.
-   * @return MonitoringLevel
-   */
-  public MonitoringLevel getLevel();
 }

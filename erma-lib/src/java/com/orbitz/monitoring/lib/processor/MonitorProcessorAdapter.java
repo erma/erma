@@ -14,7 +14,6 @@ import com.orbitz.monitoring.api.MonitoringLevel;
  * @author Matt O'Keefe
  */
 public abstract class MonitorProcessorAdapter implements MonitorProcessor {
-  private MonitoringLevel level;
 
   /**
    * This is a lifecycle method that a processor can use to initialize itself
@@ -66,15 +65,5 @@ public abstract class MonitorProcessorAdapter implements MonitorProcessor {
 
   public String getName() {
     return "";
-  }
-
-  @Override
-  public void setLevel(MonitoringLevel level) {
-    this.level = level;
-  }
-
-  @Override
-  public MonitoringLevel getLevel() {
-    return level;
   }
 }

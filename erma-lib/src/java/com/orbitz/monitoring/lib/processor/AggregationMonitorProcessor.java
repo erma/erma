@@ -2,11 +2,12 @@ package com.orbitz.monitoring.lib.processor;
 
 import com.orbitz.monitoring.api.Aggregator;
 import com.orbitz.monitoring.api.Monitor;
+import com.orbitz.monitoring.api.MonitorProcessor;
 
 /**
  * MonitorProcessor that delegates to an Aggregator.
  */
-public class AggregationMonitorProcessor extends MonitorProcessorAdapter {
+public class AggregationMonitorProcessor implements MonitorProcessor {
 
   private final Aggregator aggregator;
 

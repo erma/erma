@@ -49,5 +49,4 @@ public class StatsdMonitorProcessor extends MonitorProcessorAdapter {
   public void setName(String name) {
     this._name = name;
   }
-  
 }
